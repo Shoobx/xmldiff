@@ -1,0 +1,31 @@
+<?xml version="1.0"?> 
+<xupdate:modifications version="1.0" xmlns:xupdate="http://www.xmldb.org/xupdate">
+<xupdate:rename select="/memory[1]/mailbox[1]" >box</xupdate:rename>
+
+<xupdate:insert-after select="/memory[1]/spoken-languages[1]" >  <xupdate:element name="test">    <!-- this is an append test -->
+hoye!
+  </xupdate:element>
+</xupdate:insert-after>
+
+<xupdate:update select="/memory[1]/email_addr[1]/text()[1]" >syt@logilab.org</xupdate:update>
+
+<xupdate:rename select="/memory[1]/junkbuster-method[1]/@value" >val</xupdate:rename>
+
+<xupdate:append select="/memory[1]/junkbuster-method[1]"  child="first()" >  <xupdate:element name="newson">  </xupdate:element>
+</xupdate:append>
+
+<xupdate:append select="/memory[1]/spoken-languages[1]" >  <xupdate:attribute name="new">new attribute</xupdate:attribute>
+</xupdate:append>
+
+<xupdate:insert-after select="/memory[1]/spoken-languages[1]/language[2]" >  <xupdate:element name="language">    <xupdate:attribute name="code">it</xupdate:attribute>
+    <xupdate:attribute name="name">italian</xupdate:attribute>
+  </xupdate:element>
+</xupdate:insert-after>
+
+<xupdate:update select="/memory[1]/server-socket[2]/@port" >7797</xupdate:update>
+
+<xupdate:remove select="/memory[1]/spoken-languages[1]/language[1]" />
+
+<xupdate:remove select="/memory[1]/spoken-languages[1]/language[3]" />
+
+</xupdate:modifications>

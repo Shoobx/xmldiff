@@ -1,0 +1,21 @@
+XMLrev - a XML revision tool
+
+Prerequisites:
+ * bash
+ * xmldiff
+ * xsltproc
+ * sp
+ * libxml2-utils
+ * docbook-xsl
+
+xmlrev is a tool based on xmldiff reads two version of a document and
+outputs a new document that includes the revision information
+(parts added, removed and changed). This document can then
+be rendered with a specific stylesheet that renders the changes.
+
+Try:
+	xmlrev doc.xml new_doc.xml > rev_doc.xml
+
+Then render rev_doc.xml with the docbook_rev.xsl stylesheet.
+
+LICENSE is GPL

@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+
+<bean class="java.awt.Frame">
+  <property name="title" value="Juggler Demo"/>
+  <event-binding name="window" targetObject="eventHandler:window:closeWindow"/>
+
+  <bean class="ActionHandler" id="actionhandler"/>
+  <bean class="AdjustmentHandler" id="adjustmenthandler"/>
+
+  <add>
+    <bean class="java.awt.Panel">
+      <property name="background" value="0xffffff"/>
+      <bean class="java.awt.BorderLayout" id="panellayout">
+        <property name="rows" value="-1"/>
+        <property name="columns" value="2"/>
+      </bean>
+      <property name="layout" sourceObject="panellayout"/>
+
+      <add>
+        <bean class="java.awt.Scrollbar" id="scale">
+          <property name="minimum" value="0"/>
+          <property name="maximum" value="100"/>
+          <property name="value" value="50"/>
+          <event-binding name="adjustment" targetObject="adjustmenthandler" />
+        </bean>
+      </add>     
+</bean>
+</add>
+</bean>

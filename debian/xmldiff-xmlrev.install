@@ -1,0 +1,2 @@
+xsl/*.xsl? usr/share/sgml/stylesheet/xmldiff/
+bin/xmlrev usr/bin

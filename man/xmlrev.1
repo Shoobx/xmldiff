@@ -1,0 +1,44 @@
+.TH XMLREV 1 "December 22, 2004" xmlrev "User's Manual"
+.SH NAME
+xmlrev \- Tree 2 tree correction between xml documents
+
+.SH SYNOPSIS
+.B xmlrev [
+.I options
+.B ] 
+.I original_file modified_file
+
+
+.SH DESCRIPTION
+.B xmlrev 
+can be used to display the differences between two XML 
+documents computed by 
+.B xmldiff
+as an HTML document.
+
+.SH OPTIONS
+
+.IP "-h, --help"
+display this help message and exit.
+.IP "--revision"
+show difference between revisions as an HTML file (default)
+.IP "--diff"
+show difference between revisions as XUpdate
+
+
+
+.SH REQUIRES
+python, xmldiff, libxml2-utils, xsltproc, sp
+
+
+.SH "SEE ALSO"
+.B xmldiff(1)
+
+.I http://www.logilab.org/projects/xmldiff/
+
+.I http://www.xmldb.org/xupdate/xupdate-wd.html#N19b1de
+
+.SH AUTHOR
+Sylvain Thénault <sylvain.thenault@logilab.fr>
+
+This manpage was written by Alexandre Fayolle <alexandre.fayolle@logilab.fr>.

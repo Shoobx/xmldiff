@@ -1,0 +1,137 @@
+Change log for xmldiff
+======================
+
+200-06-29   -- 0.6.8
+    * Fixed 64bit cleanness issues
+	
+2005-05-04  --  0.6.7
+    * WARNING: xmldiff is no longer a logilab subpackage. Users may have to
+      manually remove the old logilab/xmldiff directory.
+	
+    * fixed debian bug #275750, also reported by Christopher R Newman on
+      the xml-projects mailing list
+    
+    * fixed --profile option, wrap function from maplookup when profiling
+      so that they appear in the profile information
+
+    * fixed setup.py to ignore the xmlrev shell script under windows
+      platforms 
+
+    * small improvements (remove recursion in object.py, minor
+      enhancement in mydifflib.py, rewrite of lcs4 in C)
+
+
+
+2004-12-23  --  0.6.6
+    * Applied patch by Bastian Kleineidam <calvin@debian.org> which
+      - corrects the typo in  ML_DIR
+      - fixes the TMPFILE_XSLT/TMPFILE_XSL typo
+      - makes sure the files are XML or SGML files, else prints an error
+      - adds various missing quotes around filenames which could have
+      spaces or begin with a hyphen
+      - fixes typos in the usage() function
+      Thanks a lot, Bastian.
+
+    * Fixed some problems in the xmlrev.xslt stylesheet
+
+    * Fixed problems in xmlrev caused by the exit status of xmldiff when
+      successful
+
+    * Added a man page for xmldiff and xmlrev
+
+
+
+2004-09-02  --  0.6.5
+    * xmlrev bugfixes
+
+    * Fixed packaging problems (missing xsl stylesheets and MANIFEST file)
+
+
+
+2003-10-02  --  0.6.4
+    * fix recursive mode
+
+    * rewrite regression test, add test for the recursive mode
+
+    * add --help option to xlmrev
+
+    * packaging fixes
+
+    * turn API.txt and HELP.txt to correct ReST
+
+
+
+2002-11-06  --  0.6.3
+    * fix wrong xpath for attributes
+
+    * fix bug with temporary duplicate attribute node
+
+    * fix for xupdate
+
+    * fix ext_pes option bug
+
+    * update changelog to new format
+
+
+
+2002-09-23  --  0.6.2:
+    * return number of differences on command line
+
+    * reintroduce misc.list_print which caused recursive mode
+      to fail
+
+    * use psyco if available (http://psyco.sf.net)
+
+    * little changes in C extension
+
+
+
+2002-08-29  --  0.6.1:
+    * fix packaging problems
+
+
+
+2002-08-23  --  0.6.0:
+    * change of the internal representation
+
+    * remove support for the EZS algorithm (no more maintened
+      for the moment)
+
+    * add command line options to parse html and to control
+      entities inclusion and output encoding
+
+    * fixing coalescing text nodes bug
+
+    * many other bugs fixes
+
+    * great speed improvement
+
+
+
+2002-01-31  --  0.5.3:
+    * add __init__.py in "logilab" directory
+
+
+
+2001-10-29  --  0.5.2:
+    * bug fixes in xupdate formatting and in the dom interface.
+
+
+
+2001-09-07  --  0.5.1:
+    * Fast Match / Edit Scritp algorithm, now fully usable
+
+    * fixes Unicode problem
+
+
+
+2001-08-10  --  O.2.1:
+    * bug fixes, optimizations for ezs algorithm
+
+
+
+2001-08-04  --  0.1.1:
+    * original revision
+
+
+

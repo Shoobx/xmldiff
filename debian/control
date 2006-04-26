@@ -1,0 +1,61 @@
+Source: xmldiff
+Section: misc
+Priority: optional
+Maintainer: Alexandre Fayolle <afayolle@debian.org>
+Build-Depends: debhelper (>= 4.0.0), python2.3-dev
+Standards-Version: 3.6.1
+
+Package: xmldiff
+Architecture: all
+Depends: python (>= 2.3), python (<< 2.4), python2.3-xmldiff (>= ${Source-Version})
+Suggests: xmldiff-xmlrev, python-psyco
+Description: Tree 2 tree correction between xml documents [dummy package]
+ Xmldiff is a utility for extracting differences between two xml
+ files.  It returns a set of primitives to apply on source tree to
+ obtain the destination tree.
+ .
+ The implementation is based on _Change detection in hierarchically
+ structured - information_, by S. Chawathe, A. Rajaraman,
+ H. Garcia-Molina and J. Widom, - Stanford University, 1996
+ .
+ Homepage: http://www.logilab.org/projects/xmldiff
+ .        
+ This package is an empty dummy package that always depends on
+ a package built for Debian's default Python version.
+
+Package: xmldiff-xmlrev
+Architecture: all
+Depends:  xmldiff | python2.3-xmldiff, libxml2-utils, xsltproc, sp
+Recommends: docbook-xsl
+Description: xmldiff output formatter
+ xmlrev can be used to display the differences between two XML
+ documents computed by xmldiff as an HTML document.
+
+Package: xmldiff-test
+Architecture: all
+Section: python
+Depends: xmldiff (= ${Source-Version}) | python2.3-xmldiff (= ${Source-Version})
+Description: xmldiff's test files
+ This package contains test files shared by the different versions of
+ the xmldiff package. You don't need to install this package, unless
+ you want to contribute to the development of xmldiff.
+
+Package: python2.3-xmldiff
+Conflicts: python2.3-logilab-xmldiff
+Replaces: python2.3-logilab-xmldiff
+Section: python
+Architecture: any
+Depends: python2.3, python2.3-xml
+Suggests: xmldiff-xmlrev, python2.3-psyco
+Description: Tree 2 tree correction between xml documents [built for python2.3]
+ Xmldiff is a utility for extracting differences between two xml
+ files.  It returns a set of primitives to apply on source tree to
+ obtain the destination tree.
+ .
+ The implementation is based on _Change detection in hierarchically
+ structured - information_, by S. Chawathe, A. Rajaraman,
+ H. Garcia-Molina and J. Widom, - Stanford University, 1996
+ .
+ Homepage: http://www.logilab.org/projects/xmldiff
+ . 
+ This package is built with Python 2.3.

@@ -1,0 +1,23 @@
+Quoi de neuf ?
+--------------
+Voir le ChangeLog pour plus d'information.
+
+Qu'est ce que xmldiff ?
+-------------------------
+
+xmldiff est une bibliothèque servant à la comparaison de documents xml.
+
+Home page
+---------
+http://www.logilab.org/xmldiff/
+
+Download
+--------
+ftp://ftp.logilab.org/pub/xmldiff/
+
+Mailing list
+------------
+subscription: 
+http://www.logilab.org/mailinglists/xml_projects/mailinglist_register_form
+
+mailto://xml-projects@logilab.org

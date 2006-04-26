@@ -1,0 +1,18 @@
+Data files can be added in the data/ subdirectory, with the following
+naming conventions:
+
+ * files belonging to the same test share the first 6 characters of their name
+ * the 7th character is an underscore
+ * original file name ends with 1.xml
+ * modified file name ends with 2.xml
+ * result file names end with _result, and can contain command line
+options to be passed to xmldiff separated with underscores
+
+Example:
+
+test02_1.xml
+test02_2.xml
+test02_result
+test02_--xupdate_result
+
+-- Alexandre Fayolle

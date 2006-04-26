@@ -1,0 +1,8 @@
+[append-first, /,
+<a>
+ii
+</a>
+]
+[rename, /a[2], b]
+[move-after, /b[1], /a[1]/text()[1]]
+[remove, /a[1]/b[1]/b[1]]

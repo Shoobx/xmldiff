@@ -1,0 +1,13 @@
+[append-first, /,
+<a>
+  <b>
+moretext
+  </b>
+</a>
+]
+[rename, /a[2], branch]
+[move-first, /branch[1], /a[1]]
+[append-first, /a[1]/branch[1],
+ii
+]
+[remove, /a[1]/branch[1]/b[1]]

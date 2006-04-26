@@ -1,0 +1,97 @@
+xmldiff (0.6.8-1) unstable; urgency=low
+
+  * New upstream release, fixing 64bit cleanness issues
+
+ -- Alexandre Fayolle <afayolle@debian.org>  Wed, 29 Jun 2005 08:52:11 +0200
+
+xmldiff (0.6.7-1) unstable; urgency=low
+
+  * New upstream release
+    - Fixes xupdate:move command problem (closes: #275750)
+    - small improvments / reorganization
+  * Update copyright file
+  * Add an empty line at the bottom of watch
+  * Fix some encoding problem in this file (latin1 instead of utf-8)
+  
+ -- Sylvain Thénault <sylvain.thenault@logilab.fr>  Tue,  3 May 2005 17:41:09 +0200
+
+xmldiff (0.6.6-1) unstable; urgency=low
+
+  * New upstream release
+    - Includes Bastian Kleineidam's patch which fixes many bugs/typos in  xmlrev (closes: #285167, #285164, #285165)
+    - Adds a man page for xmldiff and xmlrev (closes: #286558)
+  * Removed python2.1-dev and python2.2-dev from build dependencies
+
+ -- Alexandre Fayolle <afayolle@debian.org>  Wed, 22 Dec 2004 15:54:52 +0100
+
+xmldiff (0.6.5-1) unstable; urgency=low
+
+  * New upstream release (closes: #278830)
+  * Put xmlrev in a separate package, with proper dependencies 
+    (closes: #269343)
+  * Fixed use of DH_OPTIONS in debian/rules (closes: #276904)
+  * Updated build dependency on debhelper
+  * Now suggests python-psyco
+  * Changed section of xmldiff and xmldiff-xmlrev to text, where other xml
+    related tools can be found
+  * Updated debian/watch to version 2 of uupdaterol
+  
+  
+ -- Alexandre Fayolle <afayolle@debian.org>  Wed, 10 Nov 2004 18:36:35 +0100
+
+xmldiff (0.6.4-5) unstable; urgency=low
+
+  * Changed the Build-Depends-Indep into Build-Depends (closes: #268592)
+
+ -- Alexandre Fayolle <afayolle@debian.org>  Mon, 30 Aug 2004 11:43:27 +0200
+
+xmldiff (0.6.4-4) unstable; urgency=low
+
+  * First upload to debian  (closes: #267598)
+  * New maintainer
+
+ -- Alexandre Fayolle <afayolle@debian.org>  Wed, 25 Aug 2004 22:08:48 +0200
+
+xmldiff (0.6.4-3) unstable; urgency=low
+
+  * move test in a separated package
+
+ -- Sylvain Thénault <sylvain.thenault@logilab.fr>  Thu,  9 Oct 2003 12:40:07 +0200
+
+xmldiff (0.6.4-2) unstable; urgency=low
+
+  * fix dependancies
+
+ -- Sylvain Thénault <sylvain.thenault@logilab.fr>  Wed,  8 Oct 2003 15:43:39 +0200
+
+xmldiff (0.6.4-1) unstable; urgency=low
+
+  * new upstream release
+
+ -- Sylvain Thénault <sylvain.thenault@logilab.fr>  Thu,  8 Oct 2003 12:35:54 +0200
+
+python-logilab-xmldiff (0.6.3-1) unstable; urgency=low
+
+  * new upstream release
+
+ -- Sylvain Thénault <sylvain.thenault@logilab.fr>  Mon, 17 Mar 2003 13:04:59 +0100
+
+python-logilab-xmldiff (0.6.2-1) unstable; urgency=low
+
+  * new upstream release
+
+ -- Alexandre Fayolle <alexandre.fayolle@logilab.fr>  Wed, 25 Sep 2002 12:15:11 +0200
+
+python-logilab-xmldiff (0.6.1-1) unstable; urgency=low
+
+  * New upstream release
+  * Changed default python version to 2.2
+  * Added support for python2.3
+
+ -- Alexandre Fayolle <alexandre.fayolle@logilab.fr>  Wed, 18 Sep 2002 11:08:25 +0200
+
+python-logilab-xmldiff (0.6.0-1) unstable; urgency=low
+
+  * Initial Release.
+
+ -- Sylvain Thenault <syt@logilab.fr>  Thu, 22 Aug 2002 14:59:50 +0200

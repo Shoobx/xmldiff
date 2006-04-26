@@ -1,0 +1,91 @@
+.TH XMLDIFF 1 "December 22, 2004" xmldiff "User's Manual"
+.SH NAME
+xmldiff \- Tree 2 tree correction between xml documents
+
+.SH SYNOPSIS
+.B xmldiff [
+.I options
+.B ] 
+.I original_file modified_file
+
+.B xmldiff [
+.I options
+.B ] 
+.B -r
+.I original_directoty modified_directory
+
+
+.SH DESCRIPTION
+.B xmldiff 
+is a utility for extracting differences between two xml files.  It
+returns a set of primitives to apply on source tree to obtain the
+destination tree.
+
+The implementation is based on 
+.I Change detection in hierarchically structured information, 
+by S. Chawathe, A. Rajaraman, H. Garcia-Molina and J. Widom,
+Stanford University, 1996
+
+.SH OPTIONS
+
+.IP "-h, --help"
+     display this help message and exit.
+.IP "-V, --version"
+     display version number and exit
+.IP "-H, --html"
+     input files are HTML instead of XML
+.IP "-r, --recursive"
+     when comparing directories, recursively compare any
+     subdirectories found.
+.IP "-x, --xupdate"
+     display output following the Xupdate xml specification
+     (see http://www.xmldb.org/xupdate/xupdate-wd.html#N19b1de).
+.IP "-e <encoding>, --encoding=<encoding>"
+     specify the encoding to use for output. Default is UTF-8
+.IP "-n, --not-normalize-spaces"
+     do not normalize spaces and new lines in text and comment nodes.
+.IP "-c, --exclude-comments"
+     do not process comment nodes
+.IP "-g, --ext-ges"
+     include all external general (text) entities.
+.IP "-p, --ext-pes"
+     include all external parameter entities, including the external DTD
+     subset.
+.IP "--profile=<file>"
+     display an execution profile (run slower with this option),
+     profile saved to file (binarie form).
+
+.SH EXIT STATUS
+
+  0 means no difference were found. 
+
+  A positive number means some differences were found. 
+
+  A negative number means an error occured.
+
+.SH KNOWN PROBLEMS
+
+.B xmldiff
+uses an algorithm with a (too) high algorithmical complexity, which
+makes it unsuitable to process large XML documents. If your document
+has more than about 100 nodes, you should probably look for an
+alternative solution. 
+
+Any suggestion to this issue is welcome by Logilab. Please tell us if
+you are aware of a simpler algorithm to solve this problem. 
+
+
+.SH REQUIRES
+python, pyxml
+
+.SH "SEE ALSO"
+.B xmlrev(1)
+
+.I http://www.logilab.org/projects/xmldiff/
+
+.I http://www.xmldb.org/xupdate/xupdate-wd.html#N19b1de
+
+.SH AUTHOR
+Sylvain Thénault <sylvain.thenault@logilab.fr>
+
+This manpage was written by Alexandre Fayolle <alexandre.fayolle@logilab.fr>.

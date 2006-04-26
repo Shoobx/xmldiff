@@ -1,0 +1,11 @@
+**** TODO List for xmldiff ****
+
+_ report namespaces declaration !
+_ support Processing Instruction nodes, CDATA
+_ support for XML namespaces
+_ option for case insensitive
+_ data/document modes ?
+_ translate HELP.txt and API.txt to docbook
+_ update ezs to make it work with the new internal representation
+_ optimizations:
+  use tuple instead of list when it's possible

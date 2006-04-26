@@ -1,0 +1,66 @@
+[insert-after, /Tests[1]/Test[8],
+<Test>
+  <Seven>
+This is the seventh sentence.
+  </Seven>
+</Test>
+]
+[insert-after, /Tests[1]/Test[9],
+<Test>
+  <Eight>
+This is the Eighth sentence.
+  </Eight>
+</Test>
+]
+[insert-after, /Tests[1]/Test[1]/One[2],
+<One>
+2.1
+</One>
+]
+[insert-after, /Tests[1]/Test[3]/Three[2],
+<Three>
+1
+</Three>
+]
+[remove, /Tests[1]/Test[5]/@type]
+[append, /Tests[1]/Test[7],
+<@LogilabXmldiffTmpAttrtype>
+Insert mixed element
+</LogilabXmldiffTmpAttrtype>
+]
+[rename, /Tests[1]/Test[7]/Seven[1], Five]
+[remove, /Tests[1]/Test[6]/@type]
+[append, /Tests[1]/Test[8],
+<@LogilabXmldiffTmpAttrtype>
+Insert mixed element with text
+</LogilabXmldiffTmpAttrtype>
+]
+[rename, /Tests[1]/Test[8]/Eight[1], Six]
+[move-first, /Tests[1]/Test[7]/@type, /Tests[1]/Test[9]]
+[move-first, /Tests[1]/Test[8]/@type, /Tests[1]/Test[10]]
+[update, /Tests[1]/Test[4]/Four[1]/text()[1], This WAS the fourth sentence.]
+[update, /Tests[1]/Test[7]/Five[1]/text()[1], This is the]
+[insert-after, /Tests[1]/Test[7]/Five[1]/text()[1],
+<new/>
+]
+[update, /Tests[1]/Test[7]/Five[1]/text()[1], fifth sentence.]
+[update, /Tests[1]/Test[8]/Six[1]/text()[1], This is the]
+[insert-after, /Tests[1]/Test[8]/Six[1]/text()[1],
+<new>
+and improved
+</new>
+]
+[update, /Tests[1]/Test[8]/Six[1]/text()[1], sixth sentence.]
+[insert-after, /Tests[1]/Test[11]/Nine[1]/text()[1],
+<b>
+(changed)
+</b>
+]
+[remove, /Tests[1]/Test[2]/Two[2]]
+[remove, /Tests[1]/Test[3]/Three[1]]
+[remove, /Tests[1]/Test[5]]
+[remove, /Tests[1]/Test[5]]
+[remove, /Tests[1]/Test[5]/Five[1]/b[1]]
+[remove, /Tests[1]/Test[6]/Six[1]/b[1]]
+[remove, /Tests[1]/Test[9]/Nine[1]/b[2]]
+[rename, //LogilabXmldiffTmpAttrtype, type]
