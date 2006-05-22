@@ -1,3 +1,10 @@
+xmldiff (0.6.8-2) unstable; urgency=low
+
+  * updated standards to 3.7.2
+  * use debhelper 5
+
+ -- Alexandre Fayolle <afayolle@debian.org>  Mon, 22 May 2006 12:08:40 +0200
+
 xmldiff (0.6.8-1) unstable; urgency=low
 
   * New upstream release, fixing 64bit cleanness issues

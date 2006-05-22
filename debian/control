@@ -2,8 +2,8 @@ Source: xmldiff
 Section: misc
 Priority: optional
 Maintainer: Alexandre Fayolle <afayolle@debian.org>
-Build-Depends: debhelper (>= 4.0.0), python2.3-dev
-Standards-Version: 3.6.1
+Build-Depends: debhelper (>= 5.0.0), python2.3-dev
+Standards-Version: 3.7.2
 
 Package: xmldiff
 Architecture: all
