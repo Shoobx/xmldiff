@@ -70,7 +70,7 @@ class AbstractFormatter:
 
     def format_action(self, action):
         """ method called by end() to format each action in the edit script
-        at least this method should be overriden
+        at least this method should be overridden
         """
         raise NotImplementedError()
 
