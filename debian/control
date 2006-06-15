@@ -9,6 +9,8 @@ XS-Python-Version: current
 Package: xmldiff
 Architecture: any
 Depends: ${python:Depends}, ${shlibs:Depends}
+Conflicts: python2.3-xmldiff
+Replaces: python2.3-xmldiff
 XB-Python-Version: ${python:Versions}
 Suggests: xmldiff-xmlrev, python-psyco
 Description: tree to tree correction between xml documents
