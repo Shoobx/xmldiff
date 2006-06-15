@@ -1,7 +1,7 @@
 Change log for xmldiff
 ======================
 
-200-06-29   -- 0.6.8
+2006-06-15  --  0.6.8
     * Fixed 64bit cleanness issues
 	
 2005-05-04  --  0.6.7

@@ -1,4 +1,4 @@
-# -*- coding: ISO-8859-1 -*-
+# -*- coding: ISO-8859-15 -*-
 # This program is free software; you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
 # Foundation; either version 2 of the License, or (at your option) any later
@@ -11,7 +11,7 @@
 # You should have received a copy of the GNU General Public License along with
 # this program; if not, write to the Free Software Foundation, Inc.,
 # 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-""" Copyright (c) 2001-2005 LOGILAB S.A. (Paris, FRANCE).
+""" Copyright (c) 2001-2006 LOGILAB S.A. (Paris, FRANCE).
 http://www.logilab.fr/ -- mailto:contact@logilab.fr  
 """
 
@@ -23,7 +23,7 @@ numversion = (0, 6, 8)
 version = '.'.join(map(str, numversion))
 
 license = 'GPL'
-copyright = '''Copyright © 2001-2005 LOGILAB S.A. (Paris, FRANCE).
+copyright = '''Copyright © 2001-2006 LOGILAB S.A. (Paris, FRANCE).
 http://www.logilab.fr/ -- mailto:contact@logilab.fr'''
 
 short_desc = "tree 2 tree correction between xml documents"
