@@ -9,7 +9,6 @@ build: build-stamp
 build-stamp: 
 	dh_testdir
 	python setup.py -q build 
-	done
 	touch $@
 
 clean: 

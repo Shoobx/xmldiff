@@ -7,8 +7,8 @@ Standards-Version: 3.7.2
 XS-Python-Version: current
 
 Package: xmldiff
-Architecture: all
-Depends: ${python:Depends}
+Architecture: any
+Depends: ${python:Depends}, ${shlibs:Depends}
 XB-Python-Version: ${python:Versions}
 Suggests: xmldiff-xmlrev, python-psyco
 Description: tree to tree correction between xml documents
