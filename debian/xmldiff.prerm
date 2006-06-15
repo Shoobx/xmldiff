@@ -4,10 +4,6 @@
 # Written 1998 by Gregor Hoffleit <flight@debian.org>.
 #
 
-dpkg --listfiles python2.3-xmldiff |
-	awk '$0~/\.py$/ {print $0"c\n" $0"o"}' |
-	xargs rm -f >&2
-
-
 #DEBHELPER#
 
+exit 0

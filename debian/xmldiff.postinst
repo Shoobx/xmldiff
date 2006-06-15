@@ -1,0 +1,9 @@
+#! /bin/sh -e
+#
+# postinst script for Debian python packages.
+# Written 1998 by Gregor Hoffleit <flight@debian.org>.
+#
+
+#DEBHELPER#
+
+exit 0

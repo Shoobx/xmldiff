@@ -5,25 +5,18 @@
 # Uncomment this to turn on verbose mode.
 #export DH_VERBOSE=1
 
-# This is the debhelper compatability version to use.
-export DH_COMPAT=5
-
-PYVERSIONS=2.3
-
 build: build-stamp
 build-stamp: 
 	dh_testdir
-	for v in $(PYVERSIONS) ; do \
-	    python$$v setup.py -q build ; \
+	python setup.py -q build 
 	done
-	touch build-stamp
+	touch $@
 
 clean: 
 	dh_testdir
 	dh_testroot
 	rm -f build-stamp install-stamp
 	rm -rf build
-	rm -rf debian/python?.?-tmp*/
 	find . -name "*.pyc" | xargs rm -f
 	rm -f changelog.gz
 	dh_clean
@@ -36,24 +29,12 @@ install-stamp: build
 	dh_installdirs
 
 
-	python2.3 setup.py -q install_lib --no-compile --install-dir=debian/python2.3-xmldiff/usr/lib/python2.3/site-packages
-	python2.3 setup.py -q install_headers --install-dir=debian/python2.3-xmldiff/usr/include/
-	python2.3 setup.py -q install_scripts --install-dir=debian/python2.3-xmldiff/usr/bin/
+	python setup.py -q install --no-compile --prefix=debian/xmldiff/usr
 	# remove test directory (installed in a separated package)
-	rm -rf debian/python2.3-xmldiff/usr/lib/python2.3/site-packages/logilab/xmldiff/test debian/python2.3-xmldiff/usr/share/sgml/ debian/python2.3-xmldiff/usr/bin/xmlrev
+	rm -rf debian/xmldiff/usr/lib/python*/site-packages/xmldiff/test debian/xmldiff/usr/share/sgml/ debian/xmldiff/usr/bin/xmlrev
 
-	for v in $(PYVERSIONS) ; do \
-	    PYTHON=python$$v ; \
-	    PYTMP="debian/$$PYTHON-xmldiff" ; \
-	    i=$$PYTMP/usr/bin/xmldiff ; \
-	    if head -1 $$i | grep "^#! */usr/bin" | grep "python" >/dev/null ; then \
-	        sed "s@^#! */usr/bin/env \+python\$$@#!/usr/bin/$$PYTHON@;s@^#! */usr/bin/python\$$@#!/usr/bin/$$PYTHON@" <$$i >$$i.$$PYTHON; \
-                mv $$i.$$PYTHON $$i ; \
-	    fi ; \
-	    chmod a+x $$i ; \
-	done
 	# install tests
-	(cd test && find . -type f -not \( -path '*/CVS/*' -or -name '*.pyc' \) -exec install -D --mode=644 {} ../debian/xmldiff-test/usr/share/doc/xmldiff/test/{} \;)
+	(cd test && find . -type f -not \( -path '*/CVS/*' -or -name '*.pyc' \) -exec install -D --mode=644 {} ../debian/xmldiff/usr/share/doc/xmldiff/test/{} \;)
 	touch install-stamp
 
 
@@ -80,16 +61,8 @@ binary-arch: install
 	dh_testroot -a
 	dh_install -a
 	dh_installman -a
-	# install text documentation
-	for v in $(PYVERSIONS) ; do \
-	    PACKAGE=python$$v-xmldiff ; \
-	    cp -r doc/HELP.txt doc/API.txt debian/$$PACKAGE/usr/share/doc/$$PACKAGE/ ; \
-	done
-	# install html documentation
-	for v in $(PYVERSIONS) ; do \
-	    PACKAGE=python$$v-xmldiff ; \
-	    cp -r doc/HELP.html doc/API.html debian/$$PACKAGE/usr/share/doc/$$PACKAGE/html ; \
-	done
+	dh_pycentral -p xmldiff
+	dh_python -p xmldiff
 	gzip -9 -c ChangeLog > changelog.gz
 	dh_installdocs -a -A README TODO changelog.gz 
 	dh_installchangelogs -a
