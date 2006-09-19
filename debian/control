@@ -2,7 +2,7 @@ Source: xmldiff
 Section: misc
 Priority: optional
 Maintainer: Alexandre Fayolle <afayolle@debian.org>
-Build-Depends: debhelper (>= 5.0.37.1), python (>=2.3.5-7), python-dev (>=2.3.5-7), python-central
+Build-Depends: debhelper (>= 5.0.37.2), python (>=2.3.5-7), python-dev (>=2.3.5-7), python-central (>=0.5)
 Standards-Version: 3.7.2
 XS-Python-Version: current
 
