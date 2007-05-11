@@ -1,3 +1,10 @@
+xmldiff (0.6.8-3) unstable; urgency=low
+
+  * Fixed package description (closes: #383788, #420781)
+  * converted changelog and manpages to UTF-8
+
+ -- Alexandre Fayolle <afayolle@debian.org>  Fri, 11 May 2007 10:53:50 +0200
+
 xmldiff (0.6.8-2) unstable; urgency=low
 
   * updated standards to 3.7.2
@@ -21,7 +28,7 @@ xmldiff (0.6.7-1) unstable; urgency=low
   * Add an empty line at the bottom of watch
   * Fix some encoding problem in this file (latin1 instead of utf-8)
   
- -- Sylvain Thénault <sylvain.thenault@logilab.fr>  Tue,  3 May 2005 17:41:09 +0200
+ -- Sylvain ThÃ©nault <sylvain.thenault@logilab.fr>  Tue,  3 May 2005 17:41:09 +0200
 
 xmldiff (0.6.6-1) unstable; urgency=low
 
@@ -64,25 +71,25 @@ xmldiff (0.6.4-3) unstable; urgency=low
 
   * move test in a separated package
 
- -- Sylvain Thénault <sylvain.thenault@logilab.fr>  Thu,  9 Oct 2003 12:40:07 +0200
+ -- Sylvain ThÃ©nault <sylvain.thenault@logilab.fr>  Thu,  9 Oct 2003 12:40:07 +0200
 
 xmldiff (0.6.4-2) unstable; urgency=low
 
   * fix dependancies
 
- -- Sylvain Thénault <sylvain.thenault@logilab.fr>  Wed,  8 Oct 2003 15:43:39 +0200
+ -- Sylvain ThÃ©nault <sylvain.thenault@logilab.fr>  Wed,  8 Oct 2003 15:43:39 +0200
 
 xmldiff (0.6.4-1) unstable; urgency=low
 
   * new upstream release
 
- -- Sylvain Thénault <sylvain.thenault@logilab.fr>  Thu,  8 Oct 2003 12:35:54 +0200
+ -- Sylvain ThÃ©nault <sylvain.thenault@logilab.fr>  Thu,  8 Oct 2003 12:35:54 +0200
 
 python-logilab-xmldiff (0.6.3-1) unstable; urgency=low
 
   * new upstream release
 
- -- Sylvain Thénault <sylvain.thenault@logilab.fr>  Mon, 17 Mar 2003 13:04:59 +0100
+ -- Sylvain ThÃ©nault <sylvain.thenault@logilab.fr>  Mon, 17 Mar 2003 13:04:59 +0100
 
 python-logilab-xmldiff (0.6.2-1) unstable; urgency=low
 
