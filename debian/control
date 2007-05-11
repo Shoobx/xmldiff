@@ -23,9 +23,6 @@ Description: tree to tree correction between xml documents
  H. Garcia-Molina and J. Widom, - Stanford University, 1996
  .
  Homepage: http://www.logilab.org/projects/xmldiff
- .        
- This package is an empty dummy package that always depends on
- a package built for Debian's default Python version.
 
 Package: xmldiff-xmlrev
 Architecture: all
