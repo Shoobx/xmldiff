@@ -1,3 +1,12 @@
+xmldiff (0.6.8-4) unstable; urgency=low
+
+  * Fixed __future__ import (closes: #476161)
+  * dropped mentions of python2.3-xmldiff which no longer exists in stable
+  * updated to new standards
+  * fixed encoding of debian/copyright
+
+ -- Alexandre Fayolle <afayolle@debian.org>  Thu, 17 Apr 2008 15:18:10 +0200
+
 xmldiff (0.6.8-3) unstable; urgency=low
 
   * Fixed package description (closes: #383788, #420781)
