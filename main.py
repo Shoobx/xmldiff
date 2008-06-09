@@ -94,9 +94,9 @@ def process_files(file1, file2, norm_sp, xupd, ezs, verbose,
         return -1
 
     if verbose:
-        from xmldiff.objects import repr, N_ISSUE, N_CHILDS
-        print "Source tree\n", repr(tree1)
-        print "Destination tree\n", repr(tree2)
+        from xmldiff.objects import node_repr, N_ISSUE, N_CHILDS
+        print "Source tree\n", node_repr(tree1)
+        print "Destination tree\n", node_repr(tree2)
         print 'Source tree has', tree1[N_ISSUE], 'nodes'
         print 'Destination tree has', tree2[N_ISSUE], 'nodes'
     # output formatter
