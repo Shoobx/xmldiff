@@ -1,9 +1,8 @@
 """
 xmldiff non regression test
 """
-__revision__ = "$Id: regrtest.py,v 1.19 2005-04-27 12:36:01 syt Exp $"
-
 from __future__ import nested_scopes
+
 from os.path import join, basename
 from cStringIO import StringIO
 import sys
