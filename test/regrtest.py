@@ -1,8 +1,6 @@
 """
 xmldiff non regression test
 """
-from __future__ import nested_scopes
-
 from os.path import join, basename
 from cStringIO import StringIO
 import sys

@@ -18,8 +18,6 @@
 # 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 """ Generic Setup script, takes package info from __pkginfo__.py file """
 
-from __future__ import nested_scopes
-
 import os
 import sys
 import shutil
