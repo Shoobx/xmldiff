@@ -54,7 +54,7 @@ try:
 except ImportError:
     ext_modules = None
 
-BASE_BLACKLIST = ('CVS', 'debian', 'dist', 'build', '__buildlog')
+BASE_BLACKLIST = ('CVS', '.hg', 'debian', 'dist', 'build', '__buildlog')
 IGNORED_EXTENSIONS = ('.pyc', '.pyo', '.elc')
     
 
