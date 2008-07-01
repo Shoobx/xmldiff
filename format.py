@@ -16,9 +16,6 @@
 """
 this module provides classes to format the native tree2tree output
 """
-__revision__ = '$Id: format.py,v 1.29 2005-04-15 11:02:50 syt Exp $'
-
-
 
 import types
 try:

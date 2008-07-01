@@ -15,8 +15,6 @@
 # this program; if not, write to the Free Software Foundation, Inc.,
 # 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-__revision__ = '$Id: main.py,v 1.41 2005-04-30 11:59:46 ludal Exp $'
-
 import sys
 import os
 import getopt

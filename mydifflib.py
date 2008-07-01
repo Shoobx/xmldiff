@@ -7,7 +7,6 @@ by Eugene W. MYERS
 As opposed to the algorithm in difflib.py, this one doesn't require hashable
 elements 
 """
-__revision__ = '$Id: mydifflib.py,v 1.9 2005-04-30 11:59:46 ludal Exp $'
 
 def lcs2(X, Y, equal):
     """

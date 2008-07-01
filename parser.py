@@ -23,8 +23,6 @@ nodes nor text nodes, only nodes with a name and a child list
 (the tree is composed by elements of type Node, defined below)
 """
 
-__revision__ = '$Id: parser.py,v 1.23 2005-04-15 11:02:51 syt Exp $'
-
 from xmldiff.objects import NT_ROOT, NT_NODE, NT_ATTN, NT_ATTV, \
      NT_TEXT, NT_COMM, N_TYPE, N_ISSUE, N_CHILDS, N_VALUE, link_node
 from xml.sax import ContentHandler

@@ -20,7 +20,6 @@ for these objects use
     /!\  /!\ do not call index, remove or compare two node with == since a
              node is a recursive list
 """
-__revision__ = '$Id: objects.py,v 1.24 2005-04-30 11:59:46 ludal Exp $'
 
 from xmldiff.misc import TRUE, FALSE
 from  sys import stdout, stderr

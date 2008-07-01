@@ -15,7 +15,6 @@ it with xmldiff functions. """
 # You should have received a copy of the GNU General Public License along with
 # this program; if not, write to the Free Software Foundation, Inc.,
 # 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-__revision__ = '$Id: input.py,v 1.15 2005-04-15 11:02:50 syt Exp $'
 
 def tree_from_stream(stream, 
                      norm_sp=1, ext_ges=0, ext_pes=0, include_comment=1,

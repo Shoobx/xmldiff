@@ -19,8 +19,6 @@
  extended by Barnard, Clark and Duncan  
 """
 
-__revision__ = "$Id: ezs.py,v 1.9 2005-04-15 11:02:50 syt Exp $"
-
 from xmldiff.objects import *
 from xmldiff.misc import init_matrix
 

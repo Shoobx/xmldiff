@@ -21,8 +21,6 @@
  ([CRGMW95])
 """
 
-__revision__ = "$Id: fmes.py,v 1.22 2005-04-26 15:21:13 syt Exp $"
-
 from xmldiff.objects import NT_ROOT, NT_NODE, NT_ATTN, NT_ATTV, \
      NT_TEXT, NT_COMM, N_TYPE, N_NAME, N_VALUE, N_CHILDS, N_PARENT, N_ISSUE, \
      N_XNUM, NSIZE, A_DESC, A_N1, A_N2, FALSE, TRUE, \
