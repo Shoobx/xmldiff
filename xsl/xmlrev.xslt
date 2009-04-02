@@ -7,9 +7,8 @@
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-                xmlns:x="http://www.w3.org/1999/XSL/Transform"
                 xmlns:xupdate="http://www.xmldb.org/xupdate"
-                exclude-result-prefixes="xsl x"
+                exclude-result-prefixes="xsl"
                 version="1.0">
 
 <xsl:output method="xml" indent="yes"/>
@@ -17,27 +16,26 @@
 <!-- generique -->
 
 <xsl:template match="/">
-  <xsl:element name="x:stylesheet">
-    <xsl:attribute name="xmlns:x">http://www.w3.org/1999/XSL/Transform</xsl:attribute>
+  <xsl:element name="xsl:stylesheet">
     <xsl:attribute name="version">1.0</xsl:attribute>
 
-    <xsl:element name="x:output">
+    <xsl:element name="xsl:output">
       <xsl:attribute name="method">xml</xsl:attribute>
       <xsl:attribute name="indent">yes</xsl:attribute>
     </xsl:element>
 
-    <xsl:element name="x:template">
+    <xsl:element name="xsl:template">
        <xsl:attribute name="match">node()</xsl:attribute>
-       <xsl:element name="x:copy">
-         <xsl:element name="x:apply-templates">
+       <xsl:element name="xsl:copy">
+         <xsl:element name="xsl:apply-templates">
            <xsl:attribute name="select">*|@*|text()</xsl:attribute>
          </xsl:element>
        </xsl:element>
     </xsl:element>
 
-    <xsl:element name="x:template">
+    <xsl:element name="xsl:template">
        <xsl:attribute name="match">@*|text()</xsl:attribute>
-       <xsl:element name="x:copy-of">
+       <xsl:element name="xsl:copy-of">
          <xsl:attribute name="select">.</xsl:attribute>
        </xsl:element>
     </xsl:element>
@@ -51,7 +49,7 @@
 <!-- XUPDATE:UPDATE -->
 
 <xsl:template match="xupdate:update">
-    <xsl:element name="x:template">
+    <xsl:element name="xsl:template">
       <xsl:choose>
         <xsl:when test="contains(@select,'text()')">
           <xsl:attribute name="match"><xsl:value-of select="substring-before(@select,'/text()')"/></xsl:attribute>
@@ -61,13 +59,13 @@
         </xsl:otherwise>
       </xsl:choose>
  
-       <xsl:element name="x:copy">
-         <xsl:element name="x:attribute">
+       <xsl:element name="xsl:copy">
+         <xsl:element name="xsl:attribute">
            <xsl:attribute name="name">revisionflag</xsl:attribute>
            <xsl:text>changed</xsl:text>
          </xsl:element>
 
-         <xsl:element name="x:apply-templates"/>
+         <xsl:element name="xsl:apply-templates"/>
 
        </xsl:element>
 
@@ -77,16 +75,16 @@
 <!-- XUPDATE:REMOVE -->
 
 <xsl:template match="xupdate:remove">
-    <xsl:element name="x:template">
+    <xsl:element name="xsl:template">
       <xsl:attribute name="match"><xsl:value-of select="@select"/></xsl:attribute>
-       <xsl:element name="x:copy">
-         <xsl:element name="x:attribute">
+       <xsl:element name="xsl:copy">
+         <xsl:element name="xsl:attribute">
            <xsl:attribute name="name">revisionflag</xsl:attribute>
            <xsl:text>removed</xsl:text>
          </xsl:element>
        </xsl:element>
 
-       <xsl:element name="x:apply-templates"/>
+       <xsl:element name="xsl:apply-templates"/>
 
     </xsl:element>
 </xsl:template>
@@ -108,20 +106,20 @@
 <!-- XUPDATE:RENAME -->
 
   <xsl:template match="xupdate:rename">
-    <xsl:element name="x:template">
+    <xsl:element name="xsl:template">
       <xsl:attribute name="match"><xsl:value-of select="@select"/></xsl:attribute>
-      <xsl:element name="x:element">
+      <xsl:element name="xsl:element">
 	<xsl:attribute name="name"><xsl:value-of select="text()"/></xsl:attribute>
-	<xsl:element name="x:attribute">
+	<xsl:element name="xsl:attribute">
 	  <xsl:attribute name="name">revisionflag</xsl:attribute>
 	  <xsl:text>removed</xsl:text>
 	</xsl:element>
-	<xsl:element name="x:copy-of">
+	<xsl:element name="xsl:copy-of">
 	  <xsl:attribute name="select"><xsl:text>@*|*|text()</xsl:text></xsl:attribute>
 	</xsl:element>
       </xsl:element>
 
-      <xsl:element name="x:apply-templates"/>
+      <xsl:element name="xsl:apply-templates"/>
 
     </xsl:element>
   </xsl:template>
