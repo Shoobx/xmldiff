@@ -1,6 +1,9 @@
 Change log for xmldiff
 ======================
 
+2009-04-02  --  0.6.9
+    * Fixed xmldiff-xmlrev compilation error 
+
 2006-06-15  --  0.6.8
     * Fixed 64bit cleanness issues
 	
