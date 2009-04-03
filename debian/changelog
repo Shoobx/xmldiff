@@ -1,8 +1,8 @@
-xmldiff (0.6.9-0) unstable; urgency=low
+xmldiff (0.6.9-1) unstable; urgency=low
 
   * Fix a bug : xmldiff-xmlrev compilation error  (closes: #484768)
 
- -- Graziella Toutoungis <graziella.toutoungis@debian.org>  Thu, 02 Apr 2008 15:18:10 +0200
+ -- Graziella Toutoungis <graziella.toutoungis@logilab.fr>  Fri, 03 Apr 2009 10:41:19 +0200
 
 xmldiff (0.6.8-4) unstable; urgency=low
 
