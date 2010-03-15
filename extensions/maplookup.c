@@ -40,12 +40,6 @@ char * __revision__ = "$Id: maplookup.c,v 1.12 2005-06-29 06:49:12 alf Exp $";
 
 
 /******************* functions specific to the fmes algorithm *****************/
-#if __WORDSIZE == 64
-#define KEYSHAPE "(l,l)"
-#else
-#define KEYSHAPE "(i,i)"
-#endif
-
 static short N_ISSUE = 5 ;
 
 /* function to init objects for the next functions
@@ -162,11 +156,17 @@ static PyObject *fmes_node_equal(PyObject *self, PyObject *args)
 	{
 		PyObject *key ;
 		couple = PyList_GET_ITEM(_mapping, i) ;
-                key = Py_BuildValue(KEYSHAPE, (size_t)node1, (size_t)PyTuple_GET_ITEM(couple, 0)) ;
+		key = PyTuple_New(2);
+		Py_INCREF(key);
+		PyTuple_SET_ITEM(key, 0, PyLong_FromVoidPtr(node1));
+		PyTuple_SET_ITEM(key, 1, PyLong_FromVoidPtr(PyTuple_GET_ITEM(couple, 0)));
 		if (PyDict_GetItem(_dict1, key) != NULL)
 		{
 			Py_DECREF(key) ;
-                        key = Py_BuildValue(KEYSHAPE, (size_t)node2, (size_t)PyTuple_GET_ITEM(couple, 1)) ;
+			key = PyTuple_New(2);
+			Py_INCREF(key);
+			PyTuple_SET_ITEM(key, 0, PyLong_FromVoidPtr(node2));
+			PyTuple_SET_ITEM(key, 1, PyLong_FromVoidPtr(PyTuple_GET_ITEM(couple, 1)));
 			if (PyDict_GetItem(_dict2, key) != NULL)
 			{
 				seq_num += 1 ;
