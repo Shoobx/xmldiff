@@ -11,17 +11,17 @@
 # You should have received a copy of the GNU General Public License along with
 # this program; if not, write to the Free Software Foundation, Inc.,
 # 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-""" Copyright (c) 2001-2008 LOGILAB S.A. (Paris, FRANCE).
+""" Copyright (c) 2001-2010 LOGILAB S.A. (Paris, FRANCE).
 http://www.logilab.fr/ -- mailto:contact@logilab.fr  
 """
 
 modname = 'xmldiff'
 
-numversion = (0, 6, 9)
+numversion = (0, 6, 10)
 version = '.'.join(map(str, numversion))
 
 license = 'GPL'
-copyright = '''Copyright © 2001-2008 LOGILAB S.A. (Paris, FRANCE).
+copyright = '''Copyright © 2001-2010 LOGILAB S.A. (Paris, FRANCE).
 http://www.logilab.fr/ -- mailto:contact@logilab.fr'''
 
 short_desc = "tree 2 tree correction between xml documents"

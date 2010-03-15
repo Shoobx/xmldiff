@@ -1,5 +1,7 @@
 Change log for xmldiff
 ======================
+2010-03-15  --  0.6.10
+    * apply Daiki Ueno patch: fails when comparing minimal trees on i386
 
 2009-04-02  --  0.6.9
     * Fixed xmldiff-xmlrev compilation error 

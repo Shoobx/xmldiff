@@ -1,3 +1,10 @@
+
+xmldiff (0.6.10-1) unstable; urgency=low
+
+  * Apply Daiki Ueno patch: fails when comparing minimal trees on i386 (closes: #570727)
+
+ -- Emile Anclin <emile.anclin@logilab.fr> Mon, 15 Mar 2010 17:29:38 +0100
+
 xmldiff (0.6.9-1) unstable; urgency=low
 
   * Fix a bug : xmldiff-xmlrev compilation error  (closes: #484768)
