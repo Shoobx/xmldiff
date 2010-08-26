@@ -1,25 +1,25 @@
-I'm pleased to announce the %VERSION% release of %DISTNAME%.
+I'm pleased to announce the %(VERSION)s release of %(DISTNAME)s.
 
 What's new ?
 ------------
-%CHANGELOG%
+%(CHANGELOG)s
 
 
-What is %DISTNAME% ?
+What is %(DISTNAME)s ?
 ------------------------
-%LONG_DESC%
+%(LONG_DESC)s
 
 
 Home page
 ---------
-%WEB%
+%(WEB)s
 
 Download
 --------
-%FTP%
+%(FTP)s
 
 Mailing list
 ------------
-%MAILINGLIST%
+%(MAILINGLIST)s
 
-%ADDITIONAL_DESCR%
+%(ADDITIONAL_DESCR)s

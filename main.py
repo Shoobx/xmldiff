@@ -1,5 +1,5 @@
 #!/usr/bin/python
-# Copyright (c) 2001-2005 LOGILAB S.A. (Paris, FRANCE).
+# Copyright (c) 2001-2010 LOGILAB S.A. (Paris, FRANCE).
 # http://www.logilab.fr/ -- mailto:contact@logilab.fr
 #
 # This program is free software; you can redistribute it and/or modify it under
@@ -28,7 +28,7 @@ def usage(pgm):
 Extract differences between two xml files. It returns a set of
 primitives to apply on source tree to obtain the destination tree.
 
-OPTIONS: 
+OPTIONS:
   -h, --help
      display this help message and exit.
   -V, --version
@@ -39,9 +39,9 @@ OPTIONS:
   -r, --recursive
      when comparing directories, recursively compare any
      subdirectories found.
-     
+
   -x, --xupdate
-     display output following the Xupdate xml specification 
+     display output following the Xupdate xml specification
      (see http://www.xmldb.org/xupdate/xupdate-wd.html#N19b1de).
   -e encoding, --encoding=encoding
      specify the encoding to use for output. Default is UTF-8
@@ -51,10 +51,10 @@ OPTIONS:
   -c, --exclude-comments
      do not process comment nodes
   -g, --ext-ges
-     include all external general (text) entities. 
+     include all external general (text) entities.
   -p, --ext-pes
      include all external parameter entities, including the external DTD
-     subset. 
+     subset.
 
   --profile=file
      display an execution profile (run slower with this option),
@@ -62,7 +62,7 @@ OPTIONS:
 """
 ##   -z, --ezs
 ##      use the extended Zhang and Shasha algorithm, much slower
-##      but with the best results (only for small documents) 
+##      but with the best results (only for small documents)
 
 def process_files(file1, file2, norm_sp, xupd, ezs, verbose,
                   ext_ges, ext_pes, include_comment, encoding,
@@ -159,7 +159,7 @@ def run(args=None):
         elif o[0] == '-p' or o[0] == '--ext-pes':
             ext_pes = 1
         elif o[0] == '-e' or o[0] == '--encoding':
-            encoding = o[1] 
+            encoding = o[1]
         elif o[0] == '-x' or o[0] == '--xupdate':
             xupd = 1
         elif o[0] == '-z' or o[0] == '--ezs':
@@ -167,7 +167,7 @@ def run(args=None):
         elif o[0] == '-v' or o[0] == '--verbose':
             verbose = 1
         elif o[0] == '-p' or o[0] == '--profile':
-            prof = o[1] 
+            prof = o[1]
         elif o[0] == '-h' or o[0] == '--help':
             usage(pgm)
             sys.exit(0)
@@ -180,11 +180,11 @@ def run(args=None):
         sys.exit(-2)
     fpath1, fpath2 = args[0], args[1]
     exit_status = 0
-    # if args are directory    
+    # if args are directory
     if os.path.isdir(fpath1) and os.path.isdir(fpath2):
         from xmldiff.misc import process_dirs, list_print
         common, deleted, added = process_dirs(fpath1, fpath2, recursive)
-        
+
         list_print(deleted[0], 'FILE:', 'deleted')
         list_print(deleted[1], 'DIRECTORY:', 'deleted')
         list_print(added[0], 'FILE:', 'added')
@@ -246,7 +246,7 @@ def run(args=None):
             p = pstats.Stats(prof)
             p.sort_stats('time','calls').print_stats(.25)
             p.sort_stats('cum','calls').print_stats(.25)
-            
+
         else:
             exit_status = process_files(fpath1, fpath2,
                                         norm_sp, xupd, ezs, verbose,
@@ -257,6 +257,6 @@ def run(args=None):
         print fpath1, 'and', fpath2, \
               'are not comparable, or not directory nor regular files'
     sys.exit(exit_status)
-    
+
 if __name__ == '__main__':
     run()

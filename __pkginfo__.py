@@ -12,32 +12,35 @@
 # this program; if not, write to the Free Software Foundation, Inc.,
 # 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 """ Copyright (c) 2001-2010 LOGILAB S.A. (Paris, FRANCE).
-http://www.logilab.fr/ -- mailto:contact@logilab.fr  
+http://www.logilab.fr/ -- mailto:contact@logilab.fr
 """
 
-modname = 'xmldiff'
+modname = distname = 'xmldiff'
 
 numversion = (0, 6, 10)
 version = '.'.join(map(str, numversion))
 
+description = "tree 2 tree correction between xml documents"
+author = "Sylvain Thénault"
+author_email = "sylvain.thenault@logilab.fr"
+web = "http://www.logilab.org/projects/%s" % modname
+ftp = "ftp://ftp.logilab.org/pub/%s" % modname
+
 license = 'GPL'
-copyright = '''Copyright © 2001-2010 LOGILAB S.A. (Paris, FRANCE).
+copyright = '''Copyright © 2001-2010 LOGILAB S.A. (Paris, FRANCE), all rights reserved.
 http://www.logilab.fr/ -- mailto:contact@logilab.fr'''
 
-short_desc = "tree 2 tree correction between xml documents"
-long_desc = """Xmldiff is a utility for extracting differences between two
+
+long_description = """Xmldiff is a utility for extracting differences between two
 xml files. It returns a set of primitives to apply on source tree to obtain
 the destination tree.
 .
-The implementation is based on _Change detection in hierarchically structured 
-- information_, by S. Chawathe, A. Rajaraman, H. Garcia-Molina and J. Widom, 
+The implementation is based on _Change detection in hierarchically structured
+- information_, by S. Chawathe, A. Rajaraman, H. Garcia-Molina and J. Widom,
 - Stanford University, 1996"""
- 
-author = "Sylvain Thénault"
-author_email = "sylvain.thenault@logilab.fr"
 
-web = "http://www.logilab.org/projects/%s" % modname
-ftp = "ftp://ftp.logilab.org/pub/%s" % modname
+
+
 mailinglist = 'xml-projects@logilab.org'
 
 from os.path import join

@@ -2,8 +2,12 @@ Source: xmldiff
 Section: text
 Priority: optional
 Maintainer: Alexandre Fayolle <afayolle@debian.org>
+Uploaders: Sylvain Thenault <syt@logilab.fr>,
+	   Alexandre Fayolle <alexandre.fayolle@logilab.fr>,
+	   Emile Anclin <emile.anclin@logilab.fr>
 Build-Depends: debhelper (>= 5.0.37.2), python (>=2.3.5-7), python-dev (>=2.3.5-7), python-central (>=0.5)
 Standards-Version: 3.7.2
+Homepage: http://www.logilab.org/project/xmldiff
 XS-Python-Version: current
 
 Package: xmldiff
@@ -22,7 +26,6 @@ Description: tree to tree correction between xml documents
  structured - information_, by S. Chawathe, A. Rajaraman,
  H. Garcia-Molina and J. Widom, - Stanford University, 1996
  .
- Homepage: http://www.logilab.org/projects/xmldiff
 
 Package: xmldiff-xmlrev
 Architecture: all

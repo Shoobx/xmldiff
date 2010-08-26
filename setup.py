@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # pylint: disable-msg=W0142, W0403,W0404, W0613,W0622,W0622, W0704, R0904
 #
-# Copyright (c) 2003-2006 LOGILAB S.A. (Paris, FRANCE).
+# Copyright (c) 2003-2010 LOGILAB S.A. (Paris, FRANCE).
 # http://www.logilab.fr/ -- mailto:contact@logilab.fr
 #
 # This program is free software; you can redistribute it and/or modify it under
@@ -26,7 +26,7 @@ from distutils.command import install_lib
 from os.path import isdir, exists, join, walk
 
 # import required features
-from __pkginfo__ import modname, version, license, short_desc, long_desc, \
+from __pkginfo__ import modname, version, license, description, \
      web, author, author_email
 # import optional features
 try:
@@ -53,10 +53,14 @@ try:
     from __pkginfo__ import ext_modules
 except ImportError:
     ext_modules = None
+try:
+    from __pkginfo__ import long_description
+except ImportError:
+    long_description = file('README').read()
 
 BASE_BLACKLIST = ('CVS', '.hg', 'debian', 'dist', 'build', '__buildlog')
 IGNORED_EXTENSIONS = ('.pyc', '.pyo', '.elc')
-    
+
 
 def ensure_scripts(linux_scripts):
     """
@@ -152,7 +156,7 @@ class MyInstallLib(install_lib.install_lib):
             for directory in include_dirs:
                 dest = join(self.install_dir, base, directory)
                 export(directory, dest)
-        
+
 def install(**kwargs):
     """setup entry point"""
     if subpackage_of:
@@ -165,9 +169,9 @@ def install(**kwargs):
     kwargs['packages'] = packages
     return setup(name = distname,
                  version = version,
-                 license =license,
-                 description = short_desc,
-                 long_description = long_desc,
+                 license = license,
+                 description = description,
+                 long_description = long_description,
                  author = author,
                  author_email = author_email,
                  url = web,
@@ -177,6 +181,6 @@ def install(**kwargs):
                  cmdclass={'install_lib': MyInstallLib},
                  **kwargs
                  )
-            
+
 if __name__ == '__main__' :
     install()
