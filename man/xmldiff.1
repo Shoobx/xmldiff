@@ -5,24 +5,24 @@ xmldiff \- Tree 2 tree correction between xml documents
 .SH SYNOPSIS
 .B xmldiff [
 .I options
-.B ] 
+.B ]
 .I original_file modified_file
 
 .B xmldiff [
 .I options
-.B ] 
+.B ]
 .B -r
 .I original_directoty modified_directory
 
 
 .SH DESCRIPTION
-.B xmldiff 
+.B xmldiff
 is a utility for extracting differences between two xml files.  It
 returns a set of primitives to apply on source tree to obtain the
 destination tree.
 
-The implementation is based on 
-.I Change detection in hierarchically structured information, 
+The implementation is based on
+.I Change detection in hierarchically structured information,
 by S. Chawathe, A. Rajaraman, H. Garcia-Molina and J. Widom,
 Stanford University, 1996
 
@@ -57,9 +57,9 @@ Stanford University, 1996
 
 .SH EXIT STATUS
 
-  0 means no difference were found. 
+  0 means no difference were found.
 
-  A positive number means some differences were found. 
+  A positive number means some differences were found.
 
   A negative number means an error occured.
 
@@ -69,10 +69,10 @@ Stanford University, 1996
 uses an algorithm with a (too) high algorithmical complexity, which
 makes it unsuitable to process large XML documents. If your document
 has more than about 100 nodes, you should probably look for an
-alternative solution. 
+alternative solution.
 
 Any suggestion to this issue is welcome by Logilab. Please tell us if
-you are aware of a simpler algorithm to solve this problem. 
+you are aware of a simpler algorithm to solve this problem.
 
 
 .SH REQUIRES
@@ -81,7 +81,7 @@ python, pyxml
 .SH "SEE ALSO"
 .B xmlrev(1)
 
-.I http://www.logilab.org/projects/xmldiff/
+.I http://www.logilab.org/project/xmldiff/
 
 .I http://www.xmldb.org/xupdate/xupdate-wd.html#N19b1de
 

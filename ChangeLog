@@ -1,26 +1,26 @@
 Change log for xmldiff
 ======================
-2010-03-15  --  0.6.10
+2010-08-27  --  0.6.10
     * apply Daiki Ueno patch: fails when comparing minimal trees on i386
 
 2009-04-02  --  0.6.9
-    * Fixed xmldiff-xmlrev compilation error 
+    * Fixed xmldiff-xmlrev compilation error
 
 2006-06-15  --  0.6.8
     * Fixed 64bit cleanness issues
-	
+
 2005-05-04  --  0.6.7
     * WARNING: xmldiff is no longer a logilab subpackage. Users may have to
       manually remove the old logilab/xmldiff directory.
-	
+
     * fixed debian bug #275750, also reported by Christopher R Newman on
       the xml-projects mailing list
-    
+
     * fixed --profile option, wrap function from maplookup when profiling
       so that they appear in the profile information
 
     * fixed setup.py to ignore the xmlrev shell script under windows
-      platforms 
+      platforms
 
     * small improvements (remove recursion in object.py, minor
       enhancement in mydifflib.py, rewrite of lcs4 in C)

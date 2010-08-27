@@ -2,7 +2,7 @@ xmldiff (0.6.10-1) unstable; urgency=low
 
   * Apply Daiki Ueno patch: fails when comparing minimal trees on i386 (closes: #570727)
 
- -- Emile Anclin <emile.anclin@logilab.fr>  Mon, 15 Mar 2010 18:19:38 +0100
+ -- Alain Leufroy <alain.leufroy@logilab.fr>  Fri, 27 Aug 2010 10:21:46 +0200
 
 xmldiff (0.6.8-4.1) unstable; urgency=low
 
@@ -59,7 +59,7 @@ xmldiff (0.6.7-1) unstable; urgency=low
   * Update copyright file
   * Add an empty line at the bottom of watch
   * Fix some encoding problem in this file (latin1 instead of utf-8)
-  
+
  -- Sylvain ThÃ©nault <sylvain.thenault@logilab.fr>  Tue,  3 May 2005 17:41:09 +0200
 
 xmldiff (0.6.6-1) unstable; urgency=low
@@ -74,7 +74,7 @@ xmldiff (0.6.6-1) unstable; urgency=low
 xmldiff (0.6.5-1) unstable; urgency=low
 
   * New upstream release (closes: #278830)
-  * Put xmlrev in a separate package, with proper dependencies 
+  * Put xmlrev in a separate package, with proper dependencies
     (closes: #269343)
   * Fixed use of DH_OPTIONS in debian/rules (closes: #276904)
   * Updated build dependency on debhelper
@@ -82,8 +82,8 @@ xmldiff (0.6.5-1) unstable; urgency=low
   * Changed section of xmldiff and xmldiff-xmlrev to text, where other xml
     related tools can be found
   * Updated debian/watch to version 2 of uupdaterol
-  
-  
+
+
  -- Alexandre Fayolle <afayolle@debian.org>  Wed, 10 Nov 2004 18:36:35 +0100
 
 xmldiff (0.6.4-5) unstable; urgency=low

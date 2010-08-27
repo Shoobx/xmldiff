@@ -23,7 +23,7 @@ version = '.'.join(map(str, numversion))
 description = "tree 2 tree correction between xml documents"
 author = "Sylvain Thénault"
 author_email = "sylvain.thenault@logilab.fr"
-web = "http://www.logilab.org/projects/%s" % modname
+web = "http://www.logilab.org/project/%s" % modname
 ftp = "ftp://ftp.logilab.org/pub/%s" % modname
 
 license = 'GPL'

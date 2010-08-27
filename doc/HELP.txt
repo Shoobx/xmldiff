@@ -134,23 +134,23 @@ The script above tell you the 9 actions to apply on file1:
 * append an attribute named "new" with value "new attribute" to the
   node /memory/spoken-languages[0]
 
-* update attribute /memory/server-socket[1]@port value to "7797" 
+* update attribute /memory/server-socket[1]@port value to "7797"
 
 * update text /memory/email_addr/text()[0] to "syt@logilab.org"
 
 * rename attribute /memory/junkbuster-method[0]@value to "val"
 
 * move the attributes "code" and "name" from
-  /memory[0]/spoken-languages[0]/language[1] to 
+  /memory[0]/spoken-languages[0]/language[1] to
   /memory[0]/spoken-languages[0]/language[0]
   and rename them to LogilabXmldiffTmpAttr:code and
-  LogilabXmldiffTmpAttr:name 
+  LogilabXmldiffTmpAttr:name
 
 * move the attributes "code" and "name" from
-  /memory[0]/spoken-languages[0]/language[0] to 
+  /memory[0]/spoken-languages[0]/language[0] to
   /memory[0]/spoken-languages[0]/language[1]
   and rename them to LogilabXmldiffTmpAttr:code and
-  LogilabXmldiffTmpAttr:name 
+  LogilabXmldiffTmpAttr:name
 
 * remove node /memory/spoken-languages/language[2]
 
@@ -161,13 +161,13 @@ The script above tell you the 9 actions to apply on file1:
 * rename attributes LogilabXmldiffTmpAttr:code and
   LogilabXmldiffTmpAttr:name of /memory/spoken-languages/language[1]
   to name and code
-    
+
 Note all xpath are relative to the file1 with previous steps applied.
 
 if you would have typed "xmldiff -x file1 file2", you would have
 obtained the same thing described as an Xupdate output (see [3]). ::
 
-    <?xml version="1.0"?> 
+    <?xml version="1.0"?>
     <xupdate:modifications version="1.0"
      xmlns:xupdate="http://www.xmldb.org/xupdate">
 
@@ -234,19 +234,19 @@ Warnings
   document in one of those nodes, xmldiff won't see it.
 
 * Furthermore, xml namespaces are disabled:
-  <xsl:transform  xmlns:xsl="..."/> and 
-  <xslt:transform xmlns:xslt="..."/> 
-  are seen as different nodes  
- 
+  <xsl:transform  xmlns:xsl="..."/> and
+  <xslt:transform xmlns:xslt="..."/>
+  are seen as different nodes
+
 * Comparing document bigger than 200Ko can take a few minutes (during
   tests, it took at about 25 seconds to diff two versions of a 130Ko
   document on a Celeron 533 box with 256Mo RAM)
 
 * The execution time is scaled to the number of differences between
   the documents to compare
- 
+
 * Finally, a few assumptions have been made to obtain the faster
-  algorithm: 
+  algorithm:
 
   - there is an ordering <_l on the labels in the shema such that a node
     with a label l1 can appear as the descendent of a node with a label l2
@@ -261,14 +261,14 @@ References
 ----------
 
 1. "Tree-to-tree correction for document trees"
-   by D.T. Barnard, G. Clarke, N. Duncan 
+   by D.T. Barnard, G. Clarke, N. Duncan
    Queen's university, Kingston, Ontario K7L 3N6 (Canada), 1995
    The "ezs" algorithm
 
 2. "Change detection in hierarchically structured information"
-   by S. Chawathe, A. Rajaraman, H. Garcia-Molina, J. Widom 
-   Stanford University, 1996 
-   The Fast Match / Edit Script algorithm (fmes), used by default 
+   by S. Chawathe, A. Rajaraman, H. Garcia-Molina, J. Widom
+   Stanford University, 1996
+   The Fast Match / Edit Script algorithm (fmes), used by default
 
 3. http://www.xmldb.org/xupdate/xupdate-wd.html#N19b1de
    XUpdate update language
@@ -284,5 +284,5 @@ Feedback
 --------
 
 xmldiff discussion should take place on the xml-logilab mailing list.
-Please check http://lists.logilab.org/mailman/listinfo/xml-projects for 
+Please check http://lists.logilab.org/mailman/listinfo/xml-projects for
 information on subscribing and the mailing list archives.

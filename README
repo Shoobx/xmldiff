@@ -2,7 +2,7 @@ XMLDIFF.py -- Python classes to diff XML files
 ==============================================
 
 :Author: Sylvain Thenault - (c) 2001 Logilab S.A.
-:Web site: http://www.logilab.org/projects/xmldiff/
+:Web site: http://www.logilab.org/project/xmldiff/
 :License: GPL2
 :Mailing list: xml-projects@logilab.org (http://lists.logilab.org/mailman/listinfo/xml-projects)
 
