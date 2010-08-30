@@ -6,6 +6,12 @@
 #export DH_VERBOSE=1
 
 -include /usr/share/python/python.mk
+ifeq (,$(py_sitename))
+	py_sitename = site-packages
+	py_libdir = /usr/lib/python$(subst python,,$(1))/site-packages
+	py_sitename_sh = $(py_sitename)
+	py_libdir_sh = $(py_libdir)
+endif
 
 build: build-stamp
 build-stamp:
@@ -61,8 +67,7 @@ binary-arch: install
 	dh_testroot -a
 	dh_install -a
 	dh_installman -a
-	dh_pycentral -p xmldiff
-	dh_python -p xmldiff
+	dh_pysupport -p xmldiff
 	gzip -9 -c ChangeLog > changelog.gz
 	dh_installdocs -a -A README TODO changelog.gz
 	dh_installchangelogs -a

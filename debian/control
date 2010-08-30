@@ -6,7 +6,7 @@ Uploaders: Sylvain Thenault <syt@logilab.fr>,
 	   Alexandre Fayolle <alexandre.fayolle@logilab.fr>,
 	   Emile Anclin <emile.anclin@logilab.fr>
 	   Alain Leufroy <alain.leufroy@logilab.fr>
-Build-Depends: debhelper (>= 5.0.37.2), python (>=2.3.5-7), python-dev (>=2.3.5-7), python-central (>=0.5)
+Build-Depends: debhelper (>= 5.0.38), python (>=2.4.6-2), python-dev (>=2.4.6-2), python-support
 Standards-Version: 3.8.3
 XS-Python-Version: current
 Homepage: http://www.logilab.org/project/xmldiff

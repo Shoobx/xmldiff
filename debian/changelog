@@ -2,8 +2,9 @@ xmldiff (0.6.10-1) unstable; urgency=low
 
   * Apply Daiki Ueno patch: fails when comparing minimal trees on i386 (closes: #570727)
   * Acknowledge NMU (closes: #570727, #547860)
+  * Changed helper from pycentral to pysupport
 
- -- Alain Leufroy <alain.leufroy@logilab.fr>  Fri, 27 Aug 2010 10:21:46 +0200
+ -- Alexandre Fayolle <afayolle@debian.org>  Mon, 30 Aug 2010 15:08:36 +0200
 
 xmldiff (0.6.9-1) unstable; urgency=low
 
