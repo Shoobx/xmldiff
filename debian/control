@@ -1,5 +1,5 @@
 Source: xmldiff
-Section: text
+Section: misc
 Priority: optional
 Maintainer: Alexandre Fayolle <afayolle@debian.org>
 Uploaders: Sylvain Thenault <syt@logilab.fr>,
@@ -7,9 +7,9 @@ Uploaders: Sylvain Thenault <syt@logilab.fr>,
 	   Emile Anclin <emile.anclin@logilab.fr>
 	   Alain Leufroy <alain.leufroy@logilab.fr>
 Build-Depends: debhelper (>= 5.0.37.2), python (>=2.3.5-7), python-dev (>=2.3.5-7), python-central (>=0.5)
-Standards-Version: 3.7.2
-Homepage: http://www.logilab.org/project/xmldiff
+Standards-Version: 3.8.3
 XS-Python-Version: current
+Homepage: http://www.logilab.org/project/xmldiff
 
 Package: xmldiff
 Architecture: any
@@ -26,7 +26,7 @@ Description: tree to tree correction between xml documents
  The implementation is based on _Change detection in hierarchically
  structured - information_, by S. Chawathe, A. Rajaraman,
  H. Garcia-Molina and J. Widom, - Stanford University, 1996
- .
+ 
 
 Package: xmldiff-xmlrev
 Architecture: all

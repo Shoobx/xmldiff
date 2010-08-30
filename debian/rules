@@ -5,13 +5,15 @@
 # Uncomment this to turn on verbose mode.
 #export DH_VERBOSE=1
 
+-include /usr/share/python/python.mk
+
 build: build-stamp
-build-stamp: 
+build-stamp:
 	dh_testdir
-	python setup.py -q build 
+	python setup.py -v build
 	touch $@
 
-clean: 
+clean:
 	dh_testdir
 	dh_testroot
 	rm -f build-stamp install-stamp
@@ -27,10 +29,9 @@ install-stamp: build
 	dh_clean -k
 	dh_installdirs
 
-
-	python setup.py -q install --no-compile --prefix=debian/xmldiff/usr
+	python setup.py -v install --no-compile --prefix=debian/xmldiff/usr $(py_setup_install_args)
 	# remove test directory (installed in a separated package)
-	rm -rf debian/xmldiff/usr/lib/python*/site-packages/xmldiff/test debian/xmldiff/usr/share/sgml/ debian/xmldiff/usr/bin/xmlrev
+	rm -rf debian/xmldiff/usr/lib/python*/*-packages/xmldiff/test debian/xmldiff/usr/share/sgml/ debian/xmldiff/usr/bin/xmlrev
 
 	# install tests
 	(cd test && find . -type f -not \( -path '*/CVS/*' -or -name '*.pyc' \) -exec install -D --mode=644 {} ../debian/xmldiff/usr/share/doc/xmldiff/test/{} \;)
@@ -44,7 +45,7 @@ binary-indep: install
 	dh_install -i
 	dh_installman -i
 	gzip -9 -c ChangeLog > changelog.gz
-	dh_installdocs -i -A README TODO changelog.gz 
+	dh_installdocs -i -A README TODO changelog.gz
 	dh_installchangelogs -i
 	dh_link -i
 	dh_compress -i -X.py
@@ -63,11 +64,11 @@ binary-arch: install
 	dh_pycentral -p xmldiff
 	dh_python -p xmldiff
 	gzip -9 -c ChangeLog > changelog.gz
-	dh_installdocs -a -A README TODO changelog.gz 
+	dh_installdocs -a -A README TODO changelog.gz
 	dh_installchangelogs -a
 	dh_strip -a
 	dh_link -a
-	dh_compress -a -X.py 
+	dh_compress -a -X.py
 	dh_fixperms -a
 	dh_installdeb -a
 	dh_shlibdeps -a

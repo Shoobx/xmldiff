@@ -1,8 +1,24 @@
 xmldiff (0.6.10-1) unstable; urgency=low
 
   * Apply Daiki Ueno patch: fails when comparing minimal trees on i386 (closes: #570727)
+  * Acknowledge NMU (closes: #570727, #547860)
 
  -- Alain Leufroy <alain.leufroy@logilab.fr>  Fri, 27 Aug 2010 10:21:46 +0200
+
+xmldiff (0.6.9-1) unstable; urgency=low
+
+  * Fix a bug : xmldiff-xmlrev compilation error  (closes: #484768)
+
+ -- Graziella Toutoungis <graziella.toutoungis@logilab.fr>  Fri, 03 Apr 2009 10:41:19 +0200
+
+xmldiff (0.6.8-4.2) unstable; urgency=low
+
+  * Non-maintainer upload.
+  * Fix id() calculation in extensions/maplookup.c; that fixes comparison
+    errors on minimal trees (on i386). Patch by Daiki Ueno, applied
+    upstream (see http://www.logilab.org/ticket/21853). (Closes: #570727)
+
+ -- Stefano Zacchiroli <zack@debian.org>  Thu, 18 Mar 2010 11:14:40 +0100
 
 xmldiff (0.6.8-4.1) unstable; urgency=low
 
@@ -14,12 +30,6 @@ xmldiff (0.6.8-4.1) unstable; urgency=low
   * Standards Version is now 3.8.3 (no changes needed).
 
  -- Kumar Appaiah <akumar@debian.org>  Mon, 19 Oct 2009 22:21:57 -0500
-
-xmldiff (0.6.9-1) unstable; urgency=low
-
-  * Fix a bug : xmldiff-xmlrev compilation error  (closes: #484768)
-
- -- Graziella Toutoungis <graziella.toutoungis@logilab.fr>  Fri, 03 Apr 2009 10:41:19 +0200
 
 xmldiff (0.6.8-4) unstable; urgency=low
 
