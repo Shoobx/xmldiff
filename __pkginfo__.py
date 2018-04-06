@@ -26,7 +26,7 @@ author_email = "sylvain.thenault@logilab.fr"
 web = "http://www.logilab.org/project/%s" % modname
 ftp = "ftp://ftp.logilab.org/pub/%s" % modname
 
-license = 'GPL'
+license = 'LGPL'
 copyright = '''Copyright © 2001-2010 LOGILAB S.A. (Paris, FRANCE), all rights reserved.
 http://www.logilab.fr/ -- mailto:contact@logilab.fr'''
 

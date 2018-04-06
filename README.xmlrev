@@ -18,4 +18,4 @@ Try:
 
 Then render rev_doc.xml with the docbook_rev.xsl stylesheet.
 
-LICENSE is GPL
+LICENSE is LGPL

@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# (c) 2001-2004 Nicolas Chauvat <nicolas.chauvat@logilab.fr> - License is GPL
+# (c) 2001-2004 Nicolas Chauvat <nicolas.chauvat@logilab.fr> - License is LGPL
 
 set -e 
 DIFF="xmldiff -x"

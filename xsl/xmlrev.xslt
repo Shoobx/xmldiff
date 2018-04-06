@@ -2,7 +2,7 @@
 
 <!--
 -
-- (c) 2001-2002 Nicolas Chauvat <nico@logilab.fr> - License is GPL
+- (c) 2001-2002 Nicolas Chauvat <nico@logilab.fr> - License is LGPL
 -
 -->
 
