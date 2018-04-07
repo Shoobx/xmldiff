@@ -229,6 +229,7 @@ class FmesCorrector:
                 v = w[N_PARENT]
                 # update
                 if w[N_VALUE] != x[N_VALUE]:
+                    needs_rename = True
                     # format action
                     if w[N_TYPE] == NT_NODE:
                         self.add_action(['rename', f_xpath(w), x[N_VALUE]])
@@ -240,10 +241,15 @@ class FmesCorrector:
                         x[N_VALUE] = attr_name
                     else:
                         self.add_action(['update', f_xpath(w), x[N_VALUE]])
+                        # We are simply replacing the main text node, so no
+                        # need to rename.
+                        needs_rename = False
                     # real update on t1
                     w[N_VALUE] = x[N_VALUE]
-                    # this is necessary for xpath
-                    rename_node(w, x[N_NAME])
+                    # this is necessary for xpath, but do not rename on simple
+                    # text update.
+                    if needs_rename:
+                        rename_node(w, x[N_NAME])
                 # move x if parents not mapped together
                 if not has_couple(v, y):
                     x[N_INORDER] = TRUE
