@@ -363,6 +363,10 @@ class FmesCorrector:
             k += 1
         if n1[N_TYPE] == NT_TEXT:
             k = self._before_insert_text(n2, n1, k)
+            if k <= nb_attrs(n2):
+                self.add_action(['move-first', n1, n2])
+            else:
+                self.add_action(['move-after', n1, n2[N_CHILDS][k-1]])
         elif n1[N_TYPE] == NT_ATTN: 
             # avoid to move an attribute node from a place to another on
             # the same node
