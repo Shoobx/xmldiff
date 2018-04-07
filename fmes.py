@@ -423,7 +423,7 @@ class FmesCorrector:
                     self.add_action(['append-first', f_xpath(parent), tag])
                 else:
                     self.add_action(['insert-after',
-                                     f_xpath(parent[N_CHILDS][k]), tag])
+                                     f_xpath(parent[N_CHILDS][k-1]), tag])
                 insert_node(parent, tag, k)                
         return k
     
