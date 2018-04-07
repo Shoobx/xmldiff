@@ -33,6 +33,7 @@ def _inc_xpath(h, xpath):
     except KeyError:
         h[xpath] = 1
 
+
 class SaxHandler(ContentHandler):
     """
     Sax handler to transform xml doc into basic tree
@@ -96,7 +97,7 @@ class SaxHandler(ContentHandler):
             # if sibling text nodes
             if parent[N_CHILDS] and parent[N_CHILDS][-1][N_TYPE] == NT_TEXT:
                 n = parent[N_CHILDS][-1]
-                n[N_VALUE] = n[N_VALUE] + ch
+                n[N_VALUE] = n[N_VALUE] + '\n' + ch
             else:
                 self._n_elmt += 1
                 xpath = '%s/text()' % self._xpath
