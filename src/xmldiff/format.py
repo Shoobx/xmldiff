@@ -22,8 +22,7 @@ try:
     from xml.dom import EMPTY_NAMESPACE as NO_NS
 except:
     NO_NS = None
-from xmldiff.objects import A_N1, A_N2, A_DESC, N_PARENT, caract, \
-    xml_print, f_xpath, XUPD_PREFIX, XUPD_URI, to_dom
+from xmldiff.objects import A_N1, A_N2, A_DESC, xml_print, f_xpath
 from sys import stdout
 
 

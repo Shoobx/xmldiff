@@ -236,7 +236,7 @@ def run(args=None):
 
         else:
             exit_status = process_files(fpath1, fpath2,
-                                        norm_sp, xupd, ezs, verbose,
+                                        norm_sp, verbose,
                                         ext_ges, ext_pes, include_comment,
                                         encoding, html)
     else:
