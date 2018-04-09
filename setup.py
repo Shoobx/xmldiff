@@ -90,6 +90,7 @@ setup(
     ),
     install_requires=[
         'future',
+        'six',
         'setuptools',
     ],
     include_package_data=True,

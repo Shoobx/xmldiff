@@ -17,8 +17,8 @@
 """
 
 import unittest
-import cStringIO
 from xmldiff.objects import *
+import six
 import sys
 
 
@@ -28,7 +28,7 @@ class Tree2TreeKnownValues(unittest.TestCase):
     with known input
     """
 
-    DATA = cStringIO.StringIO("""
+    DATA = six.StringIO("""
   <memory>
   <mailbox path="/var/spool/mail/syt"/>
   <email_addr mine="yes">syt@logilab.org</email_addr>
@@ -51,7 +51,7 @@ class Tree2TreeKnownValues(unittest.TestCase):
     parser.parse(DATA)
     xmltree1 = dh.get_tree()
 
-    DATA = cStringIO.StringIO("""
+    DATA = six.StringIO("""
    <memory>
   <mailbox path="/var/spooool/mail/syt"/>
   <email_addr mine="yes">syt@logab.org</email_addr>
@@ -91,7 +91,7 @@ class Tree2TreeKnownValues(unittest.TestCase):
     }
 
     dh.__init__(1, 1)
-    parser.parse(cStringIO.StringIO("""
+    parser.parse(six.StringIO("""
     <a>
       <b/>
       <c>
@@ -108,7 +108,7 @@ class Tree2TreeKnownValues(unittest.TestCase):
     tree1 = dh.get_tree()
 
     dh.__init__(1, 1)
-    parser.parse(cStringIO.StringIO("""
+    parser.parse(six.StringIO("""
     <a>
       <c/>
       <b>

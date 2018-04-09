@@ -203,7 +203,7 @@ def _xml_print_internal_format(node, indent, stream):
     elif node[N_TYPE] == NT_TEXT:
         stream.write(node[N_VALUE] + '\n')
     else:
-        stream.write('unknown node type', `node[N_TYPE]`)
+        stream.write('unknown node type', str(node[N_TYPE]))
 
 
 def to_dom(node, doc, uri=None, prefix=None):
@@ -251,9 +251,9 @@ def get_pos(node):
         for i in xrange(len(childs)):
             if childs[i] is node:
                 return i
-    except TypeError, e:
+    except TypeError:
         return -1
-    except ValueError, e:
+    except ValueError:
         return -1
 
 

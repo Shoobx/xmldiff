@@ -102,13 +102,6 @@ def lcs4(X, Y, equal):
         vl.append(v[:])
 
 
-def pprint_V(V, N, M):
-    for v in V:
-        for k in xrange(-N-M, N+M+1):
-            print "% 3d" % v[k],
-        print
-
-
 def lcs3(X, Y, equal):
     N = len(X)+1
     M = len(Y)+1
