@@ -129,7 +129,7 @@ def list_print(list, s1='', s2=''):
     for item in list:
         if item:
             print('-'*80)
-            print(s1, item, s2)
+            print("%s %s %s" % (s1, item, s2))
 
 
 def append_list(list, a_list):

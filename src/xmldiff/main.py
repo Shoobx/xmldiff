@@ -180,7 +180,7 @@ def run(args=None):
             print 'FILE:', filename
             diffs = process_files(os.path.join(fpath1, filename),
                                   os.path.join(fpath2, filename),
-                                  norm_sp, xupd, ezs, verbose,
+                                  norm_sp, verbose,
                                   ext_ges, ext_pes, include_comment,
                                   encoding, html)
             if diffs:

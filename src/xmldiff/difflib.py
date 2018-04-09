@@ -155,3 +155,32 @@ except:
 def lcsl(X, Y, equal):
     """return the length of the result sent by lcs2"""
     return len(lcs2(X, Y, equal))
+
+
+def quick_ratio(a, b):
+    """
+    optimized version of the standard difflib.py quick_ration
+    (without junk and class)
+    Return an upper bound on ratio() relatively quickly.
+    """
+    # viewing a and b as multisets, set matches to the cardinality
+    # of their intersection; this counts the number of matches
+    # without regard to order, so is clearly an upper bound
+    if not a and not b:
+        return 1
+    fullbcount = {}
+    for elt in b:
+        fullbcount[elt] = fullbcount.get(elt, 0) + 1
+    # avail[x] is the number of times x appears in 'b' less the
+    # number of times we've seen it in 'a' so far ... kinda
+    avail = {}
+    availhas, matches = avail.has_key, 0
+    for elt in a:
+        if availhas(elt):
+            numb = avail[elt]
+        else:
+            numb = fullbcount.get(elt, 0)
+        avail[elt] = numb - 1
+        if numb > 0:
+            matches = matches + 1
+    return 2.0 * matches / (len(a) + len(b))
