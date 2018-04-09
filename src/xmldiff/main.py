@@ -19,6 +19,7 @@ import sys
 import os
 import getopt
 
+
 def usage(pgm):
     """Print usage"""
     print 'USAGE:'
@@ -58,6 +59,7 @@ OPTIONS:
      profile saved to file (binarie form).
 """
 
+
 def process_files(file1, file2, norm_sp, verbose,
                   ext_ges, ext_pes, include_comment, encoding,
                   html):
@@ -67,7 +69,7 @@ def process_files(file1, file2, norm_sp, verbose,
     from xml.sax import SAXParseException
     try:
         fh1, fh2 = open(file1, 'r'), open(file2, 'r')
-    except IOError, msg :
+    except IOError, msg:
         sys.stderr.write(str(msg) + '\n')
         return -1
     # convert xml files to tree
@@ -79,8 +81,8 @@ def process_files(file1, file2, norm_sp, verbose,
         tree2 = tree_from_stream(fh2, norm_sp, ext_ges,
                                  ext_pes, include_comment,
                                  encoding, html)
-        fh1.close ()
-        fh2.close ()
+        fh1.close()
+        fh2.close()
     except SAXParseException, msg:
         print msg
         return -1
@@ -117,7 +119,7 @@ def run(args=None):
         pgm = 'xmldiff'
     s_opt = 'Hrncgpe:xzhvV'
     l_opt = ['html', 'recursive',
-             'not-normalize-space','exclude-comments','ext-ges','ext-pes'
+             'not-normalize-space', 'exclude-comments', 'ext-ges', 'ext-pes'
              'encoding=',
              'help', 'verbose', 'version', 'profile=']
     # process command line options
@@ -186,10 +188,13 @@ def run(args=None):
     # if  args are files
     elif os.path.isfile(fpath1) and os.path.isfile(fpath2):
         if prof:
-            import profile, pstats, time
-            from maplookup import fmes_end,fmes_init, fmes_node_equal, has_couple, match_end, partner, lcs2
+            import profile
+            import pstats
+            import time
+            from maplookup import fmes_end, fmes_init, fmes_node_equal, has_couple, match_end, partner, lcs2
             import maplookup
             # replaces cfunction in maplookup by python wrappers
+
             def fmes_end_w(*args):
                 return fmes_end(*args)
             maplookup.fmes_end = fmes_end_w
@@ -220,14 +225,14 @@ def run(args=None):
 
             t = time.clock()
             profiler = profile.Profile()
-            profiler.runctx('process_files(%r,%r,%r,%r,%r,%r,%r,%r,%r,%r,%r)'% (
-              fpath1, fpath2, norm_sp, xupd, ezs, verbose, ext_ges, ext_pes,
-              include_comment, encoding, html), globals(), locals() )
-            profiler.dump_stats( prof )
-            print 'Time:',`time.clock()-t`
+            profiler.runctx('process_files(%r,%r,%r,%r,%r,%r,%r,%r,%r,%r,%r)' % (
+                fpath1, fpath2, norm_sp, xupd, ezs, verbose, ext_ges, ext_pes,
+                include_comment, encoding, html), globals(), locals())
+            profiler.dump_stats(prof)
+            print 'Time:', `time.clock()-t`
             p = pstats.Stats(prof)
-            p.sort_stats('time','calls').print_stats(.25)
-            p.sort_stats('cum','calls').print_stats(.25)
+            p.sort_stats('time', 'calls').print_stats(.25)
+            p.sort_stats('cum', 'calls').print_stats(.25)
 
         else:
             exit_status = process_files(fpath1, fpath2,
@@ -237,8 +242,9 @@ def run(args=None):
     else:
         exit_status = -1
         print fpath1, 'and', fpath2, \
-              'are not comparable, or not directory nor regular files'
+            'are not comparable, or not directory nor regular files'
     sys.exit(exit_status)
+
 
 if __name__ == '__main__':
     run()

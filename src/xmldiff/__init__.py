@@ -13,4 +13,3 @@
 """ Copyright (c) 2002-2010 LOGILAB S.A. (Paris, FRANCE).
 http://www.logilab.fr/ -- mailto:contact@logilab.fr
 """
-

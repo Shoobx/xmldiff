@@ -24,8 +24,9 @@ nodes nor text nodes, only nodes with a name and a child list
 """
 
 from xmldiff.objects import NT_ROOT, NT_NODE, NT_ATTN, NT_ATTV, \
-     NT_TEXT, NT_COMM, N_TYPE, N_ISSUE, N_CHILDS, N_VALUE, link_node
+    NT_TEXT, NT_COMM, N_TYPE, N_ISSUE, N_CHILDS, N_VALUE, link_node
 from xml.sax import ContentHandler
+
 
 def _inc_xpath(h, xpath):
     try:
@@ -39,7 +40,7 @@ class SaxHandler(ContentHandler):
     Sax handler to transform xml doc into basic tree
     """
 
-    def __init__(self, normalize_space, include_comment, encoding='UTF-8'): 
+    def __init__(self, normalize_space, include_comment, encoding='UTF-8'):
         self.encoding = encoding
         self._p_stack = [[NT_ROOT, '/', '', [], None, 0, 0]]
         self._norm_sp = normalize_space or None
@@ -51,14 +52,15 @@ class SaxHandler(ContentHandler):
     ## method of the ContentHandler interface #################################
     def startElement(self, name, attrs):
         name = name.encode(self.encoding)
-        # process xpath 
+        # process xpath
         self._xpath = "%s%s%s" % (self._xpath, '/',  name)
         _inc_xpath(self._h, self._xpath)
         # nodes construction for element
         node = [NT_NODE, name, name, [], None, self._n_elmt+1,
                 self._h[self._xpath]]
         self._n_elmt += 1
-        self._xpath = "%s%s%s%s" % (self._xpath, '[', self._h[self._xpath], ']')
+        self._xpath = "%s%s%s%s" % (
+            self._xpath, '[', self._h[self._xpath], ']')
         # nodes construction for element's attributes
         keys = attrs.keys()
         # sort attributes to avoid further moves
@@ -66,18 +68,18 @@ class SaxHandler(ContentHandler):
         for key in keys:
             key = key.encode(self.encoding)
             self._n_elmt += 2
-            attr_node = [NT_ATTN, '@%sName'%key, key, [], None, 1, 0]
+            attr_node = [NT_ATTN, '@%sName' % key, key, [], None, 1, 0]
             link_node(node, attr_node)
-            link_node(attr_node, [NT_ATTV, '@%s'%key,
+            link_node(attr_node, [NT_ATTV, '@%s' % key,
                                   attrs.get(key, '').encode(self.encoding),
-                                  [],None,0,0])
+                                  [], None, 0, 0])
 
         link_node(self._p_stack[-1], node)
         # set current element on the top of the father stack
         self._p_stack.append(node)
-        
+
     def endElement(self, name):
-        # process xpath 
+        # process xpath
         size = len(self._xpath)
         for i in range(size):
             size = size - 1
@@ -103,7 +105,7 @@ class SaxHandler(ContentHandler):
                 xpath = '%s/text()' % self._xpath
                 _inc_xpath(self._h, xpath)
                 # nodes construction for text
-                node = [NT_TEXT, 'text()', ch, [],None,0, self._h[xpath]]
+                node = [NT_TEXT, 'text()', ch, [], None, 0, self._h[xpath]]
                 link_node(parent, node)
 
     ## method of the LexicalHandler interface ##################################
@@ -118,7 +120,8 @@ class SaxHandler(ContentHandler):
             xpath = '%s/comment()' % self._xpath
             _inc_xpath(self._h, xpath)
             # nodes construction for comment
-            node = [NT_COMM,  'comment()', content, [], None, 0, self._h[xpath]]
+            node = [NT_COMM,  'comment()', content, [], None,
+                    0, self._h[xpath]]
             link_node(self._p_stack[-1], node)
 
     # methods from xml.sax.saxlib.LexicalHandler (avoid dependencie to pyxml)

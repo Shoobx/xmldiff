@@ -23,14 +23,15 @@ try:
 except:
     NO_NS = None
 from xmldiff.objects import A_N1, A_N2, A_DESC, N_PARENT, caract, \
-     xml_print, f_xpath, XUPD_PREFIX, XUPD_URI, to_dom
+    xml_print, f_xpath, XUPD_PREFIX, XUPD_URI, to_dom
 from sys import stdout
+
 
 def get_attrs_string(attrs):
     """ extract and return a string corresponding to an attributes list """
     attr_s = []
     for attr_n, attr_v in attrs:
-        attr_s.append('%s="%s" '%(attr_n, attr_v))
+        attr_s.append('%s="%s" ' % (attr_n, attr_v))
     return ' '.join(attr_s)
 
 
@@ -44,7 +45,7 @@ class AbstractFormatter:
         """ method called before the begining of the tree 2 tree correction """
         self.edit_s = []
         self._stream = stream
-    
+
     def add_action(self, action):
         """ method called when an action is added to the edit script """
         self.edit_s.append(action)
@@ -65,18 +66,18 @@ class AbstractFormatter:
 
 class InternalPrinter(AbstractFormatter):
     """ print actions in the internal format """
-    
+
     def add_action(self, action):
         """
         See AbstractFormatter interface
         """
         if len(action) > 2 and type(action[A_N2]) == types.ListType:
             if type(action[A_N1]) == types.ListType:
-                #swap or move node
+                # swap or move node
                 action[A_N1] = f_xpath(action[A_N1])
                 action[A_N2] = f_xpath(action[A_N2])
         AbstractFormatter.add_action(self, action)
-        
+
     def format_action(self, action):
         """
         See AbstractFormatter interface
@@ -87,7 +88,7 @@ class InternalPrinter(AbstractFormatter):
             self._stream.write("]\n")
         elif len(action) > 2:
             self._stream.write('[%s, %s, %s]\n' % (action[A_DESC],
-                                             action[A_N1],
-                                             action[A_N2]))
+                                                   action[A_N1],
+                                                   action[A_N2]))
         else:
             self._stream.write('[%s, %s]\n' % (action[A_DESC], action[A_N1]))

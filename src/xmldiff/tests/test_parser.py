@@ -21,6 +21,7 @@ import cStringIO
 from xmldiff.objects import *
 import sys
 
+
 class Tree2TreeKnownValues(unittest.TestCase):
     """
     This class check that source_vector functions give known result
@@ -87,7 +88,7 @@ class Tree2TreeKnownValues(unittest.TestCase):
         'h/a[0]/d[0]/e[0]/h[0]': 8,
         'N/a[0]/d[0]/f[0]': 12,
         'f/a[0]/d[0]/f[0]': 11
-        }
+    }
 
     dh.__init__(1, 1)
     parser.parse(cStringIO.StringIO("""
@@ -136,14 +137,16 @@ def suite():
         return loader.loadTestsFromNames(sys.argv[1:], module)
     return loader.loadTestsFromModule(module)
 
+
 def Run(runner=None):
     """run tests"""
     testsuite = suite()
     if runner is None:
         runner = unittest.TextTestRunner()
         # uncomment next line to write tests results in a file
-        #runner.__init__(open('tests.log','w+'))
+        # runner.__init__(open('tests.log','w+'))
     return runner.run(testsuite)
+
 
 if __name__ == '__main__':
     Run()

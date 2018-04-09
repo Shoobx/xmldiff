@@ -8,9 +8,10 @@ import os
 import unittest
 import glob
 
-from xmldiff import main 
+from xmldiff import main
 
 DATA_DIR = 'data'
+
 
 class BaseTest(unittest.TestCase):
     def check_output(self, options, expected):
@@ -23,11 +24,11 @@ class BaseTest(unittest.TestCase):
         data = output.read().strip()
         output.close()
         self.assertEqual(data, expected, '%s:\n%r != %r' %
-                         (self.name, data, expected) )
-        
+                         (self.name, data, expected))
+
 
 class DiffTest(BaseTest):
-    
+
     def test_known(self):
         old = self.data['old']
         new = self.data['new']
@@ -41,6 +42,7 @@ class DiffTest(BaseTest):
 
 class RecursiveDiffTest(BaseTest):
     name = 'RecursiveDiffTest'
+
     def test(self):
         options = ['-r', join(DATA_DIR, 'dir1'), join(DATA_DIR, 'dir2')]
         expected = """--------------------------------------------------------------------------------
@@ -51,12 +53,14 @@ FILE: onlyindir2.xml added
 FILE: inbothdir.xml"""
         self.check_output(options, expected)
 
+
 def make_tests():
     """generate tests classes from test info
-    
+
     return the list of generated test classes
     """
-    tests_files = glob.glob(join(DATA_DIR, '*.xml')) + glob.glob(join(DATA_DIR, '*_result'))
+    tests_files = glob.glob(join(DATA_DIR, '*.xml')) + \
+        glob.glob(join(DATA_DIR, '*_result'))
     tests = {}
     # regroup test files
     for filename in tests_files:
@@ -71,7 +75,7 @@ def make_tests():
             options = filetype.split('_')[:-1]
             tests.setdefault(name, {}).setdefault('result', []).append(
                 [options, filename])
-                    
+
     result = []
     for t_name, t_dict in tests.items():
         try:
@@ -82,19 +86,19 @@ def make_tests():
             msg = '** missing files in %s (%s)' % (t_name, e)
             print >>sys.stderr, msg
             continue
-            
+
         class DiffTestSubclass(DiffTest):
             name = t_name
             data = t_dict
-                
+
         result.append(DiffTestSubclass)
     return result
 
 
-    
 def suite():
     return unittest.TestSuite([unittest.makeSuite(test)
                                for test in make_tests() + [RecursiveDiffTest]])
+
 
 def Run(runner=None):
     testsuite = suite()
@@ -102,6 +106,6 @@ def Run(runner=None):
         runner = unittest.TextTestRunner()
     return runner.run(testsuite)
 
-   
+
 if __name__ == '__main__':
     Run()

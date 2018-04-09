@@ -22,20 +22,21 @@
 """
 
 from xmldiff.objects import NT_ROOT, NT_NODE, NT_ATTN, NT_ATTV, \
-     NT_TEXT, NT_COMM, N_TYPE, N_NAME, N_VALUE, N_CHILDS, N_PARENT, N_ISSUE, \
-     N_XNUM, NSIZE, A_DESC, A_N1, A_N2, FALSE, TRUE, \
-     node_repr, get_labels, get_ancestors, caract, make_bfo_list, \
-     insert_node, delete_node, rename_node, get_pos, \
-     f_xpath, nb_attrs, xml_print
+    NT_TEXT, NT_COMM, N_TYPE, N_NAME, N_VALUE, N_CHILDS, N_PARENT, N_ISSUE, \
+    N_XNUM, NSIZE, A_DESC, A_N1, A_N2, FALSE, TRUE, \
+    node_repr, get_labels, get_ancestors, caract, make_bfo_list, \
+    insert_node, delete_node, rename_node, get_pos, \
+    f_xpath, nb_attrs, xml_print
 from xmldiff.difflib import lcs2, quick_ratio
 from xmldiff.misc import intersection, in_ref, index_ref
 # c extensions
-from xmldiff.maplookup import has_couple , partner, fmes_init, \
-     fmes_node_equal, match_end, fmes_end
+from xmldiff.maplookup import has_couple, partner, fmes_init, \
+    fmes_node_equal, match_end, fmes_end
 
 # node's attributes for fmes algorithm
 N_INORDER = NSIZE
 N_MAPPED = N_INORDER + 1
+
 
 def _init_tree(tree, map_attr=None):
     """ recursively append N_INORDER attribute to tree
@@ -48,16 +49,18 @@ def _init_tree(tree, map_attr=None):
         _init_tree(child, map_attr)
 
 ## FMES TREE 2 TREE ALGORITHM #################################################
+
+
 class FmesCorrector:
     """
     Fast Match / Edit Script implementation
 
     See [CRGMW95] for reference.
     """
-    
-    def __init__(self, formatter, f=0.6, t=0.5): # f=0,59
+
+    def __init__(self, formatter, f=0.6, t=0.5):  # f=0,59
         # algorithm parameters
-        if f>1 or f<0 or t>1 or t<0.5:
+        if f > 1 or f < 0 or t > 1 or t < 0.5:
             raise Exception('Invalid parameters:  1 > f > 0 and 1 > t > 0.5')
         self.F = f
         self.T = t
@@ -70,10 +73,10 @@ class FmesCorrector:
         # add needed attribute (INORDER)
         _init_tree(tree1, map_attr=1)
         _init_tree(tree2)
-##         print '**** TREE 2'
-##         print node_repr(tree2)
-##         print '**** TREE 1'
-##         print node_repr(tree1)
+# print '**** TREE 2'
+# print node_repr(tree2)
+# print '**** TREE 1'
+# print node_repr(tree1)
         # attributes initialisation
         self._mapping = []  # empty mapping
         self.add_action = self._formatter.add_action
@@ -96,7 +99,7 @@ class FmesCorrector:
         self._fmes_step2(tree1, tree2)
         # step 3: rename tmp attributes
         for tmp_name, real_name in self._tmp_attrs_dict.items():
-            self.add_action(['rename','//%s'%tmp_name, real_name])
+            self.add_action(['rename', '//%s' % tmp_name, real_name])
         # free mapping ref in C extensions
         fmes_end()
         self._formatter.end()
@@ -119,8 +122,8 @@ class FmesCorrector:
         self._mapping.append((tree1, tree2))
         # mark node as mapped
         tree1[N_MAPPED] = TRUE
-        self._match(labl1, labl2, fmes_node_equal)#self._n_equal
-    
+        self._match(labl1, labl2, fmes_node_equal)  # self._n_equal
+
     def _match(self, lab_l1, lab_l2, equal):
         """do the actual matching"""
         d1, d2 = self._d1, self._d2
@@ -168,20 +171,20 @@ class FmesCorrector:
                         if w[N_TYPE] != NT_ATTN:
                             break
                         elif w[N_VALUE] == x[N_VALUE]:
-                            ## FIXME: what if w or w[N_CHILDS][0] yet mapped ??
+                            # FIXME: what if w or w[N_CHILDS][0] yet mapped ??
                             if not w[N_MAPPED]:
-##                                 old_value = x[N_VALUE]
-##                                 x[N_VALUE] = 'xmldiff-%s'%old_value
-##                                 self._tmp_attrs_dict[x[N_VALUE]] = old_value
-##                                 old_x = _partner(0, w)
-##                                 i = 0
-##                                 for i in range(len(mapping)):
-##                                     if mapping[i][0] is w:
-##                                         print mapping[i][1]
-##                                         mapping[i][1][N_MAPPED] = FALSE
-##                                         mapping.pop(i)
-##                                         break
-##                             else: 
+                                ##                                 old_value = x[N_VALUE]
+                                ##                                 x[N_VALUE] = 'xmldiff-%s'%old_value
+                                ##                                 self._tmp_attrs_dict[x[N_VALUE]] = old_value
+                                ##                                 old_x = _partner(0, w)
+                                ##                                 i = 0
+                                # for i in range(len(mapping)):
+                                # if mapping[i][0] is w:
+                                # print mapping[i][1]
+                                ##                                         mapping[i][1][N_MAPPED] = FALSE
+                                # mapping.pop(i)
+                                # break
+                                # else:
                                 todo = None
                                 w[N_MAPPED] = TRUE
                                 mapping.append((w, x))
@@ -189,14 +192,14 @@ class FmesCorrector:
                                 # if not w[N_CHILDS][0]:
                                 delete_node(w[N_CHILDS][0])
                             break
-                        
+
                 if todo is not None:
                     x[N_INORDER] = TRUE
                     k = fp(x)
                     # w = copy(x)
                     w = x[:]
                     w[N_CHILDS] = []
-                    w.append(TRUE) # <-> w[N_MAPPED] = TRUE
+                    w.append(TRUE)  # <-> w[N_MAPPED] = TRUE
                     mapping.append((w, x))
                     # avoid coalescing two text nodes
                     if w[N_TYPE] == NT_TEXT:
@@ -259,7 +262,6 @@ class FmesCorrector:
             al(w, x)
 #            print 'after', node_repr(tree1)
 
-        
     def _fmes_step2(self, tree1, tree2):
         """ the delete_node phase of the edit script algorithm
 
@@ -293,19 +295,18 @@ class FmesCorrector:
                 node = next_node
             elif node[N_CHILDS]:
                 # push next sibbling on the stack
-                if node[N_PARENT] and len(node[N_PARENT][N_CHILDS]) > i+1 :
+                if node[N_PARENT] and len(node[N_PARENT][N_CHILDS]) > i+1:
                     stack.append((node[N_PARENT][N_CHILDS][i+1], i+1))
                 node = node[N_CHILDS][0]
                 i = 0
             elif node[N_PARENT] and len(node[N_PARENT][N_CHILDS]) > i+1:
                 i += 1
-                node = node[N_PARENT][N_CHILDS][i] #next_sibling(node)
+                node = node[N_PARENT][N_CHILDS][i]  # next_sibling(node)
             else:
                 node = None
             if node is None and stack:
                 node, i = stack.pop()
 
-        
     def _align_children(self, w, x):
         """ align children to correct misaligned nodes
         """
@@ -314,9 +315,9 @@ class FmesCorrector:
         self._childs_out_of_order(w)
         self._childs_out_of_order(x)
         # s1: children of w whose partner is children of x
-        s1 = [n for n in w[N_CHILDS] if in_ref(x[N_CHILDS], _partner(0,n))]
+        s1 = [n for n in w[N_CHILDS] if in_ref(x[N_CHILDS], _partner(0, n))]
         # s2: children of x whose partners are children of w
-        s2 = [n for n in x[N_CHILDS] if in_ref(w[N_CHILDS], _partner(1,n))]
+        s2 = [n for n in x[N_CHILDS] if in_ref(w[N_CHILDS], _partner(1, n))]
         # compute the longest common subsequence
         s = lcs2(s1, s2, has_couple)
         # mark each (a,b) from lcs in order
@@ -353,7 +354,7 @@ class FmesCorrector:
                 break
             i -= 1
         u = partner(1, v)
-        if not u is None:
+        if u is not None:
             return get_pos(u)+1
 
     def _make_move(self, n1, n2, k):
@@ -367,7 +368,7 @@ class FmesCorrector:
                 self.add_action(['move-first', n1, n2])
             else:
                 self.add_action(['move-after', n1, n2[N_CHILDS][k-1]])
-        elif n1[N_TYPE] == NT_ATTN: 
+        elif n1[N_TYPE] == NT_ATTN:
             # avoid to move an attribute node from a place to another on
             # the same node
             if not n1[N_PARENT] is n2:
@@ -395,12 +396,11 @@ class FmesCorrector:
             if w[N_TYPE] != NT_ATTN:
                 break
             if w[N_VALUE] == attr_name:
-                new_name = 'LogilabXmldiffTmpAttr%s'%attr_name.replace(':',
-                                                                       '_')
+                new_name = 'LogilabXmldiffTmpAttr%s' % attr_name.replace(':',
+                                                                         '_')
                 self._tmp_attrs_dict[new_name] = attr_name
                 return new_name
         return attr_name
-
 
     FAKE_TAG = [NT_NODE, 'LogilabXMLDIFFFAKETag', 'LogilabXMLDIFFFAKETag',
                 [], None, 0, 0, TRUE, FALSE]
@@ -424,9 +424,9 @@ class FmesCorrector:
                 else:
                     self.add_action(['insert-after',
                                      f_xpath(parent[N_CHILDS][k-1]), tag])
-                insert_node(parent, tag, k)                
+                insert_node(parent, tag, k)
         return k
-    
+
     def _before_delete_node(self, node):
         """ check if a text node will be inserted with a sibbling text node to
         avoid coalescing two text nodes
@@ -442,7 +442,7 @@ class FmesCorrector:
                 insert_node(parent, tag, k)
                 return parent, k
         return None
-    
+
     def _childs_out_of_order(self, subtree):
         """ initialisation function : tag all the subtree as unordered """
         for child in subtree[N_CHILDS]:
@@ -453,20 +453,19 @@ class FmesCorrector:
         """ function to compare leafs during mapping """
         ratio = quick_ratio(n1[N_VALUE], n2[N_VALUE])
         if ratio > self.F:
-#            print 'MATCH (%s): %s / %s' %(ratio, n1[N_VALUE],n2[N_VALUE])
+            #            print 'MATCH (%s): %s / %s' %(ratio, n1[N_VALUE],n2[N_VALUE])
             return TRUE
 #        print 'UNMATCH (%s): %s / %s' %(ratio, n1[N_VALUE],n2[N_VALUE])
         return FALSE
-    
 
 
 try:
     import os
-    if os.environ.get('PYLINT_IMPORT') != '1': # avoid erros with pylint
+    if os.environ.get('PYLINT_IMPORT') != '1':  # avoid erros with pylint
         import psyco
         psyco.bind(FmesCorrector._fmes_step1)
         psyco.bind(FmesCorrector._align_children)
-##         psyco.bind(FmesCorrector._fmes_step2)
+# psyco.bind(FmesCorrector._fmes_step2)
         psyco.bind(FmesCorrector._match)
         psyco.bind(FmesCorrector._find_pos)
 except Exception, e:
