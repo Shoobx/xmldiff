@@ -1,4 +1,0 @@
-#!/usr/bin/python
-
-from xmldiff import main 
-main.run()
