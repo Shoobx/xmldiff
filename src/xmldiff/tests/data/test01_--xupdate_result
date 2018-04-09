@@ -1,8 +1,0 @@
-<?xml version="1.0"?> 
-<xupdate:modifications version="1.0" xmlns:xupdate="http://www.xmldb.org/xupdate">
-<xupdate:append select="/"  child="first()" >  <xupdate:element name="gap">  </xupdate:element>
-</xupdate:append>
-
-<xupdate:remove select="/oopoyy[1]" />
-
-</xupdate:modifications>

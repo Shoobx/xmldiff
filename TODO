@@ -9,7 +9,7 @@ Version 1.0 To Dos
 
 + Remove ezs code. It is deprecated.
 
-- Remove xmlrev support. It does not really work, since some of the most
++ Remove xmlrev support. It does not really work, since some of the most
   important functions are not implemented.
 
 - Remove xupdate support. It has never become a proper standard

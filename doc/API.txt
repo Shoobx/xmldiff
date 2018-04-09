@@ -75,7 +75,7 @@ FmesCorrector.process_trees(self, tree1, tree2):
 format.py
 ---------
 provides classes for converting xmldiff algorithms output to DOM
-tree or printing it in native format or xml xupdate format. The
+tree or printing it in native format. The
 formatter interface is the following :
 
 class AbstractFormatter:
@@ -98,8 +98,7 @@ AbstractFormatter.end(self):
         method called at the end of the tree 2 tree correction
 
 
-the concrete classes are InternalPrinter, XUpdatePrinter and 
-DOMXUpdateFormatter
+the concrete class is InternalPrinter
 
 
 See xmldiff.py for an use example.

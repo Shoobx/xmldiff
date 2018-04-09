@@ -90,8 +90,8 @@ if __name__ == '__main__':
     from xmldiff.fmes import FmesCorrector
     strategy = FmesCorrector(0.59, 0.5)
     actions = strategy.process_trees(tree, tree2)
-    from xmldiff.format import xupdate_dom
-    PrettyPrint(
-        xupdate_dom(
-        reader.fromString('<root/>'),
-        actions))
+    # from xmldiff.format import xupdate_dom
+    # PrettyPrint(
+    #     xupdate_dom(
+    #     reader.fromString('<root/>'),
+    #     actions))

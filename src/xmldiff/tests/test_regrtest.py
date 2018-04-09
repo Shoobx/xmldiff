@@ -56,7 +56,7 @@ def make_tests():
     
     return the list of generated test classes
     """
-    tests_files = glob.glob(join(DATA_DIR, '*.xml')) + glob.glob(join(DATA_DIR, '*_result')) + glob.glob(join(DATA_DIR, '*_result_xupdate'))
+    tests_files = glob.glob(join(DATA_DIR, '*.xml')) + glob.glob(join(DATA_DIR, '*_result'))
     tests = {}
     # regroup test files
     for filename in tests_files:

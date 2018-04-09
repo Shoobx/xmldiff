@@ -1,7 +1,0 @@
-<?xml version="1.0"?> 
-<xupdate:modifications version="1.0" xmlns:xupdate="http://www.xmldb.org/xupdate">
-<xupdate:remove select="/a[1]/text()[2]" />
-
-<xupdate:remove select="/a[1]/b[1]" />
-
-</xupdate:modifications>

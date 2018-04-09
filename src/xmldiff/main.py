@@ -40,9 +40,6 @@ OPTIONS:
      when comparing directories, recursively compare any
      subdirectories found.
 
-  -x, --xupdate
-     display output following the Xupdate xml specification
-     (see http://www.xmldb.org/xupdate/xupdate-wd.html#N19b1de).
   -e encoding, --encoding=encoding
      specify the encoding to use for output. Default is UTF-8
 
@@ -61,7 +58,7 @@ OPTIONS:
      profile saved to file (binarie form).
 """
 
-def process_files(file1, file2, norm_sp, xupd, ezs, verbose,
+def process_files(file1, file2, norm_sp, verbose,
                   ext_ges, ext_pes, include_comment, encoding,
                   html):
     """
@@ -95,23 +92,16 @@ def process_files(file1, file2, norm_sp, xupd, ezs, verbose,
         print 'Source tree has', tree1[N_ISSUE], 'nodes'
         print 'Destination tree has', tree2[N_ISSUE], 'nodes'
     # output formatter
-    if xupd:
-        from xmldiff.format import XUpdatePrinter
-        formatter = XUpdatePrinter()
-    else:
-        from xmldiff.format import InternalPrinter
-        formatter = InternalPrinter()
+    from xmldiff.format import InternalPrinter
+    formatter = InternalPrinter()
     # choose and apply tree to tree algorithm
-    if ezs:
-        from xmldiff.ezs import EzsCorrector
-        strategy = EzsCorrector(formatter)
-    else:
-        from xmldiff.fmes import FmesCorrector
-        #import gc
-        #gc.set_debug(gc.DEBUG_LEAK|gc.DEBUG_STATS)
-        strategy = FmesCorrector(formatter)
+    from xmldiff.fmes import FmesCorrector
+    # import gc
+    # gc.set_debug(gc.DEBUG_LEAK|gc.DEBUG_STATS)
+    strategy = FmesCorrector(formatter)
     strategy.process_trees(tree1, tree2)
     return len(formatter.edit_s)
+
 
 def run(args=None):
     """
@@ -128,8 +118,7 @@ def run(args=None):
     s_opt = 'Hrncgpe:xzhvV'
     l_opt = ['html', 'recursive',
              'not-normalize-space','exclude-comments','ext-ges','ext-pes'
-             'encoding=', 'xupdate',
-             'ezs', # DEPRECATED
+             'encoding=',
              'help', 'verbose', 'version', 'profile=']
     # process command line options
     try:
@@ -157,10 +146,6 @@ def run(args=None):
             ext_pes = 1
         elif o[0] == '-e' or o[0] == '--encoding':
             encoding = o[1]
-        elif o[0] == '-x' or o[0] == '--xupdate':
-            xupd = 1
-        elif o[0] == '-z' or o[0] == '--ezs':
-            ezs = 1
         elif o[0] == '-v' or o[0] == '--verbose':
             verbose = 1
         elif o[0] == '-p' or o[0] == '--profile':

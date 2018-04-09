@@ -22,10 +22,7 @@ for these objects use
 """
 
 from xmldiff.misc import TRUE, FALSE
-from  sys import stdout, stderr
-
-XUPD_URI = 'http://www.xmldb.org/xupdate'
-XUPD_PREFIX = 'xupdate'
+from sys import stdout, stderr
 
 ################ ACTIONS #######################################################
 
@@ -161,15 +158,12 @@ def _indent(node, indent_str):
         s = '%s%s' % (s, _indent(child, indent_str))
     return s
 
-def xml_print(node, indent='', xupdate=0, stream=stdout):
+def xml_print(node, indent='', stream=stdout):
     """
     recursive function which write the node in an xml form without the added
     nodes
     """
-    if xupdate:
-        _xml_print_xupdate(node, indent, stream)
-    else:
-        _xml_print_internal_format(node, indent, stream)
+    _xml_print_internal_format(node, indent, stream)
 
 def _xml_print_internal_format(node, indent, stream):
     if node[N_TYPE] == NT_NODE:
@@ -200,43 +194,6 @@ def _xml_print_internal_format(node, indent, stream):
         stream.write(node[N_VALUE] + '\n')
     else:
         stream.write('unknown node type',`node[N_TYPE]`)
-
-def _xml_print_xupdate(node, indent, stream):
-    # if suffix -> xupdate
-    attrs_s = ' name="%s"' % node[N_VALUE]
-    if node[N_TYPE] == NT_NODE:
-        stream.write('%s<%s:element%s>' % (indent, XUPD_PREFIX, attrs_s))
-        i = 0
-        while i < len(node[N_CHILDS]):
-            n = node[N_CHILDS][i]
-            if n[N_TYPE] == NT_ATTN:
-                stream.write('%s  <%s:attribute name="%s">' % (indent,
-                                                               XUPD_PREFIX,
-                                                               n[N_VALUE]))
-                stream.write('%s' % n[N_CHILDS][0][N_VALUE])
-                stream.write('</%s:attribute>\n' % XUPD_PREFIX)
-            else:
-                xml_print(n, indent = indent + '  ', stream = stream)
-            i += 1
-        stream.write('%s</%s:element>\n' % (indent, XUPD_PREFIX))
-    elif node[N_TYPE] == NT_ATTN:
-        stream.write('%s<%s:attribute%s>' % (indent, XUPD_PREFIX, attrs_s))
-        stream.write(node[N_CHILDS][0][N_VALUE])
-        stream.write('</%s:attribute>\n' % XUPD_PREFIX)
-    elif node[N_TYPE] == NT_ATTV:
-        stream.write('%s<%s:attribute name="%s">' % (indent,
-                                                     XUPD_PREFIX,
-                                                     node[N_PARENT][N_VALUE]))
-        stream.write(node[N_VALUE])
-        stream.write('</%s:attribute>\n' % XUPD_PREFIX)
-    elif node[N_TYPE] == NT_COMM:
-        stream.write('%s<%s:comment>' % (indent, XUPD_PREFIX))
-        stream.write(node[N_VALUE])
-        stream.write('</%s:comment>\n' % XUPD_PREFIX)
-    elif node[N_TYPE] == NT_TEXT:
-        stream.write('%s<%s:text>' % (indent, XUPD_PREFIX))
-        stream.write(node[N_VALUE])
-        stream.write('</%s:text>\n' % XUPD_PREFIX)
 
 def to_dom(node, doc, uri=None, prefix=None):
     """
