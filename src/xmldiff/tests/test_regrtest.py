@@ -61,14 +61,10 @@ def make_tests():
 
     result = []
     for t_name, t_dict in tests.items():
-        try:
-            old = t_dict['old']
-            new = t_dict['new']
-            res_data = t_dict['result']
-        except KeyError, e:
-            msg = '** missing files in %s (%s)' % (t_name, e)
-            print >>sys.stderr, msg
-            continue
+        # quick check whether input, output, result is there
+        old = t_dict['old']
+        new = t_dict['new']
+        res_data = t_dict['result']
 
     return tests.values()
 
