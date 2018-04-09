@@ -3,3 +3,4 @@ recursive-include src *
 include *
 
 global-exclude *.pyc
+global-exclude *.so
