@@ -12,10 +12,10 @@ Version 1.0 To Dos
 + Remove xmlrev support. It does not really work, since some of the most
   important functions are not implemented.
 
-- Remove xupdate support. It has never become a proper standard
++ Remove xupdate support. It has never become a proper standard
   * We might be able to easily add XML PATCH support instead.
 
-- Rename mydifflib.py into something more suitable.
++ Rename mydifflib.py into something more suitable.
 
 - Code cleanup:
   * Remove trailing whitespace.
@@ -25,8 +25,8 @@ Version 1.0 To Dos
   + Proper src/ directory
   * Python 2.7 and 3.7 support.
   * lxml-based SAX parser.
-  * Proper setup.py file in modern format.
-  * Setup py.test and tox to run tests.
+  + Proper setup.py file in modern format.
+  + Setup py.test and tox to run tests.
   * Allow code to be run without C extensions
     (See Zope packages with PyPy support for help.)
   * Create proper console script
