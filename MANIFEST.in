@@ -1,20 +1,5 @@
-include COPYING
-include README
-include README.xmlrev
-include TODO
-include DEPENDS
-include ChangeLog
-include doc/*.txt
-include doc/*.html
-include doc/makefile
-include bin/xmldiff
-include bin/xmlrev
-include bin/*.bat
-include extensions/maplookup.c
-include extensions/Setup
-include man/*.1
-include test/README
+recursive-include src *
 
-recursive-include xsl *.xsl *.xslt
-recursive-include test/data *
+include *
 
+global-exclude *.pyc

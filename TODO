@@ -1,13 +1,13 @@
 Version 1.0 To Dos
 ------------------
 
-- Make project a pure, Python-only package.
++ Make project a pure, Python-only package.
   * Remove Debian support (debian/, man/)
   * Remove Windows support
 
-- Proper .gitignore
++ Proper .gitignore
 
-- Remove ezs code. It is deprecated.
++ Remove ezs code. It is deprecated.
 
 - Remove xmlrev support. It does not really work, since some of the most
   important functions are not implemented.
@@ -22,7 +22,7 @@ Version 1.0 To Dos
   * PEP8, especially docstrings
 
 - Modernize package:
-  * Proper src/ directory
+  + Proper src/ directory
   * Python 2.7 and 3.7 support.
   * lxml-based SAX parser.
   * Proper setup.py file in modern format.

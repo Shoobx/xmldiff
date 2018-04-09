@@ -16,171 +16,89 @@
 # You should have received a copy of the GNU General Public License along with
 # this program; if not, write to the Free Software Foundation, Inc.,
 # 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-""" Generic Setup script, takes package info from __pkginfo__.py file """
-
+"""Setup
+"""
 import os
-import sys
-import shutil
-from distutils.core import setup
-from distutils.command import install_lib
-from os.path import isdir, exists, join, walk
+from setuptools import setup, find_packages
 
-# import required features
-from __pkginfo__ import modname, version, license, description, \
-     web, author, author_email
-# import optional features
+
+def read(*rnames):
+    with open(os.path.join(os.path.dirname(__file__), *rnames), 'rb') as f:
+        return f.read().decode('utf-8')
+
+
+def alltests():
+    import os
+    import sys
+    import unittest
+    # use the zope.testrunner machinery to find all the
+    # test suites we've put under ourselves
+    import zope.testrunner.find
+    import zope.testrunner.options
+    here = os.path.abspath(os.path.join(os.path.dirname(__file__), 'src'))
+    args = sys.argv[:]
+    defaults = ["--test-path", here]
+    options = zope.testrunner.options.get_options(args, defaults)
+    suites = list(zope.testrunner.find.find_suites(options))
+    return unittest.TestSuite(suites)
+
+TESTS_REQUIRE = [
+    'zope.testrunner',
+    'mock',
+   ]
+
 try:
-    from __pkginfo__ import distname
-except ImportError:
-    distname = modname
-try:
-    from __pkginfo__ import scripts
-except ImportError:
-    scripts = []
-try:
-    from __pkginfo__ import data_files
-except ImportError:
-    data_files = None
-try:
-    from __pkginfo__ import subpackage_of
-except ImportError:
-    subpackage_of = None
-try:
-    from __pkginfo__ import include_dirs
-except ImportError:
-    include_dirs = []
-try:
-    from __pkginfo__ import ext_modules
-except ImportError:
-    ext_modules = None
-try:
-    from __pkginfo__ import long_description
-except ImportError:
-    long_description = file('README').read()
-
-BASE_BLACKLIST = ('CVS', '.hg', 'debian', 'dist', 'build', '__buildlog')
-IGNORED_EXTENSIONS = ('.pyc', '.pyo', '.elc')
+    from distutils.core import Extension
+    ext_modules = [Extension('xmldiff.maplookup',
+                             ['extensions/maplookup.c'])]
+except:
+    ext_modules = []
 
 
-def ensure_scripts(linux_scripts):
-    """
-    Creates the proper script names required for each platform
-    (taken from 4Suite)
-    """
-    from distutils import util
-    if util.get_platform()[:3] == 'win':
-        scripts_ = [script + '.bat' for script in linux_scripts]
-    else:
-        scripts_ = linux_scripts
-    return scripts_
-
-
-def get_packages(directory, prefix):
-    """return a list of subpackages for the given directory
-    """
-    result = []
-    for package in os.listdir(directory):
-        absfile = join(directory, package)
-        if isdir(absfile):
-            if exists(join(absfile, '__init__.py')) or \
-                   package in ('test', 'tests'):
-                if prefix:
-                    result.append('%s.%s' % (prefix, package))
-                else:
-                    result.append(package)
-                result += get_packages(absfile, result[-1])
-    return result
-
-def export(from_dir, to_dir,
-           blacklist=BASE_BLACKLIST,
-           ignore_ext=IGNORED_EXTENSIONS):
-    """make a mirror of from_dir in to_dir, omitting directories and files
-    listed in the black list
-    """
-    def make_mirror(arg, directory, fnames):
-        """walk handler"""
-        for norecurs in blacklist:
-            try:
-                fnames.remove(norecurs)
-            except ValueError:
-                pass
-        for filename in fnames:
-            # don't include binary files
-            if filename[-4:] in ignore_ext:
-                continue
-            if filename[-1] == '~':
-                continue
-            src = '%s/%s' % (directory, filename)
-            dest = to_dir + src[len(from_dir):]
-            print >> sys.stderr, src, '->', dest
-            if os.path.isdir(src):
-                if not exists(dest):
-                    os.mkdir(dest)
-            else:
-                if exists(dest):
-                    os.remove(dest)
-                shutil.copy2(src, dest)
-    try:
-        os.mkdir(to_dir)
-    except OSError, ex:
-        # file exists ?
-        import errno
-        if ex.errno != errno.EEXIST:
-            raise
-    walk(from_dir, make_mirror, None)
-
-
-EMPTY_FILE = '"""generated file, don\'t modify or your data will be lost"""\n'
-
-class MyInstallLib(install_lib.install_lib):
-    """extend install_lib command to handle  package __init__.py and
-    include_dirs variable if necessary
-    """
-    def run(self):
-        """overridden from install_lib class"""
-        install_lib.install_lib.run(self)
-        # create Products.__init__.py if needed
-        if subpackage_of:
-            product_init = join(self.install_dir, subpackage_of, '__init__.py')
-            if not exists(product_init):
-                self.announce('creating %s' % product_init)
-                stream = open(product_init, 'w')
-                stream.write(EMPTY_FILE)
-                stream.close()
-        # manually install included directories if any
-        if include_dirs:
-            if subpackage_of:
-                base = join(subpackage_of, modname)
-            else:
-                base = modname
-            for directory in include_dirs:
-                dest = join(self.install_dir, base, directory)
-                export(directory, dest)
-
-def install(**kwargs):
-    """setup entry point"""
-    if subpackage_of:
-        package = subpackage_of + '.' + modname
-        kwargs['package_dir'] = {package : '.'}
-        packages = [package] + get_packages(os.getcwd(), package)
-    else:
-        kwargs['package_dir'] = {modname : '.'}
-        packages = [modname] + get_packages(os.getcwd(), modname)
-    kwargs['packages'] = packages
-    return setup(name = distname,
-                 version = version,
-                 license = license,
-                 description = description,
-                 long_description = long_description,
-                 author = author,
-                 author_email = author_email,
-                 url = web,
-                 scripts = ensure_scripts(scripts),
-                 data_files=data_files,
-                 ext_modules=ext_modules,
-                 cmdclass={'install_lib': MyInstallLib},
-                 **kwargs
-                 )
-
-if __name__ == '__main__' :
-    install()
+setup(
+    name='xmldiff',
+    version='0.7.0dev',
+    author="Shoobx Team",
+    author_email="dev@shoobx.com",
+    url='https://github.com/Shoobx/xmldiff',
+    description="tree 2 tree correction between xml documents",
+    long_description=(
+        read('src', 'xmldiff', 'README.txt')
+        + '\n\n' +
+        read('CHANGES.txt')
+    ),
+    license='LGPL',
+    classifiers=[
+        'Development Status :: 3 - Alpha',
+        'Intended Audience :: Developers',
+        'Programming Language :: Python',
+        'Programming Language :: Python :: 2',
+        'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.6',
+        'Framework :: ZODB',
+        'License :: OSI Approved :: GNU Library or Lesser General Public License (LGPL)',
+        'Natural Language :: English',
+        'Operating System :: OS Independent'],
+    packages=find_packages('src'),
+    package_dir={'': 'src'},
+    extras_require=dict(
+        test=TESTS_REQUIRE,
+        zope=(
+            'zope.container',
+        ),
+    ),
+    install_requires=[
+        'future',
+        'setuptools',
+    ],
+    include_package_data=True,
+    zip_safe=False,
+    entry_points='''
+    [console_scripts]
+    xmldiff = xmldiff.main:run
+    ''',
+    ext_modules=ext_modules,
+    tests_require=TESTS_REQUIRE,
+    test_suite='__main__.alltests',
+)
