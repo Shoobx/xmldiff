@@ -1,57 +1,42 @@
 """
 xmldiff non regression test
 """
-from os.path import join, basename
-from cStringIO import StringIO
+from os.path import join, basename, dirname
 import sys
 import os
+import pytest
 import unittest
 import glob
 
 from xmldiff import main
 
-DATA_DIR = 'data'
+HERE = dirname(__file__)
 
 
-class BaseTest(unittest.TestCase):
-    def check_output(self, options, expected):
-        try:
-            output = os.popen('%s %s %s' % (sys.executable,
-                                            main.__file__,
-                                            ' '.join(options)))
-        except SystemExit:
-            pass
-        data = output.read().strip()
-        output.close()
-        self.assertEqual(data, expected, '%s:\n%r != %r' %
-                         (self.name, data, expected))
+def check_output(options, expected):
+    try:
+        cmd = '%s %s %s' % (sys.executable, main.__file__,
+                            ' '.join(options))
+        output = os.popen(cmd)
+    except SystemExit:
+        pass
+    data = output.read().strip()
+    output.close()
+    assert data == expected, '%s:\n%r != %r' % (options, data, expected)
 
 
-class DiffTest(BaseTest):
-
-    def test_known(self):
-        old = self.data['old']
-        new = self.data['new']
-        for options, res_file in self.data['result']:
-            options = options + [old, new]
-            f = open(res_file)
-            expected = f.read().strip()
-            f.close()
-            self.check_output(options, expected)
-
-
-class RecursiveDiffTest(BaseTest):
+class RecursiveDiffTest(unittest.TestCase):
     name = 'RecursiveDiffTest'
 
     def test(self):
-        options = ['-r', join(DATA_DIR, 'dir1'), join(DATA_DIR, 'dir2')]
+        options = ['-r', join(HERE, 'data', 'dir1'), join(HERE, 'data', 'dir2')]
         expected = """--------------------------------------------------------------------------------
 FILE: onlyindir1.xml deleted
 --------------------------------------------------------------------------------
 FILE: onlyindir2.xml added
 --------------------------------------------------------------------------------
 FILE: inbothdir.xml"""
-        self.check_output(options, expected)
+        check_output(options, expected)
 
 
 def make_tests():
@@ -59,8 +44,8 @@ def make_tests():
 
     return the list of generated test classes
     """
-    tests_files = glob.glob(join(DATA_DIR, '*.xml')) + \
-        glob.glob(join(DATA_DIR, '*_result'))
+    tests_files = glob.glob(join(HERE, 'data', '*.xml')) + \
+        glob.glob(join(HERE, 'data', '*_result'))
     tests = {}
     # regroup test files
     for filename in tests_files:
@@ -72,9 +57,7 @@ def make_tests():
         elif filetype == '2.xml':
             tests.setdefault(name, {})['new'] = filename
         else:
-            options = filetype.split('_')[:-1]
-            tests.setdefault(name, {}).setdefault('result', []).append(
-                [options, filename])
+            tests.setdefault(name, {})['result'] = filename
 
     result = []
     for t_name, t_dict in tests.items():
@@ -87,25 +70,19 @@ def make_tests():
             print >>sys.stderr, msg
             continue
 
-        class DiffTestSubclass(DiffTest):
-            name = t_name
-            data = t_dict
-
-        result.append(DiffTestSubclass)
-    return result
+    return tests.values()
 
 
-def suite():
-    return unittest.TestSuite([unittest.makeSuite(test)
-                               for test in make_tests() + [RecursiveDiffTest]])
+@pytest.fixture(params=make_tests())
+def fnames(request):
+    return request.param
 
 
-def Run(runner=None):
-    testsuite = suite()
-    if runner is None:
-        runner = unittest.TextTestRunner()
-    return runner.run(testsuite)
-
-
-if __name__ == '__main__':
-    Run()
+def test_known(fnames):
+    old = fnames['old']
+    new = fnames['new']
+    res_file = fnames['result']
+    f = open(res_file)
+    expected = f.read().strip()
+    f.close()
+    check_output([old, new], expected)
