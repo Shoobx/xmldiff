@@ -193,15 +193,6 @@ def quick_ratio(a, b):
     return 2.0 * matches / (len(a) + len(b))
 
 
-try:
-    import os
-    if os.environ.get('PYLINT_IMPORT') != '1':  # avoid erros with pylint
-        import psyco
-        psyco.bind(lcs2)
-except Exception, e:
-    pass
-
-
 def test(lcs2=lcs2):
     """
     FIXME this should go into the test suite.
