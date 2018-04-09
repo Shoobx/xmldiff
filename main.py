@@ -60,9 +60,6 @@ OPTIONS:
      display an execution profile (run slower with this option),
      profile saved to file (binarie form).
 """
-##   -z, --ezs
-##      use the extended Zhang and Shasha algorithm, much slower
-##      but with the best results (only for small documents)
 
 def process_files(file1, file2, norm_sp, xupd, ezs, verbose,
                   ext_ges, ext_pes, include_comment, encoding,

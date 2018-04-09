@@ -72,20 +72,6 @@ FmesCorrector.process_trees(self, tree1, tree2):
 	return an actions list
 
 
-ezs.py ** DEPRICATED **
------------------------
-Extended Zhang and Shasha algorithm (provide the minimum edit cost,
-but too complex to be used with big documents).
-
-class EzsCorrector(self):
-        class which contains the ezs algorithm 
-       
-EzsCorrector.process_trees(self, tree1, tree2):
-        launch diff between internal tree tree1 (old xmltree) and
-        tree2 (new xml tree) 
-	return an actions list
-
-
 format.py
 ---------
 provides classes for converting xmldiff algorithms output to DOM

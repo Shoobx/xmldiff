@@ -52,7 +52,7 @@ def tree_from_stream(stream,
     return handler.get_tree()
 
 
-def tree_from_dom(root, ezs=0):
+def tree_from_dom(root):
     """ create internal tree from DOM subtree """
     from xml.dom.ext.Dom2Sax import Dom2SaxParser 
     from xml.sax.handler import feature_namespaces, property_lexical_handler
@@ -87,11 +87,8 @@ if __name__ == '__main__':
     from xmldiff.objects import repr
     print 'Source tree', repr(tree)
     print 'Destination tree', repr(tree2)
-    #from ezs import EzsCorrector
-    #strategy = EzsCorrector()
     from xmldiff.fmes import FmesCorrector
     strategy = FmesCorrector(0.59, 0.5)
-    #from ezs import process
     actions = strategy.process_trees(tree, tree2)
     from xmldiff.format import xupdate_dom
     PrettyPrint(

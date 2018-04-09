@@ -33,13 +33,6 @@ A_DESC = 0 # string describes the action
 A_N1   = 1 # node on which the action applies
 A_N2   = 2 # optionnal second action argument, maybe node or value
 
-# action types (for internal use in ezs algorithm)
-AT_APPEND = 1 
-AT_REMOVE = 2
-AT_SWAP   = 3
-AT_UPDATE = 4
-AT_RENAME = 5
-
 def actp(act):
     """ print an internal action (debugging purpose) """
     if len(act) > 2:

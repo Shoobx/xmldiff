@@ -15,13 +15,10 @@
 # 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 """ unit tests for xmldiff.
 """
-      
+
 import unittest
-import cStringIO 
-from copy import deepcopy    
-#import xmldiff.ezs
+import cStringIO
 from xmldiff.objects import *
-from xmldiff.ezs import trees_equal
 import sys
 
 class Tree2TreeKnownValues(unittest.TestCase):
@@ -29,7 +26,7 @@ class Tree2TreeKnownValues(unittest.TestCase):
     This class check that source_vector functions give known result
     with known input
     """
-    
+
     DATA = cStringIO.StringIO("""
   <memory>
   <mailbox path="/var/spool/mail/syt"/>
@@ -44,14 +41,14 @@ class Tree2TreeKnownValues(unittest.TestCase):
    <language2 name="francais" code="fr" />
   </spoken-languages>
 </memory>
-""")   
+""")
     from xmldiff.parser import SaxHandler
     from xml.sax import make_parser
     dh = SaxHandler(1, 1)
     parser = make_parser()
     parser.setContentHandler(dh)
     parser.parse(DATA)
-    xmltree1 = dh.get_tree() 
+    xmltree1 = dh.get_tree()
 
     DATA = cStringIO.StringIO("""
    <memory>
@@ -71,7 +68,7 @@ class Tree2TreeKnownValues(unittest.TestCase):
 """)
     dh.__init__(1, 1)
     parser.parse(DATA)
-    xmltree2 = dh.get_tree() 
+    xmltree2 = dh.get_tree()
 
     # those variables may change if the "DATA" string change
     # this is the post order numbers
@@ -108,7 +105,7 @@ class Tree2TreeKnownValues(unittest.TestCase):
     </a>
     """))
     tree1 = dh.get_tree()
-                 
+
     dh.__init__(1, 1)
     parser.parse(cStringIO.StringIO("""
     <a>
@@ -126,65 +123,9 @@ class Tree2TreeKnownValues(unittest.TestCase):
     """))
     tree2 = dh.get_tree()
 
-
-    def setUp (self):
+    def setUp(self):
         """ called before each test from this class """
         self.nl1, self.nl2 = [], []
-
-        
-##     def test_po_known_values(self):
-##         """
-##         post_order should give known result with known input
-##         """
-##         ezsc = ezs.EzsCorrector() 
-##         ezsc._post_order(self.tree1, self.nl1, TRUE)
-##         num = 1
-##         for node in self.nl1[:-1]:
-##             self.assert_(num == self.HKNOWN_VALUES[node[N_VALUE] + f_xpath(node)],
-##                          'Post order Error for '+f_xpath(node))
-##             num = num + 1
-
-##     def test_st_known_values(self):
-##         """
-##         swap_trees should give known result with known input
-##         """
-##         ezsc = ezs.EzsCorrector()
-##         ezsc._post_order(self.tree1, self.nl1, TRUE)
-##         n1 = self.tree1[N_CHILDS][0][N_CHILDS][1]
-##         s1 = self.tree1[N_CHILDS][0][N_CHILDS][2]
-##         self.assert_(ezs.swap_trees(n1, s1, n1, s1) == ezs.C_INFINI, 'SWAP')
-##         self.assert_(ezs.swap_trees(n1, s1, s1, n1) == ezs.C_SWAP, 'SWAP')
-
-##     def test_ezs_known_values(self):
-##         """
-##         ezs should give known result with known input
-##         """
-##         ezsc = ezs.EzsCorrector()
-##         actions = ezsc.process_trees(self.tree1, self.tree2)
-##         action_list1= ['append', 'swap']
-##         for i in range(len(actions)):
-##             self.assert_(actions[i][A_DESC] == action_list1[i])
-
-##         actions = ezsc.process_trees(self.xmltree1, self.xmltree2)
-##         #import format
-##         #format.factions_print(actions)
-##         action_list1= ['insert-after', 'remove', 'update', 'update', 'swap']
-##         for i in range(len(actions)):
-##             self.assert_(actions[i][0] == action_list1[i])
-
-        
-    def test_sanity(self):
-        """
-        global sanity check for do() function
-        """
-        self.assert_(trees_equal(self.tree1, self.tree1),
-                     'Tree unequal error')
-        self.assert_(not trees_equal(self.tree1, self.tree2),
-                     'Tree equal error')
-        #        print  "SOURCE TREE"
-        #        xml_print(self.tree1)
-        #        print  "DESTINATION TREE"
-        #        xml_print(self.tree2)
 
 
 def suite():
@@ -201,8 +142,8 @@ def Run(runner=None):
     if runner is None:
         runner = unittest.TextTestRunner()
         # uncomment next line to write tests results in a file
-        #runner.__init__(open('tests.log','w+'))    
+        #runner.__init__(open('tests.log','w+'))
     return runner.run(testsuite)
-    
+
 if __name__ == '__main__':
     Run()

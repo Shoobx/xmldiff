@@ -260,23 +260,18 @@ Warnings
 References
 ----------
 
-1. "Tree-to-tree correction for document trees"
-   by D.T. Barnard, G. Clarke, N. Duncan
-   Queen's university, Kingston, Ontario K7L 3N6 (Canada), 1995
-   The "ezs" algorithm
-
-2. "Change detection in hierarchically structured information"
+1. "Change detection in hierarchically structured information"
    by S. Chawathe, A. Rajaraman, H. Garcia-Molina, J. Widom
    Stanford University, 1996
    The Fast Match / Edit Script algorithm (fmes), used by default
 
-3. http://www.xmldb.org/xupdate/xupdate-wd.html#N19b1de
+2. http://www.xmldb.org/xupdate/xupdate-wd.html#N19b1de
    XUpdate update language
 
-4. http://www.w3.org/TR/2000/REC-xml-20001006
+3. http://www.w3.org/TR/2000/REC-xml-20001006
    XML 1.0 W3C recommendation
 
-5. http://www.w3.org/TR/xpath
+4. http://www.w3.org/TR/xpath
    XML path language 1.0 W3C recommendation
 
 
