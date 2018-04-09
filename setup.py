@@ -43,7 +43,7 @@ def alltests():
     return unittest.TestSuite(suites)
 
 TESTS_REQUIRE = [
-    'zope.testrunner',
+    'coverage',
     'mock',
    ]
 

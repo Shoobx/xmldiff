@@ -1,3 +1,9 @@
+.eggs
+.pytest_cache/
+.cache
+.tox
+.venv/
+
 tags
 TAGS
 ID
@@ -9,6 +15,7 @@ develop-eggs
 src/xmldiff.egg-info/
 .installed.cfg
 tmp
+*.so
 *.py?
 .coverage
 htmlcov

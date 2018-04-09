@@ -1,0 +1,17 @@
+language: python
+sudo: false
+matrix:
+    include:
+        - python: 2.7
+          env: TOXENV=py27
+        - python: 3.5
+          env: TOXENV=py35
+install:
+  - pip install tox-travis coveralls
+script:
+  - tox
+notifications:
+    email: false
+
+#after_success:
+#  - coveralls
