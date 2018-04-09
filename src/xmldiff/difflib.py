@@ -152,8 +152,8 @@ def lcs3(X, Y, equal):
 
 
 try:
-    import maplookup
-    lcs2 = maplookup.lcs2
+    import xmldiff.maplookup
+    lcs2 = xmldiff.maplookup.lcs2
     #lcs2 = lcs4
 except:
     pass
@@ -162,107 +162,3 @@ except:
 def lcsl(X, Y, equal):
     """return the length of the result sent by lcs2"""
     return len(lcs2(X, Y, equal))
-
-
-def quick_ratio(a, b):
-    """
-    optimized version of the standard difflib.py quick_ration
-    (without junk and class)
-    Return an upper bound on ratio() relatively quickly.
-    """
-    # viewing a and b as multisets, set matches to the cardinality
-    # of their intersection; this counts the number of matches
-    # without regard to order, so is clearly an upper bound
-    if not a and not b:
-        return 1
-    fullbcount = {}
-    for elt in b:
-        fullbcount[elt] = fullbcount.get(elt, 0) + 1
-    # avail[x] is the number of times x appears in 'b' less the
-    # number of times we've seen it in 'a' so far ... kinda
-    avail = {}
-    availhas, matches = avail.has_key, 0
-    for elt in a:
-        if availhas(elt):
-            numb = avail[elt]
-        else:
-            numb = fullbcount.get(elt, 0)
-        avail[elt] = numb - 1
-        if numb > 0:
-            matches = matches + 1
-    return 2.0 * matches / (len(a) + len(b))
-
-
-def test(lcs2=lcs2):
-    """
-    FIXME this should go into the test suite.
-    """
-    import time
-    t = time.clock()
-    quick_ratio('abcdefghijklmnopqrst'*100, 'abcdefghijklmnopqrst'*100)
-    print 'quick ratio :', time.clock()-t
-    lcs2('abcdefghijklmnopqrst'*100, 'abcdefghijklmnopqrst'*100,
-         lambda x, y: x == y)
-    print 'lcs2 :       ', time.clock()-t
-    quick_ratio('abcdefghijklmno'*100, 'zyxwvutsrqp'*100)
-    print 'quick ratio :', time.clock()-t
-    lcs2('abcdefghijklmno'*100, 'zyxwvutsrqp'*100, lambda x, y: x == y)
-    print 'lcs2 :       ', time.clock()-t
-    quick_ratio('abcdefghijklmnopqrst'*100, 'abcdefghijklmnopqrst'*100)
-    print 'quick ratio :', time.clock()-t
-    lcs2('abcdefghijklmnopqrst'*100, 'abcdefghijklmnopqrst'*100,
-         lambda x, y: x == y)
-    print 'lcs2 :       ', time.clock()-t
-    quick_ratio('abcdefghijklmno'*100, 'zyxwvutsrqp'*100)
-    print 'quick ratio :', time.clock()-t
-    lcs2('abcdefghijklmno'*100, 'zyxwvutsrqp'*100, lambda x, y: x == y)
-    print 'lcs2 :       ', time.clock()-t
-
-
-def main(lcs2=lcs2):
-    print "abcde - bydc"
-    print lcsl('abcde', 'bydc', lambda x, y: x == y)
-    for a in lcs2('abcde', 'bydc', lambda x, y: x == y):
-        print a
-    print "abacdge - bcdg"
-    print lcsl('abacdge', 'bcdg', lambda x, y: x == y)
-    for a in lcs2('abacdge', 'bcdg', lambda x, y: x == y):
-        print a
-
-
-import random
-
-
-def randstr(lmin, lmax, alphabet):
-    L = random.randint(lmin, lmax)
-    S = []
-    N = len(alphabet)-1
-    for i in range(L):
-        S.append(alphabet[random.randint(0, N)])
-    return "".join(S)
-
-
-def randtest():
-    """Generate random test sequences and compare lcs2, lcs3, lcs4"""
-    def _cmp(x, y): return x == y
-    import maplookup
-    lcsm = maplookup.lcs2
-
-    _alpha = "abcdefghijklmnopqrstuvwxyz"
-    while 1:
-        S1 = randstr(2, 5, _alpha)
-        S2 = randstr(2, 5, _alpha)
-        print S1, S2
-        R1 = lcs2(S1, S2, _cmp)
-        print "lcs2:", "".join([x[0] for x in R1])
-        R2 = lcs4(S1, S2, _cmp)
-        print "lcs4", "".join([x[0] for x in R2])
-        R3 = lcsm(S1, S2, _cmp)
-        print "lcsm", "".join([x[0] for x in R3])
-        print
-        assert R1 == R2
-        assert R1 == R3
-
-
-if __name__ == '__main__':
-    main()
