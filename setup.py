@@ -42,8 +42,8 @@ except:
 
 setup(
     name='xmldiff',
-    version='1.0.0.dev0',
-    author="Shoobx Team",
+    version='1.0.0.a2',
+    author="Logilab and Shoobx Team",
     author_email="dev@shoobx.com",
     url='https://github.com/Shoobx/xmldiff',
     description=('Tree 2 tree correction between xml documents. '
@@ -51,9 +51,9 @@ setup(
                  'It returns a set of primitives to apply on source tree '
                  'to obtain the destination tree.'),
     long_description=(
-        read('src', 'xmldiff', 'README.txt') +
+        read( 'README.rst') +
         '\n\n' +
-        read('CHANGES.txt')
+        read('CHANGES.rst')
     ),
     license='LGPL',
     classifiers=[
