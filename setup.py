@@ -27,21 +27,6 @@ def read(*rnames):
         return f.read().decode('utf-8')
 
 
-def alltests():
-    import os
-    import sys
-    import unittest
-    # use the zope.testrunner machinery to find all the
-    # test suites we've put under ourselves
-    import zope.testrunner.find
-    import zope.testrunner.options
-    here = os.path.abspath(os.path.join(os.path.dirname(__file__), 'src'))
-    args = sys.argv[:]
-    defaults = ["--test-path", here]
-    options = zope.testrunner.options.get_options(args, defaults)
-    suites = list(zope.testrunner.find.find_suites(options))
-    return unittest.TestSuite(suites)
-
 TESTS_REQUIRE = [
     'coverage',
     'mock',
@@ -66,8 +51,8 @@ setup(
                  'It returns a set of primitives to apply on source tree '
                  'to obtain the destination tree.'),
     long_description=(
-        read('src', 'xmldiff', 'README.txt')
-        + '\n\n' +
+        read('src', 'xmldiff', 'README.txt') +
+        '\n\n' +
         read('CHANGES.txt')
     ),
     license='LGPL',
@@ -87,9 +72,6 @@ setup(
     package_dir={'': 'src'},
     extras_require=dict(
         test=TESTS_REQUIRE,
-        zope=(
-            'zope.container',
-        ),
     ),
     install_requires=[
         'future',
@@ -104,5 +86,4 @@ setup(
     ''',
     ext_modules=ext_modules,
     tests_require=TESTS_REQUIRE,
-    test_suite='__main__.alltests',
 )
