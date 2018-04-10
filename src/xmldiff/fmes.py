@@ -210,7 +210,7 @@ class FmesCorrector:
                     self._dict[id(w)] = ww = w[:]
                     ww[N_CHILDS] = []
                     # preformat action
-                    if not self._dict.has_key(id(z)):
+                    if id(z) not in self._dict:
                         if w[N_TYPE] == NT_ATTV:
                             action = ['update', f_xpath(z), w[N_VALUE]]
                         elif w[N_TYPE] == NT_ATTN:

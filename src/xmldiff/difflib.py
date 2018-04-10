@@ -174,9 +174,9 @@ def quick_ratio(a, b):
     # avail[x] is the number of times x appears in 'b' less the
     # number of times we've seen it in 'a' so far ... kinda
     avail = {}
-    availhas, matches = avail.has_key, 0
+    matches = 0
     for elt in a:
-        if availhas(elt):
+        if elt in avail:
             numb = avail[elt]
         else:
             numb = fullbcount.get(elt, 0)

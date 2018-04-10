@@ -70,8 +70,8 @@ class InternalPrinter(AbstractFormatter):
         """
         See AbstractFormatter interface
         """
-        if len(action) > 2 and type(action[A_N2]) == types.ListType:
-            if type(action[A_N1]) == types.ListType:
+        if len(action) > 2 and isinstance(action[A_N2], list):
+            if isinstance(action[A_N1], list):
                 # swap or move node
                 action[A_N1] = f_xpath(action[A_N1])
                 action[A_N2] = f_xpath(action[A_N2])
@@ -81,7 +81,7 @@ class InternalPrinter(AbstractFormatter):
         """
         See AbstractFormatter interface
         """
-        if len(action) > 2 and type(action[A_N2]) == types.ListType:
+        if len(action) > 2 and isinstance(action[A_N2], list):
             self._stream.write('[%s, %s,\n' % (action[A_DESC], action[A_N1]))
             xml_print(action[A_N2])
             self._stream.write("]\n")

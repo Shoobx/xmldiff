@@ -17,6 +17,8 @@ miscellaneous functions
 # this program; if not, write to the Free Software Foundation, Inc.,
 # 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
+import os
+
 ##### interface ###
 TRUE = 1
 FALSE = 0
@@ -31,12 +33,12 @@ def process_dirs(dir1, dir2, recursive):
     dir2 = normalize_dir(dir2)
     common, deleted, added = _process_dirs(dir1, dir2, recursive)
     # remove prefix
-    deleted[0] = map(_remove_prefix(len(dir1)),  deleted[0])
-    deleted[1] = map(_remove_prefix(len(dir1)),  deleted[1])
-    added[0] = map(_remove_prefix(len(dir2)),  added[0])
-    added[1] = map(_remove_prefix(len(dir2)),  added[1])
-    common[0] = map(_remove_prefix(len(dir1)), common[0])
-    common[1] = map(_remove_prefix(len(dir1)), common[1])
+    deleted[0] = list(map(_remove_prefix(len(dir1)),  deleted[0]))
+    deleted[1] = list(map(_remove_prefix(len(dir1)),  deleted[1]))
+    added[0] = list(map(_remove_prefix(len(dir2)),  added[0]))
+    added[1] = list(map(_remove_prefix(len(dir2)),  added[1]))
+    common[0] = list(map(_remove_prefix(len(dir1)), common[0]))
+    common[1] = list(map(_remove_prefix(len(dir1)), common[1]))
     return common, deleted, added
 
 
@@ -85,7 +87,7 @@ def intersection(list1, list2):
     for i in list1:
         tmp[i] = 1
     for i in list2:
-        if tmp.has_key(i):
+        if i in tmp:
             l.append(i)
     return l
 
@@ -138,14 +140,10 @@ def append_list(list, a_list):
         list.append(item)
 
 
-##### private ###
-from os import sep
-
-
 def normalize_dir(directory):
     """remove trailing path separator from the directory name
     """
-    while directory[-1] == sep:
+    while directory[-1] == os.sep:
         directory = directory[:-1]
     return directory
 
@@ -195,5 +193,4 @@ def _remove_prefix(prfx_size):
 
 def _add_prefix(prefix):
     """ return a function to add prefix with map() """
-    import os
     return lambda s, prfx=prefix, join=os.path.join: join(prfx, s)

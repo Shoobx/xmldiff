@@ -248,8 +248,8 @@ def get_pos(node):
     """
     try:
         childs = node[N_PARENT][N_CHILDS]
-        for i in xrange(len(childs)):
-            if childs[i] is node:
+        for i, child in enumerate(childs):
+            if child is node:
                 return i
     except TypeError:
         return -1
@@ -266,8 +266,8 @@ def nb_childs(node):
 
 def nb_attrs(node):
     """ return the number of attributes of the given node """
-    for i in xrange(len(node[N_CHILDS])):
-        if node[N_CHILDS][i][N_TYPE] != NT_ATTN:
+    for i, child in enumerate(node[N_CHILDS]):
+        if child[N_TYPE] != NT_ATTN:
             break
     else:
         try:
