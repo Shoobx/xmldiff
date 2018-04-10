@@ -126,7 +126,7 @@ CHANGES
 - update changelog to new format
 
 
-0.6.2: (2002-09-23)
+0.6.2 (2002-09-23)
 ------------------
 
 - return number of differences on command line

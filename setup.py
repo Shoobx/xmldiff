@@ -56,6 +56,7 @@ setup(
         read('CHANGES.rst')
     ),
     license='LGPL',
+    keywords=['xml', 'diff', 'xmldiff', 'tree 2 tree'],
     classifiers=[
         'Development Status :: 3 - Alpha',
         'Intended Audience :: Developers',
