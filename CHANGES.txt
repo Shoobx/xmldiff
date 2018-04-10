@@ -17,9 +17,15 @@ CHANGES
 
 - Removed support for xupdate, which never became a standard.
 
-- Removed deprecated esz optiona nd algprithm.
+- Removed deprecated ezs optional algorithm.
 
 - Removed support for Debian and RedHat packaging.
+
+- Removed Windows support
+
+- LOTS of package cleanup (setup.py, MANIFEST, proper console script, etc)
+
+- tests moved to py.test and cleaned, added tox, travis, coverage support
 
 
 0.6.10 (2010-08-27)
@@ -121,7 +127,7 @@ CHANGES
 
 
 0.6.2: (2002-09-23)
-------------------
+-------------------
 
 - return number of differences on command line
 
