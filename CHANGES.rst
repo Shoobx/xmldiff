@@ -17,7 +17,7 @@ CHANGES
 
 - Removed support for xupdate, which never became a standard.
 
-- Removed deprecated ezs optional and deprecated algorithm.
+- Removed deprecated ezs optional algorithm.
 
 - Removed support for Debian and RedHat packaging.
 

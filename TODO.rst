@@ -17,6 +17,8 @@ Version 1.0 To Dos
   * lxml-based SAX parser.
   * Allow code to be run without C extensions
     (See Zope packages with PyPy support for help.)
+  + Create proper console script
+  * Make releasable with zest.releaser
   * Remove old optimizations due to slow attribute lookup
     e.g. mapping = self._mapping
   * Proper LGPL file headers with copyright notice.
