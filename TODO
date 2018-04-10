@@ -37,7 +37,7 @@ Version 1.0 To Dos
 
 - Systematic test setup.
   * Use Shoobx approach for XML-processing-based testing.
-  * Start measuring test coverage.
+  + Start measuring test coverage.
 
 - Bonus: Make some of the variables more readable and rem
 
