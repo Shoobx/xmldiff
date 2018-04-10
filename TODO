@@ -29,7 +29,7 @@ Version 1.0 To Dos
   + Setup py.test and tox to run tests.
   * Allow code to be run without C extensions
     (See Zope packages with PyPy support for help.)
-  * Create proper console script
+  + Create proper console script
   * Make releasable with zest.releaser
   * Remove old optimizations due to slow attribute lookup
     e.g. mapping = self._mapping

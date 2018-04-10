@@ -63,6 +63,7 @@ setup(
         'Programming Language :: Python :: 2',
         'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
         'Framework :: ZODB',
         'License :: OSI Approved :: GNU Library or Lesser General Public License (LGPL)',
