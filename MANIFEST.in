@@ -1,7 +1,13 @@
-recursive-include src *
+recursive-include doc *
 recursive-include extensions *
+recursive-include src *
+recursive-include tests *
 
-include *
+include *.rst
+include *.py
+include *.yml
+include tox.ini
 
+exclude .coverage
 global-exclude *.pyc
 global-exclude *.so

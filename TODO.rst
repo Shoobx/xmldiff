@@ -1,3 +1,6 @@
+TO DOs
+======
+
 Version 1.0 To Dos
 ------------------
 
@@ -5,32 +8,15 @@ Version 1.0 To Dos
   * Remove Debian support (debian/, man/)
   * Remove Windows support
 
-+ Proper .gitignore
-
-+ Remove ezs code. It is deprecated.
-
-+ Remove xmlrev support. It does not really work, since some of the most
-  important functions are not implemented.
-
-+ Remove xupdate support. It has never become a proper standard
-  * We might be able to easily add XML PATCH support instead.
-
-+ Rename mydifflib.py into something more suitable.
-
 - Code cleanup:
   * Remove trailing whitespace.
   * PEP8, especially docstrings
 
 - Modernize package:
-  + Proper src/ directory
-  * Python 2.7 and 3.7 support.
+  * Python 2.7 and 3.6 support.
   * lxml-based SAX parser.
-  + Proper setup.py file in modern format.
-  + Setup py.test and tox to run tests.
   * Allow code to be run without C extensions
     (See Zope packages with PyPy support for help.)
-  + Create proper console script
-  * Make releasable with zest.releaser
   * Remove old optimizations due to slow attribute lookup
     e.g. mapping = self._mapping
   * Proper LGPL file headers with copyright notice.
@@ -42,7 +28,8 @@ Version 1.0 To Dos
 - Bonus: Make some of the variables more readable and rem
 
 
-**** TODO List for xmldiff ****
+Old TODO List for xmldiff
+-------------------------
 
 _ report namespaces declaration !
 _ support Processing Instruction nodes, CDATA
