@@ -1,5 +1,0 @@
-# Set-up file to build the maplookup module. 
-# Note that the text should begin in the first column.
-
-*shared*
-maplookup maplookup.c

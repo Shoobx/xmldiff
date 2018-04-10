@@ -1,20 +1,26 @@
-#include <Python.h>
+#include "Python.h"
 #include <stdio.h>
 #include <inttypes.h>
 
 char * __revision__ = "$Id: maplookup.c,v 1.12 2005-06-29 06:49:12 alf Exp $";
 
+#if PY_MAJOR_VERSION >= 3
+#define INT_AS_LONG(x) PyLong_AS_LONG(x)
+#else
+#define INT_AS_LONG(x) PyInt_AS_LONG(x)
+#endif
+
 
 /* PYTHON EQUIVALENCES
-   # def _has_couple(couple, mapping): 
+   # def _has_couple(couple, mapping):
    #     for a,b in mapping:
-   #         if b is couple[1] and a is couple[0]: 
-   #             return TRUE 
-   #     return FALSE 
+   #         if b is couple[1] and a is couple[0]:
+   #             return TRUE
+   #     return FALSE
 
-   # def _partner(index, node, mapping): 
+   # def _partner(index, node, mapping):
    #     for i in mapping:
-   #         if i[index] is node: 
+   #         if i[index] is node:
    #             return i[1-index]
    #     return None
 
@@ -49,7 +55,7 @@ static short N_ISSUE = 5 ;
 static PyObject *_mapping, *_dict1, *_dict2 ;
 static double _T_treshold ;
 
-static void free_dicts(void) 
+static void free_dicts(void)
 {
 	Py_XDECREF(_dict1) ;
 	_dict1 = NULL ;
@@ -57,7 +63,7 @@ static void free_dicts(void)
 	_dict2 = NULL ;
 }
 
-static void free_global(void) 
+static void free_global(void)
 {
 	Py_XDECREF(_mapping) ;
 	_mapping = NULL ;
@@ -179,8 +185,8 @@ static PyObject *fmes_node_equal(PyObject *self, PyObject *args)
 		}
 	}
 
-	max_issue = PyInt_AS_LONG(PyList_GET_ITEM(node1, N_ISSUE)) ;
-	node2_issue = PyInt_AS_LONG(PyList_GET_ITEM(node2, N_ISSUE)) ;
+	max_issue = INT_AS_LONG(PyList_GET_ITEM(node1, N_ISSUE)) ;
+	node2_issue = INT_AS_LONG(PyList_GET_ITEM(node2, N_ISSUE)) ;
 	if (max_issue < node2_issue) 
 		max_issue = node2_issue ;
     
@@ -322,8 +328,22 @@ static PyObject* lcs2( PyObject* self, PyObject* args )
 }
 
 
-/***** PYTHON INITIALISATION *****/
-static PyMethodDef MAPLOOKUP_METHODS[] = {
+
+/*python 3 and 2 compatible module init*/
+
+
+struct module_state {
+    PyObject *error;
+};
+
+#if PY_MAJOR_VERSION >= 3
+#define GETSTATE(m) ((struct module_state*)PyModule_GetState(m))
+#else
+#define GETSTATE(m) (&_state)
+static struct module_state _state;
+#endif
+
+static PyMethodDef maplookup_methods[] = {
 	{"has_couple", has_couple, METH_VARARGS},
 	{"partner", partner, METH_VARARGS},
 	{"fmes_init", fmes_init, METH_VARARGS},
@@ -334,9 +354,60 @@ static PyMethodDef MAPLOOKUP_METHODS[] = {
 	{NULL,   NULL}        /* Sentinel */
 };
 
+#if PY_MAJOR_VERSION >= 3
 
-void initmaplookup(void)
-{
-	(void) Py_InitModule("maplookup", MAPLOOKUP_METHODS);
+static int maplookup_traverse(PyObject *m, visitproc visit, void *arg) {
+    Py_VISIT(GETSTATE(m)->error);
+    return 0;
 }
 
+static int maplookup_clear(PyObject *m) {
+    Py_CLEAR(GETSTATE(m)->error);
+    return 0;
+}
+
+
+static struct PyModuleDef moduledef = {
+        PyModuleDef_HEAD_INIT,
+        "maplookup",
+        NULL,
+        sizeof(struct module_state),
+        maplookup_methods,
+        NULL,
+        maplookup_traverse,
+        maplookup_clear,
+        NULL
+};
+
+#define INITERROR return NULL
+
+PyMODINIT_FUNC
+PyInit_maplookup(void)
+
+#else
+#define INITERROR return
+
+void
+initmaplookup(void)
+#endif
+{
+#if PY_MAJOR_VERSION >= 3
+    PyObject *module = PyModule_Create(&moduledef);
+#else
+    PyObject *module = Py_InitModule("maplookup", maplookup_methods);
+#endif
+
+    if (module == NULL)
+        INITERROR;
+    struct module_state *st = GETSTATE(module);
+
+    st->error = PyErr_NewException("maplookup.Error", NULL, NULL);
+    if (st->error == NULL) {
+        Py_DECREF(module);
+        INITERROR;
+    }
+
+#if PY_MAJOR_VERSION >= 3
+    return module;
+#endif
+}
