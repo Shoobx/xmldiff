@@ -457,16 +457,3 @@ class FmesCorrector:
             return TRUE
 #        print 'UNMATCH (%s): %s / %s' %(ratio, n1[N_VALUE],n2[N_VALUE])
         return FALSE
-
-
-try:
-    import os
-    if os.environ.get('PYLINT_IMPORT') != '1':  # avoid erros with pylint
-        import psyco
-        psyco.bind(FmesCorrector._fmes_step1)
-        psyco.bind(FmesCorrector._align_children)
-# psyco.bind(FmesCorrector._fmes_step2)
-        psyco.bind(FmesCorrector._match)
-        psyco.bind(FmesCorrector._find_pos)
-except Exception, e:
-    pass
