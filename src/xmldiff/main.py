@@ -15,49 +15,17 @@
 # this program; if not, write to the Free Software Foundation, Inc.,
 # 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
+import argparse
 import sys
 import os
-import getopt
+import pkg_resources
 
-
-def usage(pgm):
-    """Print usage"""
-    print 'USAGE:'
-    print "\t"+pgm, '[OPTIONS] from_file to_file'
-    print "\t"+pgm, '[OPTIONS] [-r] from_directory to_directory'
-    print """
-Extract differences between two xml files. It returns a set of
-primitives to apply on source tree to obtain the destination tree.
-
-OPTIONS:
-  -h, --help
-     display this help message and exit.
-  -V, --version
-     display version number and exit
-
-  -H, --html
-     input files are HTML instead of XML
-  -r, --recursive
-     when comparing directories, recursively compare any
-     subdirectories found.
-
-  -e encoding, --encoding=encoding
-     specify the encoding to use for output. Default is UTF-8
-
-  -n, --not-normalize-spaces
-     do not normalize spaces and new lines in text and comment nodes.
-  -c, --exclude-comments
-     do not process comment nodes
-  -g, --ext-ges
-     include all external general (text) entities.
-  -p, --ext-pes
-     include all external parameter entities, including the external DTD
-     subset.
-
-  --profile=file
-     display an execution profile (run slower with this option),
-     profile saved to file (binarie form).
-"""
+from xmldiff.fmes import FmesCorrector
+from xmldiff.format import InternalPrinter
+from xmldiff.input import tree_from_stream
+from xmldiff.misc import process_dirs, list_print
+from xmldiff.objects import node_repr, N_ISSUE
+from xml.sax import SAXParseException
 
 
 def process_files(file1, file2, norm_sp, verbose,
@@ -66,108 +34,91 @@ def process_files(file1, file2, norm_sp, verbose,
     """
     Computes the diff between two files.
     """
-    from xml.sax import SAXParseException
-    try:
-        fh1, fh2 = open(file1, 'r'), open(file2, 'r')
-    except IOError, msg:
-        sys.stderr.write(str(msg) + '\n')
-        return -1
-    # convert xml files to tree
-    try:
-        from xmldiff.input import tree_from_stream
-        tree1 = tree_from_stream(fh1, norm_sp, ext_ges,
-                                 ext_pes, include_comment,
-                                 encoding, html)
-        tree2 = tree_from_stream(fh2, norm_sp, ext_ges,
-                                 ext_pes, include_comment,
-                                 encoding, html)
-        fh1.close()
-        fh2.close()
-    except SAXParseException, msg:
-        print msg
-        return -1
+    trees = []
+    for fname in (file1, file2):
+        with open(fname, 'r') as fhandle:
+            try:
+                tree = tree_from_stream(fhandle, norm_sp, ext_ges,
+                                        ext_pes, include_comment,
+                                        encoding, html)
+            except SAXParseException as err:
+                print(err)
+                return -1
+            trees.append(tree)
 
     if verbose:
-        from xmldiff.objects import node_repr, N_ISSUE, N_CHILDS
-        print "Source tree\n", node_repr(tree1)
-        print "Destination tree\n", node_repr(tree2)
-        print 'Source tree has', tree1[N_ISSUE], 'nodes'
-        print 'Destination tree has', tree2[N_ISSUE], 'nodes'
+        print('Source tree:\n%s' % node_repr(trees[0]))
+        print('Destination tree:\n%s' % node_repr(trees[1]))
+        print('Source tree has %d nodes' % trees[0][N_ISSUE])
+        print('Destination tree has %d nodes' % trees[1][N_ISSUE])
+
     # output formatter
-    from xmldiff.format import InternalPrinter
     formatter = InternalPrinter()
     # choose and apply tree to tree algorithm
-    from xmldiff.fmes import FmesCorrector
-    # import gc
-    # gc.set_debug(gc.DEBUG_LEAK|gc.DEBUG_STATS)
     strategy = FmesCorrector(formatter)
-    strategy.process_trees(tree1, tree2)
+    strategy.process_trees(*trees)
     return len(formatter.edit_s)
 
 
-def run(args=None):
+def parse_args(argv):
+    package = pkg_resources.get_distribution("xmldiff")
+
+    parser = argparse.ArgumentParser(
+        description=('Tree 2 tree correction between xml documents. '
+                     'Extract differences between two xml files. '
+                     'It returns a set of primitives to apply on source tree '
+                     'to obtain the destination tree.'))
+    parser.add_argument('-V', '--version', action='version',
+                        version=package.version)
+    parser.add_argument('-H', '--html', action='store_true', default=False,
+                        help=('input files are HTML instead of XML.'))
+    parser.add_argument('-r', '--recursive', action='store_true', default=False,
+                        help=('when comparing directories, recursively compare '
+                              'any subdirectories found.'))
+    parser.add_argument('-e', '--encoding', default='UTF-8',
+                        help=('specify the encoding to use for output. '
+                              'Default is UTF-8'))
+    parser.add_argument('-v', '--verbose', action='store_true', default=False)
+    parser.add_argument('-n', '--not-normalize-spaces', action='store_true',
+                        default=False,
+                        help=('do not normalize spaces and new lines in text '
+                              'and comment nodes.'))
+    parser.add_argument('-c', '--exclude-comments', action='store_true',
+                        default=False,
+                        help=('do not process comment nodes.'))
+    parser.add_argument('-g', '--ext-ges', action='store_true', default=False,
+                        help=('include all external general (text) entities.'))
+    parser.add_argument('-p', '--ext-pes', action='store_true', default=False,
+                        help=('include all external parameter entities, '
+                              'including the external DTD subset.'))
+
+    parser.add_argument('from_file_or_dir',
+                        help=('in'))
+    parser.add_argument('to_file_or_dir',
+                        help=('out'))
+
+    args = parser.parse_args(argv)
+    return args
+
+
+def run(argv=None):
     """
     Main. To be called with list of command-line arguments (if provided,
     args should not contain the executable as first item)
-
-    FIXME: use optparse and remove usage() ?
     """
-    if args is None:
-        pgm = sys.argv[0]
-        args = sys.argv[1:]
-    else:
-        pgm = 'xmldiff'
-    s_opt = 'Hrncgpe:xzhvV'
-    l_opt = ['html', 'recursive',
-             'not-normalize-space', 'exclude-comments', 'ext-ges', 'ext-pes'
-             'encoding=',
-             'help', 'verbose', 'version', 'profile=']
-    # process command line options
-    try:
-        (opt, args) = getopt.getopt(args, s_opt, l_opt)
-    except getopt.error:
-        sys.stderr.write('Unkwown option')
-        sys.exit(-1)
-    recursive, html = 0, 0
-    xupd, ezs, verbose = 0, 0, 0
-    norm_sp, include_comment, ext_ges, ext_pes = 1, 1, 0, 0
-    encoding = 'UTF-8'
-    prof = ''
-    for o in opt:
-        if o[0] == '-r' or o[0] == '--recursive':
-            recursive = 1
-        elif o[0] == '-H' or o[0] == '--html':
-            html = 1
-        elif o[0] == '-n' or o[0] == '--not-normalize-space':
-            norm_sp = 0
-        elif o[0] == '-c' or o[0] == '--exclude-comments':
-            include_comment = 0
-        elif o[0] == '-g' or o[0] == '--ext-ges':
-            ext_ges = 1
-        elif o[0] == '-p' or o[0] == '--ext-pes':
-            ext_pes = 1
-        elif o[0] == '-e' or o[0] == '--encoding':
-            encoding = o[1]
-        elif o[0] == '-v' or o[0] == '--verbose':
-            verbose = 1
-        elif o[0] == '-p' or o[0] == '--profile':
-            prof = o[1]
-        elif o[0] == '-h' or o[0] == '--help':
-            usage(pgm)
-            sys.exit(0)
-        elif o[0] == '-V' or o[0] == '--version':
-            from xmldiff.__pkginfo__ import modname, version
-            print '%s version %s' % (modname, version)
-            sys.exit(0)
-    if len(args) != 2:
-        usage(pgm)
-        sys.exit(-2)
-    fpath1, fpath2 = args[0], args[1]
+    if argv is None:
+        argv = sys.argv[1:]
+
+    args = parse_args(argv)
+
+    fpath1 = args.from_file_or_dir
+    fpath2 = args.to_file_or_dir
+    normalize_spaces = not args.not_normalize_spaces
+    include_comments = not args.exclude_comments
     exit_status = 0
     # if args are directory
     if os.path.isdir(fpath1) and os.path.isdir(fpath2):
-        from xmldiff.misc import process_dirs, list_print
-        common, deleted, added = process_dirs(fpath1, fpath2, recursive)
+        common, deleted, added = process_dirs(fpath1, fpath2, args.recursive)
 
         list_print(deleted[0], 'FILE:', 'deleted')
         list_print(deleted[1], 'DIRECTORY:', 'deleted')
@@ -176,73 +127,27 @@ def run(args=None):
         exit_status += sum((len(deleted[0]), len(deleted[1]),
                             len(added[0]), len(added[1])))
         for filename in common[0]:
-            print '-'*80
-            print 'FILE:', filename
-            diffs = process_files(os.path.join(fpath1, filename),
-                                  os.path.join(fpath2, filename),
-                                  norm_sp, verbose,
-                                  ext_ges, ext_pes, include_comment,
-                                  encoding, html)
+            print('-'*80)
+            print('FILE: %s' % filename)
+            diffs = process_files(
+                os.path.join(fpath1, filename),
+                os.path.join(fpath2, filename),
+                normalize_spaces, args.verbose,
+                args.ext_ges, args.ext_pes, include_comments,
+                args.encoding, args.html)
             if diffs:
                 exit_status += diffs
-    # if  args are files
+    # if args are files
     elif os.path.isfile(fpath1) and os.path.isfile(fpath2):
-        if prof:
-            import profile
-            import pstats
-            import time
-            from maplookup import fmes_end, fmes_init, fmes_node_equal, has_couple, match_end, partner, lcs2
-            import maplookup
-            # replaces cfunction in maplookup by python wrappers
-
-            def fmes_end_w(*args):
-                return fmes_end(*args)
-            maplookup.fmes_end = fmes_end_w
-
-            def fmes_init_w(*args):
-                return fmes_init(*args)
-            maplookup.fmes_init = fmes_init_w
-
-            def fmes_node_equal_w(*args):
-                return fmes_node_equal(*args)
-            maplookup.fmes_node_equal = fmes_node_equal_w
-
-            def has_couple_w(*args):
-                return has_couple(*args)
-            maplookup.has_couple = has_couple_w
-
-            def match_end_w(*args):
-                return match_end(*args)
-            maplookup.match_end = match_end_w
-
-            def partner_w(*args):
-                return partner(*args)
-            maplookup.partner = partner_w
-
-            def lcs2_w(*args):
-                return lcs2(*args)
-            maplookup.lcs2 = lcs2_w
-
-            t = time.clock()
-            profiler = profile.Profile()
-            profiler.runctx('process_files(%r,%r,%r,%r,%r,%r,%r,%r,%r,%r,%r)' % (
-                fpath1, fpath2, norm_sp, xupd, ezs, verbose, ext_ges, ext_pes,
-                include_comment, encoding, html), globals(), locals())
-            profiler.dump_stats(prof)
-            print 'Time:', `time.clock()-t`
-            p = pstats.Stats(prof)
-            p.sort_stats('time', 'calls').print_stats(.25)
-            p.sort_stats('cum', 'calls').print_stats(.25)
-
-        else:
-            exit_status = process_files(fpath1, fpath2,
-                                        norm_sp, verbose,
-                                        ext_ges, ext_pes, include_comment,
-                                        encoding, html)
+        exit_status = process_files(
+            fpath1, fpath2,
+            normalize_spaces, args.verbose,
+            args.ext_ges, args.ext_pes, include_comments,
+            args.encoding, args.html)
     else:
         exit_status = -1
-        print fpath1, 'and', fpath2, \
-            'are not comparable, or not directory nor regular files'
+        print('%s and %s are not comparable, or not directory '
+              'nor regular files' % (fpath1, fpath2))
     sys.exit(exit_status)
 
 

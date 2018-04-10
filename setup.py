@@ -61,7 +61,10 @@ setup(
     author="Shoobx Team",
     author_email="dev@shoobx.com",
     url='https://github.com/Shoobx/xmldiff',
-    description="tree 2 tree correction between xml documents",
+    description=('Tree 2 tree correction between xml documents. '
+                 'Extract differences between two xml files. '
+                 'It returns a set of primitives to apply on source tree '
+                 'to obtain the destination tree.'),
     long_description=(
         read('src', 'xmldiff', 'README.txt')
         + '\n\n' +

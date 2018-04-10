@@ -13,7 +13,7 @@ from xmldiff import main
 HERE = dirname(__file__)
 
 
-def check_output(options, expected):
+def get_output(options, expected):
     try:
         cmd = '%s %s %s' % (sys.executable, main.__file__,
                             ' '.join(options))
@@ -22,21 +22,27 @@ def check_output(options, expected):
         pass
     data = output.read().strip()
     output.close()
-    assert data == expected, '%s:\n%r != %r' % (options, data, expected)
+    return data
 
 
-class RecursiveDiffTest(unittest.TestCase):
-    name = 'RecursiveDiffTest'
-
-    def test(self):
-        options = ['-r', join(HERE, 'data', 'dir1'), join(HERE, 'data', 'dir2')]
-        expected = """--------------------------------------------------------------------------------
+def test_recursive():
+    options = ['-r', join(HERE, 'data', 'dir1'), join(HERE, 'data', 'dir2')]
+    expected = """--------------------------------------------------------------------------------
 FILE: onlyindir1.xml deleted
 --------------------------------------------------------------------------------
 FILE: onlyindir2.xml added
 --------------------------------------------------------------------------------
 FILE: inbothdir.xml"""
-        check_output(options, expected)
+    data = get_output(options, expected)
+    assert data == expected, '%s:\n%r != %r' % (options, data, expected)
+
+
+def test_broken():
+    options = ['-r', join(HERE, 'data', 'broken', 'broken.xml'),
+               join(HERE, 'data', 'broken', 'broken.xml')]
+    expected = "xmldiff/tests/data/broken/broken.xml:11:4: mismatched tag"
+    data = get_output(options, expected)
+    assert expected in data
 
 
 def make_tests():
@@ -81,4 +87,6 @@ def test_known(fnames):
     f = open(res_file)
     expected = f.read().strip()
     f.close()
-    check_output([old, new], expected)
+    options = [old, new]
+    data = get_output(options, expected)
+    assert data == expected, '%s:\n%r != %r' % (options, data, expected)
