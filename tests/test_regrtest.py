@@ -3,9 +3,8 @@ xmldiff non regression test
 """
 from os.path import join, basename, dirname
 import sys
-import os
+import six
 import pytest
-import unittest
 import glob
 
 from xmldiff import main
@@ -14,15 +13,20 @@ HERE = dirname(__file__)
 
 
 def get_output(options, expected):
+    backup = sys.stdout
+
+    # capture stdout
+    sys.stdout = six.StringIO()
     try:
-        cmd = '%s %s %s' % (sys.executable, main.__file__,
-                            ' '.join(options))
-        output = os.popen(cmd)
+        main.run(options)
     except SystemExit:
         pass
-    data = output.read().strip()
-    output.close()
-    return data
+    finally:
+        output = sys.stdout.getvalue().strip()
+        sys.stdout.close()
+        sys.stdout = backup
+
+    return output
 
 
 def test_recursive():

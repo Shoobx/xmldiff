@@ -21,8 +21,8 @@ for these objects use
              node is a recursive list
 """
 
+import sys
 from xmldiff.misc import TRUE, FALSE
-from sys import stdout, stderr
 
 ################ ACTIONS #######################################################
 
@@ -35,15 +35,15 @@ def actp(act):
     """ print an internal action (debugging purpose) """
     if len(act) > 2:
         if act[A_DESC][0] == 'm':
-            print >> stderr,  act[A_DESC], caract(act[A_N1])
-            print >> stderr, '    ', caract(act[A_N2])
-            print >> stderr, '    ', caract(act[-2]), act[-3], get_pos(act[-1])
+            print >> sys.stderr,  act[A_DESC], caract(act[A_N1])
+            print >> sys.stderr, '    ', caract(act[A_N2])
+            print >> sys.stderr, '    ', caract(act[-2]), act[-3], get_pos(act[-1])
         else:
-            print >> stderr, act[A_DESC], caract(act[A_N1]),\
+            print >> sys.stderr, act[A_DESC], caract(act[A_N1]),\
                 caract(act[A_N2]),\
                 act[A_N2][N_VALUE]
     else:
-        print >> stderr, act[A_DESC], caract(act[A_N1])
+        print >> sys.stderr, act[A_DESC], caract(act[A_N1])
 
 
 ################## NODES CONSTANTES ############################################
@@ -166,11 +166,13 @@ def _indent(node, indent_str):
     return s
 
 
-def xml_print(node, indent='', stream=stdout):
+def xml_print(node, indent='', stream=None):
     """
     recursive function which write the node in an xml form without the added
     nodes
     """
+    if stream is None:
+        stream = sys.stdout
     _xml_print_internal_format(node, indent, stream)
 
 

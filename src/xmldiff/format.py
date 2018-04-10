@@ -17,13 +17,12 @@
 this module provides classes to format the native tree2tree output
 """
 
-import types
+import sys
 try:
     from xml.dom import EMPTY_NAMESPACE as NO_NS
 except:
     NO_NS = None
 from xmldiff.objects import A_N1, A_N2, A_DESC, xml_print, f_xpath
-from sys import stdout
 
 
 def get_attrs_string(attrs):
@@ -40,8 +39,10 @@ class AbstractFormatter:
     Formatter interface
     """
 
-    def init(self, stream=stdout):
+    def init(self, stream=None):
         """ method called before the begining of the tree 2 tree correction """
+        if stream is None:
+            stream = sys.stdout
         self.edit_s = []
         self._stream = stream
 
@@ -83,7 +84,7 @@ class InternalPrinter(AbstractFormatter):
         """
         if len(action) > 2 and isinstance(action[A_N2], list):
             self._stream.write('[%s, %s,\n' % (action[A_DESC], action[A_N1]))
-            xml_print(action[A_N2])
+            xml_print(action[A_N2], stream=self._stream)
             self._stream.write("]\n")
         elif len(action) > 2:
             self._stream.write('[%s, %s, %s]\n' % (action[A_DESC],
