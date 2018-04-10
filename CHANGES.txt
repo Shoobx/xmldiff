@@ -1,163 +1,189 @@
-Change log for xmldiff
-======================
+=======
+CHANGES
+=======
 
-2010-08-27  --  0.6.10
-----------------------
+1.0.0 (unreleased)
+------------------
 
-    * apply Daiki Ueno patch: fails when comparing minimal trees on i386
+- Bug: Fix a off-by-one issue with `insert-after` action.
 
+- Bug: Do not remove newlines from text while parsing the XML.
 
-2009-04-02  --  0.6.9
----------------------
+- Bug: Do not rename children on text node updates.
 
-    * Fixed xmldiff-xmlrev compilation error
+- Bug: Text moves were not recorded as part of the fmes edit script.
 
+- Remove only partially implemented xmlrev script.
 
-2006-06-15  --  0.6.8
----------------------
+- Removed support for xupdate, which never became a standard.
 
-    * Fixed 64bit cleanness issues
+- Removed deprecated esz optiona nd algprithm.
 
+- Removed support for Debian and RedHat packaging.
 
-2005-05-04  --  0.6.7
----------------------
 
-    * WARNING: xmldiff is no longer a logilab subpackage. Users may have to
-      manually remove the old logilab/xmldiff directory.
+0.6.10 (2010-08-27)
+-------------------
 
-    * fixed debian bug #275750, also reported by Christopher R Newman on
-      the xml-projects mailing list
+- apply Daiki Ueno patch: fails when comparing minimal trees on i386
 
-    * fixed --profile option, wrap function from maplookup when profiling
-      so that they appear in the profile information
 
-    * fixed setup.py to ignore the xmlrev shell script under windows
-      platforms
+0.6.9 (2009-04-02)
+------------------
 
-    * small improvements (remove recursion in object.py, minor
-      enhancement in mydifflib.py, rewrite of lcs4 in C)
+- Fixed xmldiff-xmlrev compilation error
 
 
-2004-12-23  --  0.6.6
----------------------
+0.6.8 (2006-06-15)
+------------------
 
-    * Applied patch by Bastian Kleineidam <calvin@debian.org> which
-      - corrects the typo in  ML_DIR
-      - fixes the TMPFILE_XSLT/TMPFILE_XSL typo
-      - makes sure the files are XML or SGML files, else prints an error
-      - adds various missing quotes around filenames which could have
-      spaces or begin with a hyphen
-      - fixes typos in the usage() function
-      Thanks a lot, Bastian.
+- Fixed 64bit cleanness issues
 
-    * Fixed some problems in the xmlrev.xslt stylesheet
 
-    * Fixed problems in xmlrev caused by the exit status of xmldiff when
-      successful
+0.6.7 (2005-05-04)
+------------------
 
-    * Added a man page for xmldiff and xmlrev
+- WARNING: xmldiff is no longer a logilab subpackage. Users may have to
+  manually remove the old logilab/xmldiff directory.
 
+- fixed debian bug #275750, also reported by Christopher R Newman on the
+  xml-projects mailing list
 
-2004-09-02  --  0.6.5
----------------------
+- fixed --profile option, wrap function from maplookup when profiling so that
+  they appear in the profile information
 
-    * xmlrev bugfixes
+- fixed setup.py to ignore the xmlrev shell script under windows platforms
 
-    * Fixed packaging problems (missing xsl stylesheets and MANIFEST file)
+- small improvements (remove recursion in object.py, minor enhancement in
+  mydifflib.py, rewrite of lcs4 in C)
 
 
-2003-10-02  --  0.6.4
----------------------
+0.6.6 (2004-12-23)
+------------------
 
-    * fix recursive mode
+- Applied patch by Bastian Kleineidam <calvin@debian.org> which
 
-    * rewrite regression test, add test for the recursive mode
+  - corrects the typo in  ML_DIR
 
-    * add --help option to xlmrev
+  - fixes the TMPFILE_XSLT/TMPFILE_XSL typo
 
-    * packaging fixes
+  - makes sure the files are XML or SGML files, else prints an error
 
-    * turn API.txt and HELP.txt to correct ReST
+  - adds various missing quotes around filenames which could have
+    spaces or begin with a hyphen
 
+  - fixes typos in the usage() function
 
-2002-11-06  --  0.6.3
----------------------
+  Thanks a lot, Bastian.
 
-    * fix wrong xpath for attributes
+- Fixed some problems in the xmlrev.xslt stylesheet
 
-    * fix bug with temporary duplicate attribute node
+- Fixed problems in xmlrev caused by the exit status of xmldiff when
+  successful
 
-    * fix for xupdate
+- Added a man page for xmldiff and xmlrev
 
-    * fix ext_pes option bug
 
-    * update changelog to new format
+0.6.5 (2004-09-02)
+------------------
 
+- xmlrev bugfixes
 
-2002-09-23  --  0.6.2:
----------------------
+- Fixed packaging problems (missing xsl stylesheets and MANIFEST file)
 
-    * return number of differences on command line
 
-    * reintroduce misc.list_print which caused recursive mode
-      to fail
+0.6.4 (2003-10-02)
+------------------
 
-    * use psyco if available (http://psyco.sf.net)
+- fix recursive mode
 
-    * little changes in C extension
+- rewrite regression test, add test for the recursive mode
 
+- add --help option to xlmrev
 
-2002-08-29  --  0.6.1:
----------------------
+- packaging fixes
 
-    * fix packaging problems
+- turn API.txt and HELP.txt to correct ReST
 
 
-2002-08-23  --  0.6.0:
----------------------
+0.6.3 (2002-11-06)
+------------------
 
-    * change of the internal representation
+- fix wrong xpath for attributes
 
-    * remove support for the EZS algorithm (no more maintened
-      for the moment)
+- fix bug with temporary duplicate attribute node
 
-    * add command line options to parse html and to control
-      entities inclusion and output encoding
+- fix for xupdate
 
-    * fixing coalescing text nodes bug
+- fix ext_pes option bug
 
-    * many other bugs fixes
+- update changelog to new format
 
-    * great speed improvement
 
+0.6.2: (2002-09-23)
+------------------
 
-2002-01-31  --  0.5.3:
----------------------
+- return number of differences on command line
 
-    * add __init__.py in "logilab" directory
+- reintroduce misc.list_print which caused recursive mode
+  to fail
 
+- use psyco if available (http://psyco.sf.net)
 
-2001-10-29  --  0.5.2:
----------------------
+- little changes in C extension
 
-    * bug fixes in xupdate formatting and in the dom interface.
 
+0.6.1 (2002-08-29)
+------------------
 
-2001-09-07  --  0.5.1:
----------------------
+- fix packaging problems
 
-    * Fast Match / Edit Scritp algorithm, now fully usable
 
-    * fixes Unicode problem
+0.6.0 (2002-08-23)
+------------------
 
+- change of the internal representation
 
-2001-08-10  --  0.2.1:
----------------------
+- remove support for the EZS algorithm (no more maintened
+  for the moment)
 
-    * bug fixes, optimizations for ezs algorithm
+- add command line options to parse html and to control
+  entities inclusion and output encoding
 
+- fixing coalescing text nodes bug
 
-2001-08-04  --  0.1.1:
----------------------
+- many other bugs fixes
 
-    * original revision
+- great speed improvement
+
+
+0.5.3 (2002-01-31)
+------------------
+
+- add __init__.py in "logilab" directory
+
+
+0.5.2 (2001-10-29)
+------------------
+
+- bug fixes in xupdate formatting and in the dom interface.
+
+
+0.5.1 (2001-09-07)
+------------------
+
+- Fast Match / Edit Scritp algorithm, now fully usable
+
+- fixes Unicode problem
+
+
+0.2.1 (2001-08-10)
+------------------
+
+- bug fixes, optimizations for ezs algorithm
+
+
+0.1.1 (2001-08-04)
+------------------
+
+- original revision
