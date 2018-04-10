@@ -43,14 +43,14 @@ Insert mixed element with text
 [insert-after, /Tests[1]/Test[7]/Five[1]/text()[1],
 <new/>
 ]
-[update, /Tests[1]/Test[7]/Five[1]/text()[1], fifth sentence.]
+[update, /Tests[1]/Test[7]/Five[1]/text()[2], fifth sentence.]
 [update, /Tests[1]/Test[8]/Six[1]/text()[1], This is the]
 [insert-after, /Tests[1]/Test[8]/Six[1]/text()[1],
 <new>
 and improved
 </new>
 ]
-[update, /Tests[1]/Test[8]/Six[1]/text()[1], sixth sentence.]
+[update, /Tests[1]/Test[8]/Six[1]/text()[2], sixth sentence.]
 [insert-after, /Tests[1]/Test[11]/Nine[1]/text()[1],
 <b>
 (changed)
