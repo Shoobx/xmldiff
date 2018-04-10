@@ -1,9 +1,8 @@
 CHANGES
 =======
 
-
-1.0.0 (unreleased)
-------------------
+1.0.0a1 (2018-04-10)
+--------------------
 
 - Bug: Fix a off-by-one issue with `insert-after` action.
 
