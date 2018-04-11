@@ -4,15 +4,16 @@ CHANGES
 1.0.0a2 (unreleased)
 --------------------
 
-- Nothing changed yet.
+- Temporary disabling of encoding text (hopefully permanent).
+
+- Reverted bug fix: Do not remove newlines from text while parsing
+  the XML.
 
 
 1.0.0a1 (2018-04-10)
 --------------------
 
 - Bug: Fix a off-by-one issue with `insert-after` action.
-
-- Bug: Do not remove newlines from text while parsing the XML.
 
 - Bug: Do not rename children on text node updates.
 
