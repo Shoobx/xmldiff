@@ -76,7 +76,7 @@ def make_tests():
         new = t_dict['new']
         res_data = t_dict['result']
 
-    return tests.values()
+    return sorted(tests.values())
 
 
 @pytest.fixture(params=make_tests())
@@ -84,7 +84,7 @@ def fnames(request):
     return request.param
 
 
-def test_known(fnames):
+def test_known(fnames, lcs2_type):
     old = fnames['old']
     new = fnames['new']
     res_file = fnames['result']

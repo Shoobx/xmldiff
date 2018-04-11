@@ -138,23 +138,19 @@ def lcs3(X, Y, equal):
             j -= 1
             L.append((X[i], Y[j]))
     L.reverse()
-    #from pprint import pprint
-    # pprint(D)
-    # pprint(B)
     return L
 
+
+# save the reference for tests
+lcs2_python = lcs2
+have_c_extension = False
 
 try:
     import xmldiff.maplookup
     lcs2 = xmldiff.maplookup.lcs2
-    #lcs2 = lcs4
+    have_c_extension = True
 except:
     pass
-
-
-def lcsl(X, Y, equal):
-    """return the length of the result sent by lcs2"""
-    return len(lcs2(X, Y, equal))
 
 
 def quick_ratio(a, b):

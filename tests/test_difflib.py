@@ -1,31 +1,35 @@
-
 import random
-import unittest
-from xmldiff.difflib import lcsl
-from xmldiff.difflib import lcs2
-from xmldiff.difflib import lcs4
+import xmldiff.difflib
 
 
 def _cmp(a, b):
     return a == b
 
 
-class TestLcs2(unittest.TestCase):
-    def help_test(self, seq1, seq2, res):
-        seq = lcs2(seq1, seq2, _cmp)
-        self.assertEqual(seq, zip(res, res))
+def lcsl(X, Y, equal):
+    """return the length of the result sent by lcs2"""
+    return len(xmldiff.difflib.lcs2(X, Y, equal))
 
-    def test_lcs_1(self):
-        self.help_test("abcdefghijkl", "bcdeghijk", "bcdeghijk")
 
-    def test_lcs_2(self):
-        self.help_test("abdefghijkl", "bcdeghijk", "bdeghijk")
+def help_test(seq1, seq2, res):
+    seq = xmldiff.difflib.lcs2(seq1, seq2, _cmp)
+    assert seq == zip(res, res)
 
-    def test_lcs_3(self):
-        self.help_test("abdefghijkl", "bxcydzewgzhijk", "bdeghijk")
 
-    def test_lcs_4(self):
-        self.help_test("abdefghijkl", "zzzbcdeghijk", "bdeghijk")
+def test_lcs_1(lcs2_type):
+    help_test("abcdefghijkl", "bcdeghijk", "bcdeghijk")
+
+
+def test_lcs_2(lcs2_type):
+    help_test("abdefghijkl", "bcdeghijk", "bdeghijk")
+
+
+def test_lcs_3(lcs2_type):
+    help_test("abdefghijkl", "bxcydzewgzhijk", "bdeghijk")
+
+
+def test_lcs_4(lcs2_type):
+    help_test("abdefghijkl", "zzzbcdeghijk", "bdeghijk")
 
 
 # def test_time_lcs2(lcs2=lcs2):
@@ -71,7 +75,7 @@ def randstr(lmin, lmax, alphabet):
     return "".join(S)
 
 
-def test_random_string():
+def test_random_string(lcs2_type):
     """Generate random test sequences and compare lcs2, lcs3, lcs4"""
     import xmldiff.maplookup
     lcsm = xmldiff.maplookup.lcs2
@@ -81,9 +85,9 @@ def test_random_string():
         S1 = randstr(2, 5, _alpha)
         S2 = randstr(2, 5, _alpha)
         # print S1, S2
-        R1 = lcs2(S1, S2, _cmp)
+        R1 = xmldiff.difflib.lcs2(S1, S2, _cmp)
         # print "lcs2:", "".join([x[0] for x in R1])
-        R2 = lcs4(S1, S2, _cmp)
+        R2 = xmldiff.difflib.lcs4(S1, S2, _cmp)
         # print "lcs4", "".join([x[0] for x in R2])
         R3 = lcsm(S1, S2, _cmp)
         # print "lcsm", "".join([x[0] for x in R3])
