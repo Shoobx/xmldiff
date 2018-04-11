@@ -42,7 +42,7 @@ except:
 
 setup(
     name='xmldiff',
-    version='1.0.0a3.dev0',
+    version='1.0.0a5.dev0',
     author="Logilab and Shoobx Team",
     author_email="dev@shoobx.com",
     url='https://github.com/Shoobx/xmldiff',
