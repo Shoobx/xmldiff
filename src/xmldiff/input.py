@@ -53,3 +53,11 @@ def tree_from_stream(stream,
     parser.setContentHandler(handler)
     parser.parse(stream)
     return handler.get_tree()
+
+
+def tree_from_lxml(tree, norm_sp=True, include_comment=True,
+                   encoding='UTF-8'):
+    handler = SaxHandler(norm_sp, include_comment, encoding)
+    import lxml.sax
+    lxml.sax.saxify(tree, handler)
+    return handler.get_tree()
