@@ -1,7 +1,7 @@
 CHANGES
 =======
 
-1.0.0a5 (unreleased)
+1.0.0a5 (2018-04-11)
 --------------------
 
 - Brownbag release to make up for bad previous ones.
