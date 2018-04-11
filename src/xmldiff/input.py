@@ -25,12 +25,12 @@ from xmldiff.parser import SaxHandler
 
 def tree_from_stream(stream,
                      norm_sp=1, ext_ges=0, ext_pes=0, include_comment=1,
-                     encoding='UTF-8', html=0):
+                     html=0):
     """
     create internal tree from xml stream (open file or IOString)
     if norm_sp = 1, normalize space and new line
     """
-    handler = SaxHandler(norm_sp, include_comment, encoding)
+    handler = SaxHandler(norm_sp, include_comment)
     if html:
         parser = make_parser(["xml.sax.drivers2.drv_sgmlop_html"])
     else:
@@ -55,9 +55,8 @@ def tree_from_stream(stream,
     return handler.get_tree()
 
 
-def tree_from_lxml(tree, norm_sp=True, include_comment=True,
-                   encoding='UTF-8'):
-    handler = SaxHandler(norm_sp, include_comment, encoding)
+def tree_from_lxml(tree, norm_sp=True, include_comment=True):
+    handler = SaxHandler(norm_sp, include_comment)
     import lxml.sax
     lxml.sax.saxify(tree, handler)
     return handler.get_tree()

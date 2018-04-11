@@ -40,8 +40,7 @@ class SaxHandler(ContentHandler):
     Sax handler to transform xml doc into basic tree
     """
 
-    def __init__(self, normalize_space, include_comment, encoding='UTF-8'):
-        self.encoding = encoding
+    def __init__(self, normalize_space, include_comment):
         self._p_stack = [[NT_ROOT, '/', '', [], None, 0, 0]]
         self._norm_sp = normalize_space or None
         self._incl_comm = include_comment or None
@@ -51,7 +50,6 @@ class SaxHandler(ContentHandler):
 
     ## method of the ContentHandler interface #################################
     def startElement(self, name, attrs):
-        #name = name.encode(self.encoding)
         # process xpath
         self._xpath = "%s%s%s" % (self._xpath, '/',  name)
         _inc_xpath(self._h, self._xpath)
@@ -66,12 +64,11 @@ class SaxHandler(ContentHandler):
         # sort attributes to avoid further moves
         keys.sort()
         for key in keys:
-            #key = key.encode(self.encoding)
             self._n_elmt += 2
             attr_node = [NT_ATTN, '@%sName' % key, key, [], None, 1, 0]
             link_node(node, attr_node)
             link_node(attr_node, [NT_ATTV, '@%s' % key,
-                                  attrs.get(key, ''),#.encode(self.encoding),
+                                  attrs.get(key, ''),
                                   [], None, 0, 0])
 
         link_node(self._p_stack[-1], node)
@@ -94,7 +91,6 @@ class SaxHandler(ContentHandler):
         if self._norm_sp is not None:
             ch = ' '.join(ch.split())
         if len(ch) > 0 and ch != "\n" and ch != '  ':
-            #ch = ch.encode(self.encoding)
             parent = self._p_stack[-1]
             # if sibling text nodes
             if parent[N_CHILDS] and parent[N_CHILDS][-1][N_TYPE] == NT_TEXT:
@@ -116,7 +112,6 @@ class SaxHandler(ContentHandler):
             content = ' '.join(content.split())
         if len(content) > 0:
             self._n_elmt += 1
-            #content = content.encode(self.encoding)
             xpath = '%s/comment()' % self._xpath
             _inc_xpath(self._h, xpath)
             # nodes construction for comment

@@ -29,7 +29,7 @@ from xml.sax import SAXParseException
 
 
 def process_files(file1, file2, norm_sp, verbose,
-                  ext_ges, ext_pes, include_comment, encoding,
+                  ext_ges, ext_pes, include_comment,
                   html):
     """
     Computes the diff between two files.
@@ -39,8 +39,7 @@ def process_files(file1, file2, norm_sp, verbose,
         with open(fname, 'r') as fhandle:
             try:
                 tree = tree_from_stream(fhandle, norm_sp, ext_ges,
-                                        ext_pes, include_comment,
-                                        encoding, html)
+                                        ext_pes, include_comment, html)
             except SAXParseException as err:
                 print(err)
                 return -1
@@ -75,9 +74,6 @@ def parse_args(argv):
     parser.add_argument('-r', '--recursive', action='store_true', default=False,
                         help=('when comparing directories, recursively compare '
                               'any subdirectories found.'))
-    parser.add_argument('-e', '--encoding', default='UTF-8',
-                        help=('specify the encoding to use for output. '
-                              'Default is UTF-8'))
     parser.add_argument('-v', '--verbose', action='store_true', default=False)
     parser.add_argument('-n', '--not-normalize-spaces', action='store_true',
                         default=False,
@@ -133,8 +129,7 @@ def run(argv=None):
                 os.path.join(fpath1, filename),
                 os.path.join(fpath2, filename),
                 normalize_spaces, args.verbose,
-                args.ext_ges, args.ext_pes, include_comments,
-                args.encoding, args.html)
+                args.ext_ges, args.ext_pes, include_comments, args.html)
             if diffs:
                 exit_status += diffs
     # if args are files
@@ -142,8 +137,7 @@ def run(argv=None):
         exit_status = process_files(
             fpath1, fpath2,
             normalize_spaces, args.verbose,
-            args.ext_ges, args.ext_pes, include_comments,
-            args.encoding, args.html)
+            args.ext_ges, args.ext_pes, include_comments, args.html)
     else:
         exit_status = -1
         print('%s and %s are not comparable, or not directory '
