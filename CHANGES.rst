@@ -1,7 +1,7 @@
 CHANGES
 =======
 
-1.0.0a6 (unreleased)
+1.0.0a6 (2018-04-12)
 --------------------
 
 - Removed encoding, because python does unicode just fine
