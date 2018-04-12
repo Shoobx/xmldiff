@@ -61,7 +61,7 @@ def make_tests():
     for filename in tests_files:
         base = basename(filename)
         name = base[:6]
-        filetype = base[7:]
+        filetype = base[-5:]
         if filetype == '1.xml':
             tests.setdefault(name, {})['old'] = filename
         elif filetype == '2.xml':

@@ -6,6 +6,8 @@ CHANGES
 
 - Removed encoding, because python does unicode just fine
 
+- Switched on namespace handling for XML input
+
 
 1.0.0a5 (2018-04-11)
 --------------------

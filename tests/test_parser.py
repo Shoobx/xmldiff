@@ -17,11 +17,12 @@
 """
 
 import os
+import lxml.etree
 import mock
 import six
-from xmldiff.parser import SaxHandler
+
 from xmldiff.input import tree_from_stream
-from xml.sax import make_parser
+from xmldiff.input import tree_from_lxml
 
 from xmldiff.objects import NT_ROOT, NT_NODE, NT_ATTN, NT_ATTV, \
     NT_TEXT, NT_COMM, N_TYPE, N_NAME, N_VALUE, N_CHILDS, N_PARENT, N_ISSUE, \
@@ -29,6 +30,14 @@ from xmldiff.objects import NT_ROOT, NT_NODE, NT_ATTN, NT_ATTV, \
 
 
 HERE = os.path.dirname(__file__)
+
+
+def _nuke_parent(tree):
+    # having the parent node is cool, but causes all sort of problems
+    # with asserts and comparison... get rid of it
+    tree[N_PARENT] = None
+    for child in tree[N_CHILDS]:
+        _nuke_parent(child)
 
 
 def test_tree_from_stream_simple():
@@ -127,3 +136,129 @@ def test_tree_from_stream_iso():
         text_node = tree[N_CHILDS][0][N_CHILDS][0][N_CHILDS][1][N_CHILDS][0]
         assert type_node[N_VALUE] == u'\xf6\xfc'
         assert text_node[N_VALUE] == u'\xe9\xe1'
+
+
+def test_tree_from_stream_with_namespace():
+    fname = os.path.join(HERE, 'data', 'parse', 'simple_ns.xml')
+    with open(fname, 'r') as fhandle:
+        tree = tree_from_stream(fhandle)
+
+    _nuke_parent(tree)
+
+    expected = [
+        6,
+        '/',
+        '',
+        [[1,
+          u'{urn:corp:sec}section',
+          u'{urn:corp:sec}section',
+          [[1,
+            u'{urn:corp:sec}sectionInfo',
+            u'{urn:corp:sec}sectionInfo',
+            [[1,
+              u'{urn:corp:sec}secID',
+              u'{urn:corp:sec}secID',
+              [[4, 'text()', u'S001', [], None, 0, 1]],
+              None,
+              1,
+              1],
+             [1,
+              u'{urn:corp:sec}name',
+              u'{urn:corp:sec}name',
+              [[4, 'text()', u'Sales', [], None, 0, 1]],
+              None,
+              1,
+              1]],
+            None,
+            4,
+            1],
+           [1,
+            u'{urn:corp:sec}sectionInfo',
+            u'{urn:corp:sec}sectionInfo',
+            [[2,
+              u'@nameName',
+              u'name',
+              [[3, u'@name', u'Development', [], None, 0, 0]],
+              None,
+              1,
+              0],
+             [2,
+              u'@secIDName',
+              u'secID',
+              [[3, u'@secID', u'S002', [], None, 0, 0]],
+              None,
+              1,
+              0]],
+            None,
+            4,
+            2],
+           [1,
+            u'{urn:corp:sec}sectionInfo',
+            u'{urn:corp:sec}sectionInfo',
+            [[2,
+              u'@{urn:corp:sec}nameName',
+              u'{urn:corp:sec}name',
+              [[3, u'@{urn:corp:sec}name', u'Gardening', [], None, 0, 0]],
+              None,
+              1,
+              0],
+             [2,
+              u'@{urn:corp:sec}secIDName',
+              u'{urn:corp:sec}secID',
+              [[3, u'@{urn:corp:sec}secID', u'S003', [], None, 0, 0]],
+              None,
+              1,
+              0]],
+            None,
+            4,
+            3]],
+          None,
+          15,
+          1]],
+        None,
+        16,
+        0]
+
+    assert tree == expected
+
+
+def test_tree_from_lxml():
+    fname = os.path.join(HERE, 'data', 'parse', '1.xml')
+    xml = lxml.etree.parse(fname)
+    tree = tree_from_lxml(xml)
+    assert len(tree[N_CHILDS]) == 1
+
+    fname = os.path.join(HERE, 'data', 'parse', '1.xml')
+    with open(fname, 'r') as fhandle:
+        tree_stream = tree_from_stream(fhandle)
+
+    _nuke_parent(tree)
+    _nuke_parent(tree_stream)
+
+    assert tree == tree_stream
+
+
+def test_tree_from_lxml_with_namespace():
+    fname = os.path.join(HERE, 'data', 'parse', 'simple_ns.xml')
+    xml = lxml.etree.parse(fname)
+    tree = tree_from_lxml(xml)
+
+    with open(fname, 'r') as fhandle:
+        tree_stream = tree_from_stream(fhandle)
+
+    _nuke_parent(tree)
+    _nuke_parent(tree_stream)
+
+    assert tree == tree_stream
+
+    fname = os.path.join(HERE, 'data', 'parse', 'tal_ns.xml')
+    xml = lxml.etree.parse(fname)
+    tree = tree_from_lxml(xml)
+
+    with open(fname, 'r') as fhandle:
+        tree_stream = tree_from_stream(fhandle)
+
+    _nuke_parent(tree)
+    _nuke_parent(tree_stream)
+
+    assert tree == tree_stream

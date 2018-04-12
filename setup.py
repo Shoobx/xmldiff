@@ -29,7 +29,10 @@ def read(*rnames):
 
 TESTS_REQUIRE = [
     'coverage',
+    'lxml',
     'mock',
+    'pytest',
+    'pytest-cov',
    ]
 
 try:
@@ -51,7 +54,7 @@ setup(
                  'It returns a set of primitives to apply on source tree '
                  'to obtain the destination tree.'),
     long_description=(
-        read( 'README.rst') +
+        read('README.rst') +
         '\n\n' +
         read('CHANGES.rst')
     ),
@@ -77,6 +80,7 @@ setup(
     ),
     install_requires=[
         'future',
+        'lxml',
         'six',
         'setuptools',
     ],
