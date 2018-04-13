@@ -128,7 +128,6 @@ class FmesCorrector:
     def _match(self, lab_l1, lab_l2, equal):
         """do the actual matching"""
         d1, d2 = self._d1, self._d2
-        mapping = self._mapping
         # for each leaf label in both tree1 and tree2
         # sort list to avoid differences between python version
         labls = sorted(intersection(lab_l1.keys(), lab_l2.keys()))
@@ -140,7 +139,7 @@ class FmesCorrector:
             # for each pair of nodes (x,y) in the lcs
             for x, y in common:
                 # add (x,y) to the mapping
-                mapping.append((x, y))
+                self._mapping.append((x, y))
                 # mark node from tree 1 as mapped
                 x[N_MAPPED] = TRUE
                 # fill the mapping cache
@@ -153,15 +152,11 @@ class FmesCorrector:
         """ first step of the edit script algorithm
         combines the update, insert, align and move phases
         """
-        mapping = self._mapping
-        fp = self._find_pos
-        al = self._align_children
-        _partner = partner
         # x the current node in the breadth-first order traversal
         for x in make_bfo_list(tree2):
             y = x[N_PARENT]
-            z = _partner(1, y)
-            w = _partner(1, x)
+            z = partner(1, y)
+            w = partner(1, x)
             # insert
             if not w:
                 todo = 1
@@ -175,7 +170,7 @@ class FmesCorrector:
                             if not w[N_MAPPED]:
                                 todo = None
                                 w[N_MAPPED] = TRUE
-                                mapping.append((w, x))
+                                self._mapping.append((w, x))
                                 # print 'delete 1'
                                 # if not w[N_CHILDS][0]:
                                 delete_node(w[N_CHILDS][0])
@@ -183,12 +178,12 @@ class FmesCorrector:
 
                 if todo is not None:
                     x[N_INORDER] = TRUE
-                    k = fp(x)
+                    k = self._find_pos(x)
                     # w = copy(x)
                     w = x[:]
                     w[N_CHILDS] = []
                     w.append(TRUE)  # <-> w[N_MAPPED] = TRUE
-                    mapping.append((w, x))
+                    self._mapping.append((w, x))
                     # avoid coalescing two text nodes
                     if w[N_TYPE] == NT_TEXT:
                         k = self._before_insert_text(z, w, k)
@@ -244,11 +239,11 @@ class FmesCorrector:
                 # move x if parents not mapped together
                 if not has_couple(v, y):
                     x[N_INORDER] = TRUE
-                    k = fp(x)
+                    k = self._find_pos(x)
                     self._make_move(w, z, k)
             # align children
-            al(w, x)
-#            print 'after', node_repr(tree1)
+            self._align_children(w, x)
+            # print 'after', node_repr(tree1)
 
     def _fmes_step2(self, tree1, tree2):
         """ the delete_node phase of the edit script algorithm
@@ -298,14 +293,13 @@ class FmesCorrector:
     def _align_children(self, w, x):
         """ align children to correct misaligned nodes
         """
-        _partner = partner
         # mark all children of w an d as "out of order"
         self._childs_out_of_order(w)
         self._childs_out_of_order(x)
         # s1: children of w whose partner is children of x
-        s1 = [n for n in w[N_CHILDS] if in_ref(x[N_CHILDS], _partner(0, n))]
+        s1 = [n for n in w[N_CHILDS] if in_ref(x[N_CHILDS], partner(0, n))]
         # s2: children of x whose partners are children of w
-        s2 = [n for n in x[N_CHILDS] if in_ref(w[N_CHILDS], _partner(1, n))]
+        s2 = [n for n in x[N_CHILDS] if in_ref(w[N_CHILDS], partner(1, n))]
         # compute the longest common subsequence
         s = lcs2(s1, s2, has_couple)
         # mark each (a,b) from lcs in order
@@ -314,7 +308,7 @@ class FmesCorrector:
             s1.pop(index_ref(s1, a))
         # s: a E T1, b E T2, (a,b) E M, (a;b) not E s
         for a in s1:
-            b = _partner(0, a)
+            b = partner(0, a)
             # mark a and b in order
             a[N_INORDER] = b[N_INORDER] = TRUE
             k = self._find_pos(b)

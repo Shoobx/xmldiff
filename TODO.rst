@@ -13,8 +13,6 @@ Version 1.0 To Dos
     (See Zope packages with PyPy support for help.)
     need to reimplement a bunch of C only code in python
     also, the C code gets variables "passed" with `fmes_init`
-  * Remove old optimizations due to slow attribute lookup
-    e.g. mapping = self._mapping
   * Proper LGPL file headers with copyright notice.
 
 - Systematic test setup.
