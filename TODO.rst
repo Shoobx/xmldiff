@@ -13,7 +13,6 @@ Version 1.0 To Dos
     (See Zope packages with PyPy support for help.)
     need to reimplement a bunch of C only code in python
     also, the C code gets variables "passed" with `fmes_init`
-  * Proper LGPL file headers with copyright notice.
 
 - Systematic test setup.
   * Use Shoobx approach for XML-processing-based testing.
