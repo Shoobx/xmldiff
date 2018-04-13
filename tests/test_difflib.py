@@ -13,7 +13,7 @@ def lcsl(X, Y, equal):
 
 def help_test(seq1, seq2, res):
     seq = xmldiff.difflib.lcs2(seq1, seq2, _cmp)
-    assert seq == zip(res, res)
+    assert seq == list(zip(res, res))
 
 
 def test_lcs_1(lcs2_type):

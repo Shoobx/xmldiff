@@ -5,11 +5,9 @@ Version 1.0 To Dos
 ------------------
 
 - Code cleanup:
-  * Remove trailing whitespace.
   * PEP8, especially docstrings
 
 - Modernize package:
-  * Python 2.7 and 3.6 support.
   * lxml-based SAX parser.
   * Allow code to be run without C extensions
     (See Zope packages with PyPy support for help.)

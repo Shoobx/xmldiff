@@ -108,7 +108,7 @@ def test_tree_from_stream():
 
 def test_tree_from_stream_utf8():
     fname = os.path.join(HERE, 'data', 'parse', 'utf8.xml')
-    with open(fname, 'r') as fhandle:
+    with open(fname, 'rb') as fhandle:
         tree = tree_from_stream(fhandle)
         type_node = tree[N_CHILDS][0][N_CHILDS][0][N_CHILDS][0][N_CHILDS][0]
         text_node = tree[N_CHILDS][0][N_CHILDS][0][N_CHILDS][1][N_CHILDS][0]
@@ -118,7 +118,7 @@ def test_tree_from_stream_utf8():
 
 def test_tree_from_stream_utf16():
     fname = os.path.join(HERE, 'data', 'parse', 'utf16.xml')
-    with open(fname, 'r') as fhandle:
+    with open(fname, 'rb') as fhandle:
         tree = tree_from_stream(fhandle)
         type_node = tree[N_CHILDS][0][N_CHILDS][0][N_CHILDS][0][N_CHILDS][0]
         text_node = tree[N_CHILDS][0][N_CHILDS][0][N_CHILDS][1][N_CHILDS][0]
@@ -128,7 +128,7 @@ def test_tree_from_stream_utf16():
 
 def test_tree_from_stream_iso():
     fname = os.path.join(HERE, 'data', 'parse', 'iso.xml')
-    with open(fname, 'r') as fhandle:
+    with open(fname, 'rb') as fhandle:
         tree = tree_from_stream(fhandle)
         type_node = tree[N_CHILDS][0][N_CHILDS][0][N_CHILDS][0][N_CHILDS][0]
         text_node = tree[N_CHILDS][0][N_CHILDS][0][N_CHILDS][1][N_CHILDS][0]
