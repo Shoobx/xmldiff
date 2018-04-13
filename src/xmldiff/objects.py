@@ -21,6 +21,7 @@ for these objects use
              node is a recursive list
 """
 
+import six
 import sys
 
 ################ ACTIONS ######################################################
@@ -219,7 +220,7 @@ def to_dom(node, doc, uri=None, prefix=None):
         for n in node[N_CHILDS]:
             if n[N_TYPE] == NT_ATTN:
                 dom_n = doc.createElementNS(uri, '%sattribute' % prefix)
-                v = unicode(n[N_CHILDS][0][N_VALUE], 'UTF-8')
+                v = six.text_type(n[N_CHILDS][0][N_VALUE], 'UTF-8')
                 dom_n.setAttributeNS(None, 'name', n[N_VALUE])
                 dom_n.appendChild(doc.createTextNode(v))
             else:
@@ -227,15 +228,15 @@ def to_dom(node, doc, uri=None, prefix=None):
     elif node[N_TYPE] == NT_ATTN:
         dom_n = doc.createElementNS(uri, '%sattribute' % prefix)
         dom_n.setAttributeNS(None, 'name', node[N_VALUE])
-        v = unicode(node[N_CHILDS][0][N_VALUE], 'UTF-8')
+        v = six.text_type(node[N_CHILDS][0][N_VALUE], 'UTF-8')
         dom_n.appendChild(doc.createTextNode(v))
     elif node[N_TYPE] == NT_COMM:
         dom_n = doc.createElementNS(uri, '%scomment' % prefix)
-        v = unicode(node[N_VALUE], 'UTF-8')
+        v = six.text_type(node[N_VALUE], 'UTF-8')
         dom_n.appendChild(doc.createTextNode(v))
     elif node[N_TYPE] == NT_TEXT:
         dom_n = doc.createElementNS(uri, '%stext' % prefix)
-        v = unicode(node[N_VALUE], 'UTF-8')
+        v = six.text_type(node[N_VALUE], 'UTF-8')
         dom_n.appendChild(doc.createTextNode(v))
     return dom_n
 

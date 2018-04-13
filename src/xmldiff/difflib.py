@@ -8,6 +8,8 @@ As opposed to the algorithm in difflib.py, this one doesn't require hashable
 elements
 """
 
+from six.moves import range
+
 
 def lcs2(X, Y, equal):
     """
@@ -21,10 +23,10 @@ def lcs2(X, Y, equal):
     if not X or not Y:
         return []
     max = N + M
-    v = [0 for i in xrange(2 * max + 1)]
-    common = [[] for i in xrange(2 * max + 1)]
-    for D in xrange(max + 1):
-        for k in xrange(-D, D + 1, 2):
+    v = [0 for i in range(2 * max + 1)]
+    common = [[] for i in range(2 * max + 1)]
+    for D in range(max + 1):
+        for k in range(-D, D + 1, 2):
             if k == -D or k != D and v[k - 1] < v[k + 1]:
                 x = v[k + 1]
                 common[k] = common[k + 1][:]
@@ -55,10 +57,10 @@ def lcs4(X, Y, equal):
     if not X or not Y:
         return []
     max = N + M
-    v = [0 for i in xrange(2 * max + 1)]
+    v = [0 for i in range(2 * max + 1)]
     vl = [v]
-    for D in xrange(max + 1):
-        for k in xrange(-D, D + 1, 2):
+    for D in range(max + 1):
+        for k in range(-D, D + 1, 2):
             if k == -D or k != D and v[k - 1] < v[k + 1]:
                 x = v[k + 1]
             else:
@@ -110,9 +112,9 @@ def lcs3(X, Y, equal):
     # D(i,j) is the length of longest subsequence for X[:i], Y[:j]
     pre = [0] * M
     row = [0] * M
-    B = [[0] * M for i in xrange(N)]
-    for i in xrange(1, N):
-        for j in xrange(1, M):
+    B = [[0] * M for i in range(N)]
+    for i in range(1, N):
+        for j in range(1, M):
             if equal(X[i - 1], Y[j - 1]):
                 row[j] = pre[j - 1] + 1
                 B[i][j] = 2  # move back (-1,-1)

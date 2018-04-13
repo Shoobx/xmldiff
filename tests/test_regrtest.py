@@ -75,7 +75,7 @@ def make_tests():
         t_dict['new']
         t_dict['result']
 
-    return sorted(tests.values())
+    return sorted(tests.values(), key=lambda td: td['old'])
 
 
 @pytest.fixture(params=make_tests())
