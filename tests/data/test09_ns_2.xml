@@ -3,4 +3,10 @@
 	<Test tns:type="Change mixed element with text">
 		<Nine>This is <b tns:name="NineName">(changed)</b> the Ninth sentence.</Nine>
 	</Test>
+	<Test tns:type="Change mixed element with text">
+		<Nine><b tns:name="NineName">(changed)</b> the Ninth sentence.</Nine>
+	</Test>
+	<Test tns:type="Change mixed element with text">
+		<Nine>This is <b tns:name="NineName">(changed)</b></Nine>
+	</Test>
 </Tests>

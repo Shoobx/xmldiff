@@ -20,21 +20,13 @@ this module provides classes to format the native tree2tree output
 import sys
 try:
     from xml.dom import EMPTY_NAMESPACE as NO_NS
-except ImportError:
+except ImportError:  # pragma: no cover
     NO_NS = None
 from xmldiff.objects import A_N1, A_N2, A_DESC, xml_print, f_xpath
 
 
-def get_attrs_string(attrs):
-    """ extract and return a string corresponding to an attributes list """
-    attr_s = []
-    for attr_n, attr_v in attrs:
-        attr_s.append('%s="%s" ' % (attr_n, attr_v))
-    return ' '.join(attr_s)
-
-
 ## Formatter interface ########################################################
-class AbstractFormatter:
+class AbstractFormatter(object):
     """
     Formatter interface
     """
@@ -54,7 +46,7 @@ class AbstractFormatter:
         """ method called by end() to format each action in the edit script
         at least this method should be overridden
         """
-        raise NotImplementedError()
+        raise NotImplementedError()  # pragma: no cover
 
     def end(self):
         """ method called at the end of the tree 2 tree correction """
@@ -75,7 +67,7 @@ class InternalPrinter(AbstractFormatter):
                 # swap or move node
                 action[A_N1] = f_xpath(action[A_N1])
                 action[A_N2] = f_xpath(action[A_N2])
-        AbstractFormatter.add_action(self, action)
+        super(InternalPrinter, self).add_action(action)
 
     def format_action(self, action):
         """

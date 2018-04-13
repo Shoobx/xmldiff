@@ -32,6 +32,20 @@ def test_lcs_4(lcs2_type):
     help_test("abdefghijkl", "zzzbcdeghijk", "bdeghijk")
 
 
+def test_lcs_5(lcs2_type):
+    help_test("", "", [])
+
+
+def test_lcs_6():
+    seq = xmldiff.difflib.lcs4("", "", _cmp)
+    assert seq == []
+
+
+def test_quick_ratio():
+    seq = xmldiff.difflib.quick_ratio("", "")
+    assert seq == 1
+
+
 # def test_time_lcs2(lcs2=lcs2):
 #     import time
 #     t = time.clock()

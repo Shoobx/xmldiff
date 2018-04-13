@@ -4,5 +4,21 @@
 [append-first, /Tests[1]/Test[1]/Nine[1]/b[1],
 (changed)
 ]
+[append-first, /Tests[1]/Test[2]/Nine[1]/b[1],
+<LogilabXMLDIFFFAKETag/>
+]
+[append-first, /Tests[1]/Test[2]/Nine[1]/b[1],
+(changed)
+]
+[append-first, /Tests[1]/Test[3]/Nine[1]/b[1],
+<LogilabXMLDIFFFAKETag/>
+]
+[append-first, /Tests[1]/Test[3]/Nine[1]/b[1],
+(changed)
+]
 [remove, /Tests[1]/Test[1]/Nine[1]/b[1]/text()[2]]
 [remove, /Tests[1]/Test[1]/Nine[1]/b[1]/LogilabXMLDIFFFAKETag[1]]
+[remove, /Tests[1]/Test[2]/Nine[1]/b[1]/text()[2]]
+[remove, /Tests[1]/Test[2]/Nine[1]/b[1]/LogilabXMLDIFFFAKETag[1]]
+[remove, /Tests[1]/Test[3]/Nine[1]/b[1]/text()[2]]
+[remove, /Tests[1]/Test[3]/Nine[1]/b[1]/LogilabXMLDIFFFAKETag[1]]

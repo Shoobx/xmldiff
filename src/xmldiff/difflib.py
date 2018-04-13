@@ -104,45 +104,6 @@ def lcs4(X, Y, equal):
         vl.append(v[:])
 
 
-def lcs3(X, Y, equal):
-    N = len(X) + 1
-    M = len(Y) + 1
-    if not X or not Y:
-        return []
-    # D(i,j) is the length of longest subsequence for X[:i], Y[:j]
-    pre = [0] * M
-    row = [0] * M
-    B = [[0] * M for i in range(N)]
-    for i in range(1, N):
-        for j in range(1, M):
-            if equal(X[i - 1], Y[j - 1]):
-                row[j] = pre[j - 1] + 1
-                B[i][j] = 2  # move back (-1,-1)
-            elif pre[j] >= row[j - 1]:
-                row[j] = pre[j]
-                B[i][j] = 1  # move back (0,-1)
-            else:
-                row[j] = row[j - 1]
-                B[i][j] = 0  # move back (-1,0)
-        pre, row = row, pre
-    i = N - 1
-    j = M - 1
-    L = []
-    while i >= 0 and j >= 0:
-        d = B[i][j]
-        # print i,j,d
-        if d == 0:
-            j -= 1
-        elif d == 1:
-            i -= 1
-        else:
-            i -= 1
-            j -= 1
-            L.append((X[i], Y[j]))
-    L.reverse()
-    return L
-
-
 # save the reference for tests
 lcs2_python = lcs2
 have_c_extension = False
@@ -151,7 +112,7 @@ try:
     import xmldiff.maplookup
     lcs2 = xmldiff.maplookup.lcs2
     have_c_extension = True
-except ImportError:
+except ImportError:  # pragma: no cover
     pass
 
 

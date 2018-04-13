@@ -40,11 +40,11 @@ def tree_from_stream(stream,
     # do not include any external entities
     try:
         parser.setFeature(feature_external_ges, ext_ges)
-    except SAXNotRecognizedException:
+    except SAXNotRecognizedException:  # pragma: no cover
         print('Unable to set feature external ges')
     try:
         parser.setFeature(feature_external_pes, ext_pes)
-    except SAXNotRecognizedException:
+    except SAXNotRecognizedException:  # pragma: no cover
         print('Unable to set feature external pes')
 
     # add lexical handler for comments,  entities, dtd and cdata

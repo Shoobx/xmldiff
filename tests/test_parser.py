@@ -260,3 +260,11 @@ def test_tree_from_lxml_with_namespace():
     _nuke_parent(tree_stream)
 
     assert tree == tree_stream
+
+
+def test_parse_html():
+    fname = os.path.join(HERE, 'data', 'parse', 'html.html')
+    with open(fname, 'r') as fhandle:
+        tree = tree_from_stream(fhandle, html=True)
+        # lets not dump the whole tree
+        assert len(tree[N_CHILDS]) == 1

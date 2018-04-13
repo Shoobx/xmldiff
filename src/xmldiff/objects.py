@@ -21,7 +21,6 @@ for these objects use
              node is a recursive list
 """
 
-import six
 import sys
 
 ################ ACTIONS ######################################################
@@ -29,22 +28,6 @@ import sys
 A_DESC = 0  # string describes the action
 A_N1 = 1  # node on which the action applies
 A_N2 = 2  # optional second action argument, maybe node or value
-
-
-def actp(act):
-    """ print an internal action (debugging purpose) """
-    if len(act) > 2:
-        if act[A_DESC][0] == 'm':
-            print >> sys.stderr, act[A_DESC], caract(act[A_N1])
-            print >> sys.stderr, '    ', caract(act[A_N2])
-            print >> sys.stderr, '    ', caract(act[-2]), act[-3], \
-                get_pos(act[-1])
-        else:
-            print >> sys.stderr, act[A_DESC], caract(act[A_N1]),\
-                caract(act[A_N2]),\
-                act[A_N2][N_VALUE]
-    else:
-        print >> sys.stderr, act[A_DESC], caract(act[A_N1])
 
 
 ################## NODES CONSTANTES ###########################################
@@ -209,38 +192,6 @@ def _xml_print_internal_format(node, indent, stream):
         stream.write('unknown node type', str(node[N_TYPE]))
 
 
-def to_dom(node, doc, uri=None, prefix=None):
-    """
-    recursive function to convert internal tree in an xml dom tree without
-    the added nodes
-    """
-    if node[N_TYPE] == NT_NODE:
-        dom_n = doc.createElementNS(uri, '%selement' % prefix)
-        dom_n.setAttributeNS(None, 'name', node[N_VALUE])
-        for n in node[N_CHILDS]:
-            if n[N_TYPE] == NT_ATTN:
-                dom_n = doc.createElementNS(uri, '%sattribute' % prefix)
-                v = six.text_type(n[N_CHILDS][0][N_VALUE], 'UTF-8')
-                dom_n.setAttributeNS(None, 'name', n[N_VALUE])
-                dom_n.appendChild(doc.createTextNode(v))
-            else:
-                dom_n.appendChild(to_dom(n, doc, uri))
-    elif node[N_TYPE] == NT_ATTN:
-        dom_n = doc.createElementNS(uri, '%sattribute' % prefix)
-        dom_n.setAttributeNS(None, 'name', node[N_VALUE])
-        v = six.text_type(node[N_CHILDS][0][N_VALUE], 'UTF-8')
-        dom_n.appendChild(doc.createTextNode(v))
-    elif node[N_TYPE] == NT_COMM:
-        dom_n = doc.createElementNS(uri, '%scomment' % prefix)
-        v = six.text_type(node[N_VALUE], 'UTF-8')
-        dom_n.appendChild(doc.createTextNode(v))
-    elif node[N_TYPE] == NT_TEXT:
-        dom_n = doc.createElementNS(uri, '%stext' % prefix)
-        v = six.text_type(node[N_VALUE], 'UTF-8')
-        dom_n.appendChild(doc.createTextNode(v))
-    return dom_n
-
-
 ################## OPERATIONS GIVING INFOS ON NODES ###########################
 def get_pos(node):
     """ return the index of a node in its parent's children list
@@ -257,14 +208,6 @@ def get_pos(node):
         return -1
     except ValueError:
         return -1
-
-
-def nb_childs(node):
-    """ return the number of childs (without attribute childs) of the given
-        node
-    """
-    return len(filter(lambda n: n[N_CHILDS][0][N_TYPE] != NT_ATTN,
-                      node[N_CHILDS]))
 
 
 def nb_attrs(node):
@@ -288,14 +231,6 @@ def next_sibling(node):
     myindex = get_pos(node)
     if len(node[N_PARENT][N_CHILDS]) > myindex + 1:
         return node[N_PARENT][N_CHILDS][myindex + 1]
-    return None
-
-
-def previous_sibling(node):
-    """ return the node's left sibling """
-    myindex = get_pos(node)
-    if node[N_PARENT] and myindex > 0:
-        return node[N_PARENT][N_CHILDS][myindex - 1]
     return None
 
 

@@ -46,8 +46,7 @@ def divide_files(dir):
     import os
     dirs = []
     regs = []
-    # os.path.normpath(dir)
-    for filename in os.listdir(dir):
+    for filename in sorted(os.listdir(dir)):
         if os.path.isfile(os.path.join(dir, filename)):
             regs.append(filename)
         elif os.path.isdir(os.path.join(dir, filename)):
@@ -70,16 +69,6 @@ def extract(list1, list2):
     return common, deleted, added
 
 
-def union(list1, list2):
-    """ return list1 union list2 """
-    tmp = {}
-    for i in list1:
-        tmp[i] = 1
-    for i in list2:
-        tmp[i] = 1
-    return tmp.keys()
-
-
 def intersection(list1, list2):
     """ return common items in list1 and list2 """
     tmp = {}
@@ -90,20 +79,6 @@ def intersection(list1, list2):
         if i in tmp:
             result.append(i)
     return result
-
-
-def init_matrix(nbrows, nbcols, default_value):
-    """
-    return a 2d matrix list2d[nbrows][nbcols] initialised with
-    default_value (carefull for side effect with references...)
-    """
-    list2d = []
-    for i in range(nbrows):
-        tmpl = []
-        for j in range(nbcols):
-            tmpl.append(default_value)
-        list2d.append(tmpl)
-    return list2d
 
 
 def in_ref(list, item):
@@ -134,12 +109,6 @@ def list_print(list, s1='', s2=''):
             print("%s %s %s" % (s1, item, s2))
 
 
-def append_list(list, a_list):
-    """ append a_list items to list """
-    for item in a_list:
-        list.append(item)
-
-
 def normalize_dir(directory):
     """remove trailing path separator from the directory name
     """
@@ -162,27 +131,24 @@ def _process_dirs(dir1, dir2, recursive):
     common[0], deleted[0], added[0] = extract(f_list1, f_list2)
     common[1], deleted[1], added[1] = extract(d_list1, d_list2)
     # add prefix
-    deleted[0] = map(_add_prefix(dir1), deleted[0])
-    deleted[1] = map(_add_prefix(dir1), deleted[1])
-    added[0] = map(_add_prefix(dir2), added[0])
-    added[1] = map(_add_prefix(dir2), added[1])
-    common[0] = map(_add_prefix(dir1), common[0])
+    deleted[0] = list(map(_add_prefix(dir1), deleted[0]))
+    deleted[1] = list(map(_add_prefix(dir1), deleted[1]))
+    added[0] = list(map(_add_prefix(dir2), added[0]))
+    added[1] = list(map(_add_prefix(dir2), added[1]))
+    common[0] = list(map(_add_prefix(dir1), common[0]))
     if recursive:
-        import os
         # for all common subdirs
         for dir in common[1]:
-            if dir == 'CVS':
-                continue
             # recursion
             comm, dele, adde = _process_dirs(os.path.join(dir1, dir),
                                              os.path.join(dir2, dir),
                                              recursive)
             # add subdir items
-            append_list(deleted[0], dele[0])
-            append_list(deleted[1], dele[1])
-            append_list(added[0], adde[0])
-            append_list(added[1], adde[1])
-            append_list(common[0], comm[0])
+            deleted[0].extend(dele[0])
+            deleted[1].extend(dele[1])
+            added[0].extend(adde[0])
+            added[1].extend(adde[1])
+            common[0].extend(comm[0])
     return common, deleted, added
 
 
