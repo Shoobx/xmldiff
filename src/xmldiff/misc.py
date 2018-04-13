@@ -21,9 +21,6 @@ miscellaneous functions
 
 import os
 
-TRUE = 1
-FALSE = 0
-
 
 def process_dirs(dir1, dir2, recursive):
     """
@@ -87,8 +84,8 @@ def in_ref(list, item):
     """ return true if list contains a reference on item """
     for it in list:
         if it is item:
-            return TRUE
-    return FALSE
+            return True
+    return False
 
 
 def index_ref(list, item):

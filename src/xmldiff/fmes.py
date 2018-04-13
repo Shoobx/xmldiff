@@ -30,7 +30,6 @@ from xmldiff.objects import (
     rename_node, get_pos, f_xpath, nb_attrs)
 from xmldiff.difflib import lcs2, quick_ratio
 from xmldiff.misc import intersection, in_ref, index_ref
-from xmldiff.misc import TRUE, FALSE
 
 # c extensions
 from xmldiff.maplookup import (
@@ -45,9 +44,9 @@ def _init_tree(tree, map_attr=None):
     """ recursively append N_INORDER attribute to tree
     optionnaly add the N_MAPPED attribute (for node from tree 1)
     """
-    tree.append(FALSE)
+    tree.append(False)
     if map_attr is not None:
-        tree.append(FALSE)
+        tree.append(False)
     for child in tree[N_CHILDS]:
         _init_tree(child, map_attr)
 
@@ -123,7 +122,7 @@ class FmesCorrector:
         # append roots to mapping
         self._mapping.append((tree1, tree2))
         # mark node as mapped
-        tree1[N_MAPPED] = TRUE
+        tree1[N_MAPPED] = True
         self._match(labl1, labl2, fmes_node_equal)  # self._n_equal
 
     def _match(self, lab_l1, lab_l2, equal):
@@ -142,7 +141,7 @@ class FmesCorrector:
                 # add (x,y) to the mapping
                 self._mapping.append((x, y))
                 # mark node from tree 1 as mapped
-                x[N_MAPPED] = TRUE
+                x[N_MAPPED] = True
                 # fill the mapping cache
                 for n in get_ancestors(x, []):
                     d1[(id(n), id(x))] = 1
@@ -170,7 +169,7 @@ class FmesCorrector:
                             # FIXME: what if w or w[N_CHILDS][0] yet mapped ??
                             if not w[N_MAPPED]:
                                 todo = None
-                                w[N_MAPPED] = TRUE
+                                w[N_MAPPED] = True
                                 self._mapping.append((w, x))
                                 # print 'delete 1'
                                 # if not w[N_CHILDS][0]:
@@ -178,12 +177,12 @@ class FmesCorrector:
                             break
 
                 if todo is not None:
-                    x[N_INORDER] = TRUE
+                    x[N_INORDER] = True
                     k = self._find_pos(x)
                     # w = copy(x)
                     w = x[:]
                     w[N_CHILDS] = []
-                    w.append(TRUE)  # <-> w[N_MAPPED] = TRUE
+                    w.append(True)  # <-> w[N_MAPPED] = True
                     self._mapping.append((w, x))
                     # avoid coalescing two text nodes
                     if w[N_TYPE] == NT_TEXT:
@@ -239,7 +238,7 @@ class FmesCorrector:
                         rename_node(w, x[N_NAME])
                 # move x if parents not mapped together
                 if not has_couple(v, y):
-                    x[N_INORDER] = TRUE
+                    x[N_INORDER] = True
                     k = self._find_pos(x)
                     self._make_move(w, z, k)
             # align children
@@ -260,12 +259,12 @@ class FmesCorrector:
         i = 0
         node = tree1
         while node is not None:
-            if node[N_MAPPED] != TRUE:
+            if not node[N_MAPPED]:
                 if node[N_PARENT] and len(node[N_PARENT][N_CHILDS]) > i + 1:
                     next_node = node[N_PARENT][N_CHILDS][i + 1]
                     # if next node is a text node to remove, switch actions
                     if next_node[N_TYPE] == NT_TEXT and \
-                       next_node[N_MAPPED] != TRUE:
+                       not next_node[N_MAPPED]:
                         self.add_action(['remove', f_xpath(next_node)])
                         delete_node(next_node)
                         try:
@@ -305,13 +304,13 @@ class FmesCorrector:
         s = lcs2(s1, s2, has_couple)
         # mark each (a,b) from lcs in order
         for a, b in s:
-            a[N_INORDER] = b[N_INORDER] = TRUE
+            a[N_INORDER] = b[N_INORDER] = True
             s1.pop(index_ref(s1, a))
         # s: a E T1, b E T2, (a,b) E M, (a;b) not E s
         for a in s1:
             b = partner(0, a)
             # mark a and b in order
-            a[N_INORDER] = b[N_INORDER] = TRUE
+            a[N_INORDER] = b[N_INORDER] = True
             k = self._find_pos(b)
             self._make_move(a, w, k)
 
@@ -385,7 +384,7 @@ class FmesCorrector:
         return attr_name
 
     FAKE_TAG = [NT_NODE, 'LogilabXMLDIFFFAKETag', 'LogilabXMLDIFFFAKETag',
-                [], None, 0, 0, TRUE, FALSE]
+                [], None, 0, 0, True, False]
 
     def _before_insert_text(self, parent, new_text, k):
         """ check if a text node that will be remove has two sibbling text
@@ -428,7 +427,7 @@ class FmesCorrector:
     def _childs_out_of_order(self, subtree):
         """ initialisation function : tag all the subtree as unordered """
         for child in subtree[N_CHILDS]:
-            child[N_INORDER] = FALSE
+            child[N_INORDER] = False
             self._childs_out_of_order(child)
 
     def _l_equal(self, n1, n2):
@@ -436,6 +435,6 @@ class FmesCorrector:
         ratio = quick_ratio(n1[N_VALUE], n2[N_VALUE])
         if ratio > self.F:
             # print 'MATCH (%s): %s / %s' %(ratio, n1[N_VALUE],n2[N_VALUE])
-            return TRUE
+            return True
         # print 'UNMATCH (%s): %s / %s' %(ratio, n1[N_VALUE],n2[N_VALUE])
-        return FALSE
+        return False
