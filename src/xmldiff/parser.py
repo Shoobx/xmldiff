@@ -8,7 +8,7 @@
 #
 # This program is distributed in the hope that it will be useful, but WITHOUT
 # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-# FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details?
+# FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License along with
 # this program; if not, write to the Free Software Foundation, Inc.,
@@ -85,10 +85,10 @@ class SaxHandler(ContentHandler):
 
     def startElement(self, name, attrs):
         # process xpath
-        self._xpath = "%s%s%s" % (self._xpath, '/',  name)
+        self._xpath = "%s%s%s" % (self._xpath, '/', name)
         _inc_xpath(self._h, self._xpath)
         # nodes construction for element
-        node = [NT_NODE, name, name, [], None, self._n_elmt+1,
+        node = [NT_NODE, name, name, [], None, self._n_elmt + 1,
                 self._h[self._xpath]]
         self._n_elmt += 1
         self._xpath = "%s%s%s%s" % (
@@ -139,7 +139,7 @@ class SaxHandler(ContentHandler):
                 node = [NT_TEXT, 'text()', ch, [], None, 0, self._h[xpath]]
                 link_node(parent, node)
 
-    ## method of the LexicalHandler interface ##################################
+    ## method of the LexicalHandler interface #################################
     def comment(self, content):
         if self._incl_comm is None:
             return
@@ -150,7 +150,7 @@ class SaxHandler(ContentHandler):
             xpath = '%s/comment()' % self._xpath
             _inc_xpath(self._h, xpath)
             # nodes construction for comment
-            node = [NT_COMM,  'comment()', content, [], None,
+            node = [NT_COMM, 'comment()', content, [], None,
                     0, self._h[xpath]]
             link_node(self._p_stack[-1], node)
 

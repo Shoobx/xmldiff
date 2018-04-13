@@ -1,4 +1,3 @@
-#!/usr/bin/python
 # Copyright (c) 2001-2010 LOGILAB S.A. (Paris, FRANCE).
 # http://www.logilab.fr/ -- mailto:contact@logilab.fr
 #
@@ -71,9 +70,10 @@ def parse_args(argv):
                         version=package.version)
     parser.add_argument('-H', '--html', action='store_true', default=False,
                         help=('input files are HTML instead of XML.'))
-    parser.add_argument('-r', '--recursive', action='store_true', default=False,
-                        help=('when comparing directories, recursively compare '
-                              'any subdirectories found.'))
+    parser.add_argument('-r', '--recursive', action='store_true',
+                        default=False,
+                        help=('when comparing directories, recursively '
+                              'compare any subdirectories found.'))
     parser.add_argument('-v', '--verbose', action='store_true', default=False)
     parser.add_argument('-n', '--not-normalize-spaces', action='store_true',
                         default=False,
@@ -123,7 +123,7 @@ def run(argv=None):
         exit_status += sum((len(deleted[0]), len(deleted[1]),
                             len(added[0]), len(added[1])))
         for filename in common[0]:
-            print('-'*80)
+            print('-' * 80)
             print('FILE: %s' % filename)
             diffs = process_files(
                 os.path.join(fpath1, filename),

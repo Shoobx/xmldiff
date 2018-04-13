@@ -1,5 +1,3 @@
-""" Provides functions for converting DOM tree or xml file in order to process
-it with xmldiff functions. """
 # Copyright (c) 2001 LOGILAB S.A. (Paris, FRANCE).
 # http://www.logilab.fr/ -- mailto:contact@logilab.fr
 #
@@ -15,6 +13,8 @@ it with xmldiff functions. """
 # You should have received a copy of the GNU General Public License along with
 # this program; if not, write to the Free Software Foundation, Inc.,
 # 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+""" Provides functions for converting DOM tree or xml file in order to process
+it with xmldiff functions. """
 
 from xml.sax import make_parser, SAXNotRecognizedException
 from xml.sax.handler import feature_namespaces, feature_external_ges

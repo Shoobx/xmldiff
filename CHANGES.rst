@@ -4,7 +4,7 @@ CHANGES
 1.0.0a7 (unreleased)
 --------------------
 
-- Nothing changed yet.
+- pep8 cleanup, added flake8 checking to tox
 
 
 1.0.0a6 (2018-04-12)

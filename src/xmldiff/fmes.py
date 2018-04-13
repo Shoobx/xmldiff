@@ -21,17 +21,19 @@
  ([CRGMW95])
 """
 
-from xmldiff.objects import NT_ROOT, NT_NODE, NT_ATTN, NT_ATTV, \
-    NT_TEXT, NT_COMM, N_TYPE, N_NAME, N_VALUE, N_CHILDS, N_PARENT, N_ISSUE, \
-    N_XNUM, NSIZE, A_DESC, A_N1, A_N2, FALSE, TRUE, \
-    node_repr, get_labels, get_ancestors, caract, make_bfo_list, \
-    insert_node, delete_node, rename_node, get_pos, \
-    f_xpath, nb_attrs, xml_print
+from xmldiff.objects import (
+    NT_ROOT, NT_NODE, NT_ATTN, NT_ATTV, NT_TEXT, N_TYPE, N_NAME, N_VALUE,
+    N_CHILDS, N_PARENT, NSIZE)
+from xmldiff.objects import (
+    get_labels, get_ancestors, make_bfo_list, insert_node, delete_node,
+    rename_node, get_pos, f_xpath, nb_attrs)
 from xmldiff.difflib import lcs2, quick_ratio
 from xmldiff.misc import intersection, in_ref, index_ref
+from xmldiff.misc import TRUE, FALSE
+
 # c extensions
-from xmldiff.maplookup import has_couple, partner, fmes_init, \
-    fmes_node_equal, match_end, fmes_end
+from xmldiff.maplookup import (
+    has_couple, partner, fmes_init, fmes_node_equal, match_end, fmes_end)
 
 # node's attributes for fmes algorithm
 N_INORDER = NSIZE
@@ -43,14 +45,13 @@ def _init_tree(tree, map_attr=None):
     optionnaly add the N_MAPPED attribute (for node from tree 1)
     """
     tree.append(FALSE)
-    if not map_attr is None:
+    if map_attr is not None:
         tree.append(FALSE)
     for child in tree[N_CHILDS]:
         _init_tree(child, map_attr)
 
+
 ## FMES TREE 2 TREE ALGORITHM #################################################
-
-
 class FmesCorrector:
     """
     Fast Match / Edit Script implementation
@@ -73,10 +74,10 @@ class FmesCorrector:
         # add needed attribute (INORDER)
         _init_tree(tree1, map_attr=1)
         _init_tree(tree2)
-# print '**** TREE 2'
-# print node_repr(tree2)
-# print '**** TREE 1'
-# print node_repr(tree1)
+        # print '**** TREE 2'
+        # print node_repr(tree2)
+        # print '**** TREE 1'
+        # print node_repr(tree1)
         # attributes initialisation
         self._mapping = []  # empty mapping
         self.add_action = self._formatter.add_action
@@ -129,10 +130,9 @@ class FmesCorrector:
         d1, d2 = self._d1, self._d2
         mapping = self._mapping
         # for each leaf label in both tree1 and tree2
-        l = intersection(lab_l1.keys(), lab_l2.keys())
         # sort list to avoid differences between python version
-        l.sort()
-        for label in l:
+        labls = sorted(intersection(lab_l1.keys(), lab_l2.keys()))
+        for label in labls:
             s1 = lab_l1[label]
             s2 = lab_l2[label]
             # compute the longest common subsequence
@@ -173,18 +173,6 @@ class FmesCorrector:
                         elif w[N_VALUE] == x[N_VALUE]:
                             # FIXME: what if w or w[N_CHILDS][0] yet mapped ??
                             if not w[N_MAPPED]:
-                                ##                                 old_value = x[N_VALUE]
-                                ##                                 x[N_VALUE] = 'xmldiff-%s'%old_value
-                                ##                                 self._tmp_attrs_dict[x[N_VALUE]] = old_value
-                                ##                                 old_x = _partner(0, w)
-                                ##                                 i = 0
-                                # for i in range(len(mapping)):
-                                # if mapping[i][0] is w:
-                                # print mapping[i][1]
-                                ##                                         mapping[i][1][N_MAPPED] = FALSE
-                                # mapping.pop(i)
-                                # break
-                                # else:
                                 todo = None
                                 w[N_MAPPED] = TRUE
                                 mapping.append((w, x))
@@ -224,7 +212,7 @@ class FmesCorrector:
                                           f_xpath(z), ww]
                             else:
                                 action = ['insert-after',
-                                          f_xpath(z[N_CHILDS][k-1]), ww]
+                                          f_xpath(z[N_CHILDS][k - 1]), ww]
                         self.add_action(action)
                     else:
                         insert_node(self._dict[id(z)], ww, k)
@@ -277,16 +265,16 @@ class FmesCorrector:
         node = tree1
         while node is not None:
             if node[N_MAPPED] != TRUE:
-                if node[N_PARENT] and len(node[N_PARENT][N_CHILDS]) > i+1:
-                    next_node = node[N_PARENT][N_CHILDS][i+1]
+                if node[N_PARENT] and len(node[N_PARENT][N_CHILDS]) > i + 1:
+                    next_node = node[N_PARENT][N_CHILDS][i + 1]
                     # if next node is a text node to remove, switch actions
                     if next_node[N_TYPE] == NT_TEXT and \
                        next_node[N_MAPPED] != TRUE:
                         self.add_action(['remove', f_xpath(next_node)])
                         delete_node(next_node)
                         try:
-                            next_node = node[N_PARENT][N_CHILDS][i+1]
-                        except:
+                            next_node = node[N_PARENT][N_CHILDS][i + 1]
+                        except IndexError:
                             next_node = None
                 else:
                     next_node = None
@@ -295,11 +283,11 @@ class FmesCorrector:
                 node = next_node
             elif node[N_CHILDS]:
                 # push next sibbling on the stack
-                if node[N_PARENT] and len(node[N_PARENT][N_CHILDS]) > i+1:
-                    stack.append((node[N_PARENT][N_CHILDS][i+1], i+1))
+                if node[N_PARENT] and len(node[N_PARENT][N_CHILDS]) > i + 1:
+                    stack.append((node[N_PARENT][N_CHILDS][i + 1], i + 1))
                 node = node[N_CHILDS][0]
                 i = 0
-            elif node[N_PARENT] and len(node[N_PARENT][N_CHILDS]) > i+1:
+            elif node[N_PARENT] and len(node[N_PARENT][N_CHILDS]) > i + 1:
                 i += 1
                 node = node[N_PARENT][N_CHILDS][i]  # next_sibling(node)
             else:
@@ -355,7 +343,7 @@ class FmesCorrector:
             i -= 1
         u = partner(1, v)
         if u is not None:
-            return get_pos(u)+1
+            return get_pos(u) + 1
 
     def _make_move(self, n1, n2, k):
         # avoid coalescing two text nodes
@@ -367,12 +355,11 @@ class FmesCorrector:
             if k <= nb_attrs(n2):
                 self.add_action(['move-first', n1, n2])
             else:
-                self.add_action(['move-after', n1, n2[N_CHILDS][k-1]])
+                self.add_action(['move-after', n1, n2[N_CHILDS][k - 1]])
         elif n1[N_TYPE] == NT_ATTN:
             # avoid to move an attribute node from a place to another on
             # the same node
             if not n1[N_PARENT] is n2:
-                n1_xpath = f_xpath(n1)
                 old_name = n1[N_VALUE]
                 new_name = self._before_attribute(n2, n1)
                 if new_name != old_name:
@@ -385,7 +372,7 @@ class FmesCorrector:
         elif k <= nb_attrs(n2):
             self.add_action(['move-first', n1, n2])
         else:
-            self.add_action(['move-after', n1, n2[N_CHILDS][k-1]])
+            self.add_action(['move-after', n1, n2[N_CHILDS][k - 1]])
         # real move
         delete_node(n1)
         insert_node(n2, n1, k)
@@ -410,12 +397,12 @@ class FmesCorrector:
         nodes to avoid coalescing two text nodes
         """
         if k > 1:
-            if parent[N_CHILDS][k-1][N_TYPE] == NT_TEXT:
+            if parent[N_CHILDS][k - 1][N_TYPE] == NT_TEXT:
                 tag = self.FAKE_TAG[:]
                 self.add_action(['insert-after',
-                                 f_xpath(parent[N_CHILDS][k-1]), tag])
+                                 f_xpath(parent[N_CHILDS][k - 1]), tag])
                 insert_node(parent, tag, k)
-                return k+1
+                return k + 1
         if k < len(parent[N_CHILDS]):
             if parent[N_CHILDS][k][N_TYPE] == NT_TEXT:
                 tag = self.FAKE_TAG[:]
@@ -423,7 +410,7 @@ class FmesCorrector:
                     self.add_action(['append-first', f_xpath(parent), tag])
                 else:
                     self.add_action(['insert-after',
-                                     f_xpath(parent[N_CHILDS][k-1]), tag])
+                                     f_xpath(parent[N_CHILDS][k - 1]), tag])
                 insert_node(parent, tag, k)
         return k
 
@@ -433,12 +420,12 @@ class FmesCorrector:
         """
         k = get_pos(node)
         parent = node[N_PARENT]
-        if k >= 1 and k+1 < len(parent[N_CHILDS]):
-            if parent[N_CHILDS][k-1][N_TYPE] == NT_TEXT and \
-               parent[N_CHILDS][k+1][N_TYPE] == NT_TEXT:
+        if k >= 1 and k + 1 < len(parent[N_CHILDS]):
+            if parent[N_CHILDS][k - 1][N_TYPE] == NT_TEXT and \
+               parent[N_CHILDS][k + 1][N_TYPE] == NT_TEXT:
                 tag = self.FAKE_TAG[:]
                 self.add_action(['insert-after',
-                                 f_xpath(parent[N_CHILDS][k-1]), tag])
+                                 f_xpath(parent[N_CHILDS][k - 1]), tag])
                 insert_node(parent, tag, k)
                 return parent, k
         return None
@@ -453,7 +440,7 @@ class FmesCorrector:
         """ function to compare leafs during mapping """
         ratio = quick_ratio(n1[N_VALUE], n2[N_VALUE])
         if ratio > self.F:
-            #            print 'MATCH (%s): %s / %s' %(ratio, n1[N_VALUE],n2[N_VALUE])
+            # print 'MATCH (%s): %s / %s' %(ratio, n1[N_VALUE],n2[N_VALUE])
             return TRUE
-#        print 'UNMATCH (%s): %s / %s' %(ratio, n1[N_VALUE],n2[N_VALUE])
+        # print 'UNMATCH (%s): %s / %s' %(ratio, n1[N_VALUE],n2[N_VALUE])
         return FALSE

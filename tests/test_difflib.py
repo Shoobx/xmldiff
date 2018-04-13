@@ -69,7 +69,7 @@ def test_lcs_4(lcs2_type):
 def randstr(lmin, lmax, alphabet):
     L = random.randint(lmin, lmax)
     S = []
-    N = len(alphabet)-1
+    N = len(alphabet) - 1
     for i in range(L):
         S.append(alphabet[random.randint(0, N)])
     return "".join(S)

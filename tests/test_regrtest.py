@@ -69,12 +69,11 @@ def make_tests():
         else:
             tests.setdefault(name, {})['result'] = filename
 
-    result = []
-    for t_name, t_dict in tests.items():
+    for t_dict in tests.values():
         # quick check whether input, output, result is there
-        old = t_dict['old']
-        new = t_dict['new']
-        res_data = t_dict['result']
+        t_dict['old']
+        t_dict['new']
+        t_dict['result']
 
     return sorted(tests.values())
 

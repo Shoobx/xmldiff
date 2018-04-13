@@ -5,7 +5,7 @@ the algorithm is describe in "An O(ND) Difference Algorithm and its Variation"
 by Eugene W. MYERS
 
 As opposed to the algorithm in difflib.py, this one doesn't require hashable
-elements 
+elements
 """
 
 
@@ -21,16 +21,16 @@ def lcs2(X, Y, equal):
     if not X or not Y:
         return []
     max = N + M
-    v = [0 for i in xrange(2*max+1)]
-    common = [[] for i in xrange(2*max+1)]
-    for D in xrange(max+1):
-        for k in xrange(-D, D+1, 2):
-            if k == -D or k != D and v[k-1] < v[k+1]:
-                x = v[k+1]
-                common[k] = common[k+1][:]
+    v = [0 for i in xrange(2 * max + 1)]
+    common = [[] for i in xrange(2 * max + 1)]
+    for D in xrange(max + 1):
+        for k in xrange(-D, D + 1, 2):
+            if k == -D or k != D and v[k - 1] < v[k + 1]:
+                x = v[k + 1]
+                common[k] = common[k + 1][:]
             else:
-                x = v[k-1] + 1
-                common[k] = common[k-1][:]
+                x = v[k - 1] + 1
+                common[k] = common[k - 1][:]
 
             y = x - k
             while x < N and y < M and equal(X[x], Y[y]):
@@ -40,7 +40,7 @@ def lcs2(X, Y, equal):
 
             v[k] = x
             if x >= N and y >= M:
-                return [(X[x], Y[y]) for x, y in common[k]]
+                return [(X[xl], Y[yl]) for xl, yl in common[k]]
 
 
 def lcs4(X, Y, equal):
@@ -55,14 +55,14 @@ def lcs4(X, Y, equal):
     if not X or not Y:
         return []
     max = N + M
-    v = [0 for i in xrange(2*max+1)]
+    v = [0 for i in xrange(2 * max + 1)]
     vl = [v]
-    for D in xrange(max+1):
-        for k in xrange(-D, D+1, 2):
-            if k == -D or k != D and v[k-1] < v[k+1]:
-                x = v[k+1]
+    for D in xrange(max + 1):
+        for k in xrange(-D, D + 1, 2):
+            if k == -D or k != D and v[k - 1] < v[k + 1]:
+                x = v[k + 1]
             else:
-                x = v[k-1] + 1
+                x = v[k - 1] + 1
 
             y = x - k
             while x < N and y < M and equal(X[x], Y[y]):
@@ -73,20 +73,19 @@ def lcs4(X, Y, equal):
             if x >= N and y >= M:
                 # reconstruction du chemin
                 vl.append(v)
-                vl_saved = vl[:]
                 path = []
-                k = N-M
+                k = N - M
 
                 while vl:
                     oldv = vl.pop(-1)
-                    oldk = k
-                    if k == -D or k != D and oldv[k-1] < oldv[k+1]:
-                        xs = oldv[k+1]
+                    if k == -D or k != D and oldv[k - 1] < oldv[k + 1]:
+                        xs = oldv[k + 1]
                         k = k + 1
                     else:
-                        xs = oldv[k-1]+1
+                        xs = oldv[k - 1] + 1
                         k = k - 1
-                    # print "-> x=%d y=%d v=%r ok=%d k=%d xs=%d D=%d" % (x,y,oldv,oldk,k,xs,D)
+                    # print "-> x=%d y=%d v=%r ok=%d k=%d xs=%d D=%d" % (
+                    #   x,y,oldv,oldk,k,xs,D)
                     while x > xs:
                         x -= 1
                         y -= 1
@@ -95,32 +94,33 @@ def lcs4(X, Y, equal):
                     D -= 1
                     x = oldv[k]
                     y = x - k
-                    # print "<- x=%d y=%d v=%r ok=%d k=%d xs=%d D=%d" % (x,y,oldv,oldk,k,xs,D)
+                    # print "<- x=%d y=%d v=%r ok=%d k=%d xs=%d D=%d" % (
+                    #   x,y,oldv,oldk,k,xs,D)
                 # print x,y,deltax,deltay,oldv, oldk, k
                 path.reverse()
-                return path  # , vl_saved
+                return path
         vl.append(v[:])
 
 
 def lcs3(X, Y, equal):
-    N = len(X)+1
-    M = len(Y)+1
+    N = len(X) + 1
+    M = len(Y) + 1
     if not X or not Y:
         return []
     # D(i,j) is the length of longest subsequence for X[:i], Y[:j]
-    pre = [0]*M
-    row = [0]*M
-    B = [[0]*M for i in xrange(N)]
+    pre = [0] * M
+    row = [0] * M
+    B = [[0] * M for i in xrange(N)]
     for i in xrange(1, N):
         for j in xrange(1, M):
-            if equal(X[i-1], Y[j-1]):
-                row[j] = pre[j-1] + 1
+            if equal(X[i - 1], Y[j - 1]):
+                row[j] = pre[j - 1] + 1
                 B[i][j] = 2  # move back (-1,-1)
-            elif pre[j] >= row[j-1]:
+            elif pre[j] >= row[j - 1]:
                 row[j] = pre[j]
                 B[i][j] = 1  # move back (0,-1)
             else:
-                row[j] = row[j-1]
+                row[j] = row[j - 1]
                 B[i][j] = 0  # move back (-1,0)
         pre, row = row, pre
     i = N - 1
@@ -149,7 +149,7 @@ try:
     import xmldiff.maplookup
     lcs2 = xmldiff.maplookup.lcs2
     have_c_extension = True
-except:
+except ImportError:
     pass
 
 

@@ -24,9 +24,7 @@ import six
 from xmldiff.input import tree_from_stream
 from xmldiff.input import tree_from_lxml
 
-from xmldiff.objects import NT_ROOT, NT_NODE, NT_ATTN, NT_ATTV, \
-    NT_TEXT, NT_COMM, N_TYPE, N_NAME, N_VALUE, N_CHILDS, N_PARENT, N_ISSUE, \
-    N_XNUM, NSIZE, A_DESC, A_N1, A_N2, FALSE, TRUE
+from xmldiff.objects import N_VALUE, N_CHILDS, N_PARENT
 
 
 HERE = os.path.dirname(__file__)

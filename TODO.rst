@@ -4,10 +4,6 @@ TO DOs
 Version 1.0 To Dos
 ------------------
 
-+ Make project a pure, Python-only package.
-  * Remove Debian support (debian/, man/)
-  * Remove Windows support
-
 - Code cleanup:
   * Remove trailing whitespace.
   * PEP8, especially docstrings
@@ -17,15 +13,14 @@ Version 1.0 To Dos
   * lxml-based SAX parser.
   * Allow code to be run without C extensions
     (See Zope packages with PyPy support for help.)
-  + Create proper console script
-  * Make releasable with zest.releaser
+    need to reimplement a bunch of C only code in python
+    also, the C code gets variables "passed" with `fmes_init`
   * Remove old optimizations due to slow attribute lookup
     e.g. mapping = self._mapping
   * Proper LGPL file headers with copyright notice.
 
 - Systematic test setup.
   * Use Shoobx approach for XML-processing-based testing.
-  + Start measuring test coverage.
 
 - Bonus: Make some of the variables more readable and rem
 

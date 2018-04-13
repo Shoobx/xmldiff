@@ -19,7 +19,6 @@ miscellaneous functions
 
 import os
 
-##### interface ###
 TRUE = 1
 FALSE = 0
 
@@ -33,10 +32,10 @@ def process_dirs(dir1, dir2, recursive):
     dir2 = normalize_dir(dir2)
     common, deleted, added = _process_dirs(dir1, dir2, recursive)
     # remove prefix
-    deleted[0] = list(map(_remove_prefix(len(dir1)),  deleted[0]))
-    deleted[1] = list(map(_remove_prefix(len(dir1)),  deleted[1]))
-    added[0] = list(map(_remove_prefix(len(dir2)),  added[0]))
-    added[1] = list(map(_remove_prefix(len(dir2)),  added[1]))
+    deleted[0] = list(map(_remove_prefix(len(dir1)), deleted[0]))
+    deleted[1] = list(map(_remove_prefix(len(dir1)), deleted[1]))
+    added[0] = list(map(_remove_prefix(len(dir2)), added[0]))
+    added[1] = list(map(_remove_prefix(len(dir2)), added[1]))
     common[0] = list(map(_remove_prefix(len(dir1)), common[0]))
     common[1] = list(map(_remove_prefix(len(dir1)), common[1]))
     return common, deleted, added
@@ -66,7 +65,7 @@ def extract(list1, list2):
         else:
             deleted.append(item)
     for item in list2:
-        if not item in list1:
+        if item not in list1:
             added.append(item)
     return common, deleted, added
 
@@ -83,13 +82,14 @@ def union(list1, list2):
 
 def intersection(list1, list2):
     """ return common items in list1 and list2 """
-    tmp, l = {}, []
+    tmp = {}
+    result = []
     for i in list1:
         tmp[i] = 1
     for i in list2:
         if i in tmp:
-            l.append(i)
-    return l
+            result.append(i)
+    return result
 
 
 def init_matrix(nbrows, nbcols, default_value):
@@ -124,13 +124,13 @@ def index_ref(list, item):
         if it is item:
             return index
         index += 1
-    raise Exception('No item '+item)
+    raise Exception('No item ' + item)
 
 
 def list_print(list, s1='', s2=''):
     for item in list:
         if item:
-            print('-'*80)
+            print('-' * 80)
             print("%s %s %s" % (s1, item, s2))
 
 
@@ -153,7 +153,7 @@ def _process_dirs(dir1, dir2, recursive):
     function which return common, added, deleted file from dir1 to dir2
     if recursive, enter in subdirectory
     """
-    #/!\ sym links /!\#
+    # /!\ sym links /!\#
 
     # extract common files and directory
     d_list1, f_list1 = divide_files(dir1)
@@ -162,10 +162,10 @@ def _process_dirs(dir1, dir2, recursive):
     common[0], deleted[0], added[0] = extract(f_list1, f_list2)
     common[1], deleted[1], added[1] = extract(d_list1, d_list2)
     # add prefix
-    deleted[0] = map(_add_prefix(dir1),  deleted[0])
-    deleted[1] = map(_add_prefix(dir1),  deleted[1])
-    added[0] = map(_add_prefix(dir2),  added[0])
-    added[1] = map(_add_prefix(dir2),  added[1])
+    deleted[0] = map(_add_prefix(dir1), deleted[0])
+    deleted[1] = map(_add_prefix(dir1), deleted[1])
+    added[0] = map(_add_prefix(dir2), added[0])
+    added[1] = map(_add_prefix(dir2), added[1])
     common[0] = map(_add_prefix(dir1), common[0])
     if recursive:
         import os
@@ -188,7 +188,7 @@ def _process_dirs(dir1, dir2, recursive):
 
 def _remove_prefix(prfx_size):
     """ return a function to add remove with map() """
-    return lambda s, len=prfx_size: s[len+1:]
+    return lambda s, len=prfx_size: s[len + 1:]
 
 
 def _add_prefix(prefix):

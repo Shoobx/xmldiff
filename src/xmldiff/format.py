@@ -20,7 +20,7 @@ this module provides classes to format the native tree2tree output
 import sys
 try:
     from xml.dom import EMPTY_NAMESPACE as NO_NS
-except:
+except ImportError:
     NO_NS = None
 from xmldiff.objects import A_N1, A_N2, A_DESC, xml_print, f_xpath
 
@@ -62,8 +62,7 @@ class AbstractFormatter:
             self.format_action(action)
 
 
-## Internal Formatter ##########################################################
-
+## Internal Formatter #########################################################
 class InternalPrinter(AbstractFormatter):
     """ print actions in the internal format """
 

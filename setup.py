@@ -33,6 +33,7 @@ TESTS_REQUIRE = [
     'mock',
     'pytest',
     'pytest-cov',
+    'flake8',
    ]
 
 try:
