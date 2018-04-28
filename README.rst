@@ -22,3 +22,38 @@ tree.
 The implementation is based on `Change detection in hierarchically structured
 information`, by S. Chawathe, A. Rajaraman, H. Garcia-Molina and J. Widom,
 Stanford University, 1996
+
+Installation
+------------
+
+To install the latest release:
+
+.. code:: bash
+
+    pip install xmldiff
+
+
+To install the development version:
+
+.. code:: bash
+
+    git clone https://github.com/Shoobx/xmldiff.git
+    cd xmldiff
+    virtualenv ./.venv
+    ./.venv/bin/python setup.py install
+
+Then to compare two given XML files:
+
+.. code:: bash
+
+    ./.venv/bin/xmldiff 1.xml 2.xml
+
+
+Running tests
+-------------
+
+To run the test suite for all python versions:
+
+.. code:: bash
+
+    tox
