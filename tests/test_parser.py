@@ -150,21 +150,21 @@ def test_tree_from_stream_with_namespace():
         '/',
         '',
         [[1,
-          u'{urn:corp:sec}section',
-          u'{urn:corp:sec}section',
+          u'sec:section',
+          u'sec:section',
           [[1,
-            u'{urn:corp:sec}sectionInfo',
-            u'{urn:corp:sec}sectionInfo',
+            u'sec:sectionInfo',
+            u'sec:sectionInfo',
             [[1,
-              u'{urn:corp:sec}secID',
-              u'{urn:corp:sec}secID',
+              u'sec:secID',
+              u'sec:secID',
               [[4, 'text()', u'S001', [], None, 0, 1]],
               None,
               1,
               1],
              [1,
-              u'{urn:corp:sec}name',
-              u'{urn:corp:sec}name',
+              u'sec:name',
+              u'sec:name',
               [[4, 'text()', u'Sales', [], None, 0, 1]],
               None,
               1,
@@ -173,8 +173,8 @@ def test_tree_from_stream_with_namespace():
             4,
             1],
            [1,
-            u'{urn:corp:sec}sectionInfo',
-            u'{urn:corp:sec}sectionInfo',
+            u'sec:sectionInfo',
+            u'sec:sectionInfo',
             [[2,
               u'@nameName',
               u'name',
@@ -193,19 +193,19 @@ def test_tree_from_stream_with_namespace():
             4,
             2],
            [1,
-            u'{urn:corp:sec}sectionInfo',
-            u'{urn:corp:sec}sectionInfo',
+            u'sec:sectionInfo',
+            u'sec:sectionInfo',
             [[2,
-              u'@{urn:corp:sec}nameName',
-              u'{urn:corp:sec}name',
-              [[3, u'@{urn:corp:sec}name', u'Gardening', [], None, 0, 0]],
+              u'@sec:nameName',
+              u'sec:name',
+              [[3, u'@sec:name', u'Gardening', [], None, 0, 0]],
               None,
               1,
               0],
              [2,
-              u'@{urn:corp:sec}secIDName',
-              u'{urn:corp:sec}secID',
-              [[3, u'@{urn:corp:sec}secID', u'S003', [], None, 0, 0]],
+              u'@sec:secIDName',
+              u'sec:secID',
+              [[3, u'@sec:secID', u'S003', [], None, 0, 0]],
               None,
               1,
               0]],
@@ -238,6 +238,20 @@ def test_tree_from_lxml():
     assert tree == tree_stream
 
 
+# In lxml, up to and including version 4.2.1, the namespace prefixes
+# will be replaced by auto-generated namespace prefixes, ns00, ns01, etc
+# If we encounter an "ns00:"" prefix, replace it.
+# This code can be removed once we no longer need to run the tests with
+# lxml 4.2.1 or earlier.
+# This is only to fix this test, using xmldiff with these versions of
+# lxml will still work, but the prefixes will be wrong.
+def fix_lxml_421_tree(t, prefix):
+    t[1] = t[1].replace('ns00:', prefix)
+    t[2] = t[2].replace('ns00:', prefix)
+    for subtree in t[3]:
+        fix_lxml_421_tree(subtree, prefix)
+
+
 def test_tree_from_lxml_with_namespace():
     fname = os.path.join(HERE, 'data', 'parse', 'simple_ns.xml')
     xml = lxml.etree.parse(fname)
@@ -248,6 +262,9 @@ def test_tree_from_lxml_with_namespace():
 
     _nuke_parent(tree)
     _nuke_parent(tree_stream)
+
+    # lxml <= 4.2.1
+    fix_lxml_421_tree(tree, 'sec:')
 
     assert tree == tree_stream
 
@@ -260,6 +277,25 @@ def test_tree_from_lxml_with_namespace():
 
     _nuke_parent(tree)
     _nuke_parent(tree_stream)
+
+    # lxml <= 4.2.1
+    fix_lxml_421_tree(tree, 'z:')
+
+    assert tree == tree_stream
+
+
+def test_tree_from_lxml_with_default_namespace():
+    fname = os.path.join(HERE, 'data', 'parse', 'default_ns.xml')
+    xml = lxml.etree.parse(fname)
+    tree = tree_from_lxml(xml)
+
+    with open(fname, 'r') as fhandle:
+        tree_stream = tree_from_stream(fhandle)
+
+    _nuke_parent(tree)
+    _nuke_parent(tree_stream)
+
+    fix_lxml_421_tree(tree, '')
 
     assert tree == tree_stream
 

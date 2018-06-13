@@ -70,13 +70,13 @@ class SaxHandler(ContentHandler):
 
     def _buildTag(self, ns_name_tuple):
         ns_uri, local_name = ns_name_tuple
-        if ns_uri:
-            el_tag = "{%s}%s" % ns_name_tuple
-        elif self._default_ns:
-            el_tag = "{%s}%s" % (self._default_ns, local_name)
-        else:
-            el_tag = local_name
-        return el_tag
+
+        if ns_uri and ns_uri != self._default_ns:
+            ns_name = [x[0] for x in self._ns_mapping.items()
+                       if ns_uri in x[1]][0]
+            return "%s:%s" % (ns_name, local_name)
+
+        return local_name
 
     ## method of the ContentHandler interface #################################
     def startElementNS(self, name, qname, attributes):
