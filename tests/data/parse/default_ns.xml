@@ -1,0 +1,10 @@
+<section xmlns="urn:corp:sec">
+    <sectionInfo>
+        <secID>S001</secID>
+        <name>Sales</name>
+    </sectionInfo>
+    <sectionInfo secID="S002" name="Development">
+    </sectionInfo>
+    <sectionInfo secID="S003" name="Gardening">
+    </sectionInfo>
+</section>

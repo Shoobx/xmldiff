@@ -38,7 +38,7 @@ Insert mixed element with text
 [rename, /Tests[1]/Test[7]/Eight[1], Six]
 [move-first, /Tests[1]/Test[6]/@type, /Tests[1]/Test[8]]
 [move-first, /Tests[1]/Test[7]/@type, /Tests[1]/Test[9]]
-[update, /Tests[1]/Test[3]/{urn:test_ns}Four[1]/text()[1], This WAS the fourth sentence.]
+[update, /Tests[1]/Test[3]/tns:Four[1]/text()[1], This WAS the fourth sentence.]
 [update, /Tests[1]/Test[6]/Five[1]/text()[1], This is the]
 [insert-after, /Tests[1]/Test[6]/Five[1]/text()[1],
 <new/>
@@ -57,7 +57,7 @@ and improved
 [append-first, /Tests[1]/Test[10]/Nine[1]/b[1],
 (changed)
 ]
-[remove, /Tests[1]/{urn:test_ns}Test[1]/Two[2]]
+[remove, /Tests[1]/tns:Test[1]/Two[2]]
 [remove, /Tests[1]/Test[2]/Three[1]]
 [remove, /Tests[1]/Test[4]]
 [remove, /Tests[1]/Test[4]]
