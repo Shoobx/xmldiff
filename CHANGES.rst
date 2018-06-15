@@ -1,7 +1,7 @@
 CHANGES
 =======
 
-1.1.0 (unreleased)
+1.1.0 (2018-06-15)
 ------------------
 
 - When using namespaces, the returned xpaths are now in the form ns_prefix:tag
