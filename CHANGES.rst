@@ -1,10 +1,11 @@
 CHANGES
 =======
 
-1.0.1 (unreleased)
+1.1.0 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- When using namespaces, the returned xpaths are now in the form ns_prefix:tag
+  instead of the earlier {ns_uri}tag, which isn't correct xpaths.
 
 
 1.0.0 (2018-04-13)
