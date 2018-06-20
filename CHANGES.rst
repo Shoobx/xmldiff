@@ -1,7 +1,7 @@
 CHANGES
 =======
 
-1.1.1 (unreleased)
+1.1.1 (2018-06-20)
 ------------------
 
 - When moving attributes the secondary rename action xpath was
