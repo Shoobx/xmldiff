@@ -100,7 +100,7 @@ class FmesCorrector:
         self._fmes_step2(tree1, tree2)
         # step 3: rename tmp attributes
         for tmp_name, real_name in self._tmp_attrs_dict.items():
-            self.add_action(['rename', '//%s' % tmp_name, real_name])
+            self.add_action(['rename', '//@%s' % tmp_name, real_name])
         # free mapping ref in C extensions
         fmes_end()
         self._formatter.end()

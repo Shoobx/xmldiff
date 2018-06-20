@@ -4,7 +4,10 @@ CHANGES
 1.1.1 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- When moving attributes the secondary rename action xpath was
+  '//LogilabXmldiffTmpAttr<attrib>' which is a tag specification.
+  Changed this to '//@LogilabXmldiffTmpAttr<attrib>', so an attribute
+  is specified.
 
 
 1.1.0 (2018-06-15)
