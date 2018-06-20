@@ -63,4 +63,4 @@ and improved
 [remove, /Tests[1]/Test[5]/Five[1]/b[1]]
 [remove, /Tests[1]/Test[6]/Six[1]/b[1]]
 [remove, /Tests[1]/Test[9]/Nine[1]/b[2]]
-[rename, //LogilabXmldiffTmpAttrtype, type]
+[rename, //@LogilabXmldiffTmpAttrtype, type]
