@@ -4,7 +4,11 @@ CHANGES
 1.1.2 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- When I fixed the xpath namespace handling I also changed the tag names to
+  an xpath syntax. This was unhelpful, so I changed that back. To solve this
+  I have had to extend the return format from the parser and ass a N_NSPREFIX
+  that contains the prefix. This is used by the differ to return correct
+  xpaths without changing the tags.
 
 
 1.1.1 (2018-06-20)
