@@ -42,6 +42,7 @@ def lcs2(X, Y, equal):
     max = N + M
     v = [0 for i in range(2 * max + 1)]
     common = [[] for i in range(2 * max + 1)]
+
     for D in range(max + 1):
         for k in range(-D, D + 1, 2):
             if k == -D or k != D and v[k - 1] < v[k + 1]:
@@ -121,6 +122,7 @@ def lcs4(X, Y, equal):
         vl.append(v[:])
 
 
+# BBB remove in 2.1
 # save the reference for tests
 lcs2_python = lcs2
 have_c_extension = False

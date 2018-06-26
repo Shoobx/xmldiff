@@ -24,9 +24,11 @@ nodes nor text nodes, only nodes with a name and a child list
 
 (the tree is composed by elements of type Node, defined below)
 """
+from collections import MutableSequence, Sequence
 
 from xmldiff.objects import NT_ROOT, NT_NODE, NT_ATTN, NT_ATTV, \
-    NT_TEXT, NT_COMM, N_TYPE, N_ISSUE, N_CHILDS, N_VALUE, link_node
+    NT_TEXT, NT_COMM, N_TYPE, N_NAME, N_VALUE, N_CHILDS, N_PARENT, N_ISSUE, \
+    N_XNUM, N_NSPREFIX, N_INORDER, N_MAPPED, link_node
 from xml.sax import ContentHandler
 
 
@@ -37,13 +39,156 @@ def _inc_xpath(h, xpath):
         h[xpath] = 1
 
 
+class Node(MutableSequence):
+    """A node object"""
+
+    __slots__ = ('type', 'name', 'value', 'children', 'parent', 'issue',
+                 'xnum', 'prefix', 'inorder', 'mapped')
+
+    def __init__(self, type, name, value, children=None, parent=None,
+                 issue=0, xnum=0, prefix=None, inorder=False, mapped=False):
+        self.type = type
+        self.name = name
+        self.value = value
+        if children:
+            for child in children:
+                child.parent = self
+        self.children = children
+        self.parent = parent
+        self.issue = issue
+        self.xnum = xnum
+        self.prefix = prefix
+        self.inorder = inorder
+        self.mapped = mapped
+
+    def tag(self):
+        if self.type == NT_NODE:
+            if not self.children:
+                return '<%s/>' % self.value
+            else:
+                child_tags = ''.join(e.tag() for e in self.children)
+                return '<%s>\n%s\n</%s>' % (self.value, child_tags, self.value)
+        if self.type in (NT_TEXT, NT_ATTN, NT_ATTV):
+            return self.value.strip()
+        return self
+
+    def __repr__(self):
+        'Return a nicely formatted representation string'
+        # Always return "None" for parent, since otherwise we get infinite
+        # recursions.
+        return 'Node(type=%r, name=%r, value=%r, children=%r, parent=%r, '\
+               'issue=%r, xnum=%r, prefix=%r, inorder=%r, mapped=%r)' % (
+                   self.type, self.name, self.value, self.children,
+                   None, self.issue, self.xnum, self.prefix, self.inorder,
+                   self.mapped)
+
+    def __getitem__(self, index):
+        # TODO: Log warning
+        if index == N_TYPE:
+            return self.type
+        if index == N_NAME:
+            return self.name
+        if index == N_VALUE:
+            return self.value
+        if index == N_CHILDS:
+            return self.children
+        if index == N_PARENT:
+            return self.parent
+        if index == N_ISSUE:
+            return self.issue
+        if index == N_XNUM:
+            return self.xnum
+        if index == N_NSPREFIX:
+            return self.prefix
+        if index == N_INORDER:
+            return self.inorder
+        if index == N_MAPPED:
+            return self.mapped
+
+    def __setitem__(self, index, value):
+        if index == N_TYPE:
+            self.type = value
+        if index == N_NAME:
+            self.name = value
+        if index == N_VALUE:
+            self.value = value
+        if index == N_CHILDS:
+            self.children = value
+        if index == N_PARENT:
+            self.parent = value
+        if index == N_ISSUE:
+            self.issue = value
+        if index == N_XNUM:
+            self.xnum = value
+        if index == N_NSPREFIX:
+            self.prefix = value
+        if index == N_INORDER:
+            self.prefix = value
+        if index == N_MAPPED:
+            self.mapped = value
+
+    def __delitem__(self, index):
+        raise NotImplementedError
+
+    def insert(self, index, value):
+        raise NotImplementedError
+
+    def __contains__(self, x):
+        raise NotImplementedError
+
+    def __iter__(self):
+        yield self.type
+        yield self.name
+        yield self.value
+        yield self.children
+        yield self.parent
+        yield self.issue
+        yield self.xnum
+        yield self.prefix
+        yield self.inorder
+        yield self.mapped
+
+    def __len__(self):
+        return 10
+
+    def __eq__(self, other):
+        """This should be comparable with lists, and we also need to
+        ignore the issue of recursion with parents.
+        """
+        if isinstance(other, (Node)):
+            # we don't check for parent, inorder or mapped,
+            # they are allowed to be different
+            for attr in ('type', 'name', 'value', 'children', 'issue',
+                         'xnum', 'prefix'):
+                if getattr(self, attr) != getattr(other, attr):
+                    return False
+
+            return True
+        elif isinstance(other, (Sequence)):
+            # It's a list! BBB
+            if len(other) != len(self):
+                return False
+            for i, values in enumerate(zip(self, other)):
+                # Don't compare parents, we'll get infinite recursion,
+                # also inorder and skipped are not relevant for equality
+                if i in (N_PARENT, N_INORDER, N_MAPPED):
+                    continue
+                if values[0] != values[1]:
+                    return False
+
+            return True
+
+        # Other comparisons
+        return NotImplemented
+
+
 class SaxHandler(ContentHandler):
     """
     Sax handler to transform xml doc into basic tree
     """
 
     def __init__(self, normalize_space, include_comment):
-        self._p_stack = [[NT_ROOT, '/', '', [], None, 0, 0, None]]
+        self._p_stack = [Node(NT_ROOT, '/', '', [], None, 0, 0, None, None, None)]
         self._norm_sp = normalize_space or None
         self._incl_comm = include_comment or None
         self._xpath = ''
@@ -87,14 +232,6 @@ class SaxHandler(ContentHandler):
             return 'xml'
         raise ValueError("No prefix found for namespace URI %s" % ns_uri)
 
-    # Don't know if I need this
-    def _buildXPath(self, ns_name_tuple):
-        ns_uri, local_name = ns_name_tuple
-        if ns_uri:
-            prefix = self._getPrefix(ns_uri)
-            return '%s:%s' % (prefix, local_name)
-        return local_name
-
     ## method of the ContentHandler interface #################################
     def startElement(self, name, attrs):
         self.startElementNS((None, name), None, attrs)
@@ -107,8 +244,8 @@ class SaxHandler(ContentHandler):
         self._xpath = "%s%s%s" % (self._xpath, '/', name)
         _inc_xpath(self._h, self._xpath)
         # nodes construction for element
-        node = [NT_NODE, tagName, tagName, [], None, self._n_elmt + 1,
-                self._h[self._xpath], prefix]
+        node = Node(NT_NODE, tagName, tagName, [], None, self._n_elmt + 1,
+                    self._h[self._xpath], prefix, None, None)
         self._n_elmt += 1
         self._xpath = "%s%s%s%s" % (
             self._xpath, '[', self._h[self._xpath], ']')
@@ -118,11 +255,11 @@ class SaxHandler(ContentHandler):
             self._n_elmt += 2
             attrName = self._buildTag(key)
             prefix = self._getPrefix(key[0])
-            attr_node = [NT_ATTN, '@%sName' % attrName, attrName, [], None,
-                         1, 0, prefix]
+            attr_node = Node(NT_ATTN, '@%sName' % attrName, attrName, [], None,
+                             1, 0, prefix, None, None)
             link_node(node, attr_node)
-            link_node(attr_node, [NT_ATTV, '@%s' % attrName, value,
-                                  [], None, 0, 0, prefix])
+            link_node(attr_node, Node(NT_ATTV, '@%s' % attrName, value,
+                                      [], None, 0, 0, prefix, None, None))
 
         link_node(self._p_stack[-1], node)
         # set current element on the top of the father stack
@@ -139,7 +276,7 @@ class SaxHandler(ContentHandler):
             if self._xpath[-i - 1] == '/':
                 break
         self._xpath = self._xpath[:size]
-        self._p_stack[-1][N_ISSUE] = self._n_elmt - self._p_stack[-1][N_ISSUE]
+        self._p_stack[-1].issue = self._n_elmt - self._p_stack[-1].issue
         # remove last element from stack
         self._p_stack.pop()
 
@@ -149,16 +286,16 @@ class SaxHandler(ContentHandler):
         if len(ch) > 0 and ch != "\n" and ch != '  ':
             parent = self._p_stack[-1]
             # if sibling text nodes
-            if parent[N_CHILDS] and parent[N_CHILDS][-1][N_TYPE] == NT_TEXT:
-                n = parent[N_CHILDS][-1]
-                n[N_VALUE] = n[N_VALUE] + ch
+            if parent.children and parent.children[-1].type == NT_TEXT:
+                n = parent.children[-1]
+                n.value = n.value + ch
             else:
                 self._n_elmt += 1
                 xpath = '%s/text()' % self._xpath
                 _inc_xpath(self._h, xpath)
                 # nodes construction for text
-                node = [NT_TEXT, 'text()', ch, [], None, 0,
-                        self._h[xpath], None]
+                node = Node(NT_TEXT, 'text()', ch, [], None, 0,
+                            self._h[xpath], None, None, None)
                 link_node(parent, node)
 
     ## method of the LexicalHandler interface #################################
@@ -172,8 +309,8 @@ class SaxHandler(ContentHandler):
             xpath = '%s/comment()' % self._xpath
             _inc_xpath(self._h, xpath)
             # nodes construction for comment
-            node = [NT_COMM, 'comment()', content, [], None,
-                    0, self._h[xpath], None]
+            node = Node(NT_COMM, 'comment()', content, [], None,
+                        0, self._h[xpath], None, None, None)
             link_node(self._p_stack[-1], node)
 
     # methods from xml.sax.saxlib.LexicalHandler (avoid dependency on pyxml)
@@ -221,5 +358,5 @@ class SaxHandler(ContentHandler):
         "Reports the end of a CDATA marked section."
 
     def get_tree(self):
-        self._p_stack[0][N_ISSUE] = self._n_elmt
+        self._p_stack[0].issue = self._n_elmt
         return self._p_stack[0]

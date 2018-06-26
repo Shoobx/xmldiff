@@ -25,9 +25,7 @@ import six
 
 from xmldiff.input import tree_from_stream
 from xmldiff.input import tree_from_lxml
-
-from xmldiff.objects import N_VALUE, N_CHILDS, N_PARENT, N_NSPREFIX
-
+from xmldiff.parser import Node
 
 HERE = os.path.dirname(__file__)
 
@@ -35,8 +33,8 @@ HERE = os.path.dirname(__file__)
 def _nuke_parent(tree):
     # having the parent node is cool, but causes all sort of problems
     # with asserts and comparison... get rid of it
-    tree[N_PARENT] = None
-    for child in tree[N_CHILDS]:
+    tree.parent = None
+    for child in tree.children:
         _nuke_parent(child)
 
 
@@ -56,6 +54,9 @@ def test_tree_from_stream_simple():
     </a>
     """)
     tree = tree_from_stream(stream)
+
+    # BBB This is kept in the old format to test backwards compatibility.
+    # Move it to be a Node() structure when BBB is removed.
     expected = [
         6,
         '/',
@@ -63,8 +64,8 @@ def test_tree_from_stream_simple():
         [[1,
           u'a',
           u'a',
-          [[1, u'b', u'b', [], mock.ANY, 0, 1, None],
-           [1, u'c', u'c', [], mock.ANY, 0, 1, None],
+          [[1, u'b', u'b', [], mock.ANY, 0, 1, None, None, None],
+           [1, u'c', u'c', [], mock.ANY, 0, 1, None, None, None],
            [1,
             u'd',
             u'd',
@@ -78,10 +79,14 @@ def test_tree_from_stream_simple():
                 mock.ANY,
                 0,
                 1,
+                None,
+                None,
                 None]],
               mock.ANY,
               1,
               1,
+              None,
+              None,
               None],
              [1,
               u'f',
@@ -90,18 +95,26 @@ def test_tree_from_stream_simple():
               mock.ANY,
               0,
               1,
+              None,
+              None,
               None]],
             mock.ANY,
             3,
             1,
+            None,
+            None,
             None]],
           mock.ANY,
           6,
           1,
+          None,
+          None,
           None]],
         None,
         7,
         0,
+        None,
+        None,
         None]
     assert tree == expected
 
@@ -111,37 +124,37 @@ def test_tree_from_stream():
     with open(fname, 'r') as fhandle:
         tree = tree_from_stream(fhandle)
         # lets not dump the whole tree
-        assert len(tree[N_CHILDS]) == 1
+        assert len(tree.children) == 1
 
 
 def test_tree_from_stream_utf8():
     fname = os.path.join(HERE, 'data', 'parse', 'utf8.xml')
     with open(fname, 'rb') as fhandle:
         tree = tree_from_stream(fhandle)
-        type_node = tree[N_CHILDS][0][N_CHILDS][0][N_CHILDS][0][N_CHILDS][0]
-        text_node = tree[N_CHILDS][0][N_CHILDS][0][N_CHILDS][1][N_CHILDS][0]
-        assert type_node[N_VALUE] == u'\xf6\xfc'
-        assert text_node[N_VALUE] == u'\xe9\xe1\u03a9'
+        type_node = tree.children[0].children[0].children[0].children[0]
+        text_node = tree.children[0].children[0].children[1].children[0]
+        assert type_node.value == u'\xf6\xfc'
+        assert text_node.value == u'\xe9\xe1\u03a9'
 
 
 def test_tree_from_stream_utf16():
     fname = os.path.join(HERE, 'data', 'parse', 'utf16.xml')
     with open(fname, 'rb') as fhandle:
         tree = tree_from_stream(fhandle)
-        type_node = tree[N_CHILDS][0][N_CHILDS][0][N_CHILDS][0][N_CHILDS][0]
-        text_node = tree[N_CHILDS][0][N_CHILDS][0][N_CHILDS][1][N_CHILDS][0]
-        assert type_node[N_VALUE] == u'\xf6\xfc'
-        assert text_node[N_VALUE] == u'\xe9\xe1\u03a9'
+        type_node = tree.children[0].children[0].children[0].children[0]
+        text_node = tree.children[0].children[0].children[1].children[0]
+        assert type_node.value == u'\xf6\xfc'
+        assert text_node.value == u'\xe9\xe1\u03a9'
 
 
 def test_tree_from_stream_iso():
     fname = os.path.join(HERE, 'data', 'parse', 'iso.xml')
     with open(fname, 'rb') as fhandle:
         tree = tree_from_stream(fhandle)
-        type_node = tree[N_CHILDS][0][N_CHILDS][0][N_CHILDS][0][N_CHILDS][0]
-        text_node = tree[N_CHILDS][0][N_CHILDS][0][N_CHILDS][1][N_CHILDS][0]
-        assert type_node[N_VALUE] == u'\xf6\xfc'
-        assert text_node[N_VALUE] == u'\xe9\xe1'
+        type_node = tree.children[0].children[0].children[0].children[0]
+        text_node = tree.children[0].children[0].children[1].children[0]
+        assert type_node.value == u'\xf6\xfc'
+        assert text_node.value == u'\xe9\xe1'
 
 
 def test_tree_from_stream_with_namespace():
@@ -151,90 +164,118 @@ def test_tree_from_stream_with_namespace():
 
     _nuke_parent(tree)
 
-    expected = [
+    expected = Node(
         6,
         '/',
         '',
-        [[1,
-          u'{urn:corp:sec}section',
-          u'{urn:corp:sec}section',
-          [[1,
-            u'{urn:corp:sec}sectionInfo',
-            u'{urn:corp:sec}sectionInfo',
-            [[1,
-              u'{urn:corp:sec}secID',
-              u'{urn:corp:sec}secID',
-              [[4, 'text()', u'S001', [], None, 0, 1, None]],
-              None,
-              1,
-              1,
-              'sec'],
-             [1,
-              u'{urn:corp:sec}name',
-              u'{urn:corp:sec}name',
-              [[4, 'text()', u'Sales', [], None, 0, 1, None]],
-              None,
-              1,
-              1,
-              'sec']],
-            None,
-            4,
-            1,
-            'sec'],
-           [1,
-            u'{urn:corp:sec}sectionInfo',
-            u'{urn:corp:sec}sectionInfo',
-            [[2,
-              u'@nameName',
-              u'name',
-              [[3, u'@name', u'Development', [], None, 0, 0, None]],
-              None,
-              1,
-              0,
-              None],
-             [2,
-              u'@secIDName',
-              u'secID',
-              [[3, u'@secID', u'S002', [], None, 0, 0, None]],
-              None,
-              1,
-              0,
-              None]],
-            None,
-            4,
-            2,
-            'sec'],
-           [1,
-            u'{urn:corp:sec}sectionInfo',
-            u'{urn:corp:sec}sectionInfo',
-            [[2,
-              u'@{urn:corp:sec}nameName',
-              u'{urn:corp:sec}name',
-              [[3, u'@{urn:corp:sec}name', u'Gardening', [], None, 0, 0, 'sec']],
-              None,
-              1,
-              0,
-              'sec'],
-             [2,
-              u'@{urn:corp:sec}secIDName',
-              u'{urn:corp:sec}secID',
-              [[3, u'@{urn:corp:sec}secID', u'S003', [], None, 0, 0, 'sec']],
-              None,
-              1,
-              0,
-              'sec']],
-            None,
-            4,
-            3,
-            'sec']],
-          None,
-          15,
-          1,
-          'sec']],
+        [
+            Node(
+                1,
+                u'{urn:corp:sec}section',
+                u'{urn:corp:sec}section',
+                [
+                    Node(
+                        1,
+                        u'{urn:corp:sec}sectionInfo',
+                        u'{urn:corp:sec}sectionInfo',
+                        [
+                            Node(
+                                1,
+                                u'{urn:corp:sec}secID',
+                                u'{urn:corp:sec}secID',
+                                [Node(4, 'text()', u'S001', [], None, 0, 1)],
+                                None,
+                                1,
+                                1,
+                                'sec'
+                            ),
+                            Node(
+                                1,
+                                u'{urn:corp:sec}name',
+                                u'{urn:corp:sec}name',
+                                [Node(4, 'text()', u'Sales', [], None, 0, 1,)],
+                                None,
+                                1,
+                                1,
+                                'sec'
+                            ),
+                        ],
+                        None,
+                        4,
+                        1,
+                        'sec'
+                    ),
+                    Node(
+                        1,
+                        u'{urn:corp:sec}sectionInfo',
+                        u'{urn:corp:sec}sectionInfo',
+                        [
+                            Node(
+                                2,
+                                u'@nameName',
+                                u'name',
+                                [Node(3, u'@name', u'Development', [], None, 0, 0)],
+                                None,
+                                1,
+                                0
+                            ),
+                            Node(
+                                2,
+                                u'@secIDName',
+                                u'secID',
+                                [Node(3, u'@secID', u'S002', [], None, 0, 0)],
+                                None,
+                                1,
+                                0,
+                            )
+                        ],
+                        None,
+                        4,
+                        2,
+                        'sec'
+                    ),
+                    Node(
+                        1,
+                        u'{urn:corp:sec}sectionInfo',
+                        u'{urn:corp:sec}sectionInfo',
+                        [
+                            Node(
+                                2,
+                                u'@{urn:corp:sec}nameName',
+                                u'{urn:corp:sec}name',
+                                [Node(3, u'@{urn:corp:sec}name', u'Gardening', [], None, 0, 0, 'sec')],
+                                None,
+                                1,
+                                0,
+                                'sec'
+                            ),
+                            Node(
+                                2,
+                                u'@{urn:corp:sec}secIDName',
+                                u'{urn:corp:sec}secID',
+                                [Node(3, u'@{urn:corp:sec}secID', u'S003', [], None, 0, 0, 'sec')],
+                                None,
+                                1,
+                                0,
+                                'sec'
+                            )
+                        ],
+                        None,
+                        4,
+                        3,
+                        'sec'
+                    )
+                ],
+                None,
+                15,
+                1,
+                'sec',
+            )
+        ],
         None,
         16,
         0,
-        None]
+    )
 
     assert tree == expected
 
@@ -243,7 +284,7 @@ def test_tree_from_lxml():
     fname = os.path.join(HERE, 'data', 'parse', '1.xml')
     xml = lxml.etree.parse(fname)
     tree = tree_from_lxml(xml)
-    assert len(tree[N_CHILDS]) == 1
+    assert len(tree.children) == 1
 
     fname = os.path.join(HERE, 'data', 'parse', '1.xml')
     with open(fname, 'r') as fhandle:
@@ -263,9 +304,9 @@ def test_tree_from_lxml():
 # This is only to fix this test, using xmldiff with these versions of
 # lxml will still work, but the prefixes will be wrong.
 def fix_lxml_421_tree(t, prefix):
-    if t[N_NSPREFIX] == 'ns00':
-        t[N_NSPREFIX] = prefix
-    for subtree in t[3]:
+    if t.prefix == 'ns00':
+        t.prefix = prefix
+    for subtree in t.children:
         fix_lxml_421_tree(subtree, prefix)
 
 
@@ -322,4 +363,4 @@ def test_parse_html():
     with open(fname, 'r') as fhandle:
         tree = tree_from_stream(fhandle, html=True)
         # lets not dump the whole tree
-        assert len(tree[N_CHILDS]) == 1
+        assert len(tree.children) == 1

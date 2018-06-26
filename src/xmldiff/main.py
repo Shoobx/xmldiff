@@ -26,7 +26,7 @@ from xmldiff.fmes import FmesCorrector
 from xmldiff.format import InternalPrinter
 from xmldiff.input import tree_from_stream
 from xmldiff.misc import process_dirs, list_print
-from xmldiff.objects import node_repr, N_ISSUE
+from xmldiff.objects import node_repr
 from xml.sax import SAXParseException
 
 logging.basicConfig()
@@ -52,8 +52,8 @@ def process_files(file1, file2, norm_sp, verbose,
     if verbose:
         print('Source tree:\n%s' % node_repr(trees[0]))
         print('Destination tree:\n%s' % node_repr(trees[1]))
-        print('Source tree has %d nodes' % trees[0][N_ISSUE])
-        print('Destination tree has %d nodes' % trees[1][N_ISSUE])
+        print('Source tree has %d nodes' % trees[0].issue)
+        print('Destination tree has %d nodes' % trees[1].issue)
 
     # output formatter
     formatter = InternalPrinter()

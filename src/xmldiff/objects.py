@@ -33,6 +33,7 @@ A_N2 = 2  # optional second action argument, maybe node or value
 
 
 ################## NODES CONSTANTES ###########################################
+# BBB remove in 2.1
 
 N_TYPE = 0  # node's type
 N_NAME = 1  # node's label (to process xpath)
@@ -42,7 +43,12 @@ N_PARENT = 4  # node's parent
 N_ISSUE = 5  # node's total issue number
 N_XNUM = 6  # to compute node's xpath
 N_NSPREFIX = 7  # node's namespace prefix (if any)
-NSIZE = 8  # number of items in a list which represent a node
+N_INORDER = 8
+N_MAPPED = 9
+
+# number of items in a list which represent a node
+# except N_INORDER and N_MAPPED (don't ask)
+NSIZE = 8
 
 # NODE TYPES
 # NT_SYST = 0 # SYSTEM node (added by parser) /!\ deprecated
@@ -60,33 +66,33 @@ NODES_TYPES = ('NT', 'NN', 'AN', 'AV', 'T', 'C', 'R')  # for printing
 def link_node(parent, child):
     """ link child to his parent """
     if child:
-        parent[N_CHILDS].append(child)
-        child[N_PARENT] = parent
+        parent.children.append(child)
+        child.parent = parent
 
 
 def insert_node(node, new, pos):
     """ insert child new on node at position pos (integer) """
-    node[N_CHILDS].insert(pos, new)
-    new[N_PARENT] = node
+    node.children.insert(pos, new)
+    new.parent = node
     i, j = 0, 1
-    while i < len(node[N_CHILDS]):
-        n = node[N_CHILDS][i]
-        if n[N_NAME] == new[N_NAME] and n[N_TYPE] == new[N_TYPE]:
-            n[N_XNUM] = j
+    while i < len(node.children):
+        n = node.children[i]
+        if n.name == new.name and n.type == new.type:
+            n.xnum = j
             j += 1
         i += 1
 
 
 def delete_node(node):
     """ delete a node from its tree """
-    siblings = node[N_PARENT][N_CHILDS]
+    siblings = node.parent.children
     i = get_pos(node)
     siblings.pop(i)
-    node[N_PARENT] = None
+    node.parent = None
     while i < len(siblings):
         n = siblings[i]
-        if n[N_NAME] == node[N_NAME] and n[N_TYPE] == node[N_TYPE]:
-            n[N_XNUM] -= 1
+        if n.name == node.name and n.type == node.type:
+            n.xnum -= 1
         i += 1
 
 
@@ -94,39 +100,39 @@ def rename_node(node, new_name):
     """ rename a node
     this is necessary for xpath
     """
-    siblings = node[N_PARENT][N_CHILDS]
+    siblings = node.parent.children
     pos = get_pos(node)
     xnum = 1
     for i in range(len(siblings)):
         n = siblings[i]
         if i < pos:
-            if n[N_NAME] == new_name and n[N_TYPE] == node[N_TYPE]:
+            if n.name == new_name and n.type == node.type:
                 xnum += 1
         elif i != pos:
-            if n[N_NAME] == node[N_NAME] and n[N_TYPE] == node[N_TYPE]:
-                n[N_XNUM] -= 1
-            elif n[N_NAME] == new_name and n[N_TYPE] == node[N_TYPE]:
-                n[N_XNUM] += 1
-    node[N_NAME] = new_name
-    node[N_XNUM] = xnum
+            if n.name == node.name and n.type == node.type:
+                n.xnum -= 1
+            elif n.name == new_name and n.type == node.type:
+                n.xnum += 1
+    node.name = new_name
+    node.xnum = xnum
 
 
 ################## OPERATIONS FORMATING NODES #################################
 
 def caract(node):
     """ return a string which represent the node """
-    return '%s:%s (%s) %s %s' % (NODES_TYPES[node[N_TYPE]], node[N_VALUE],
-                                 f_xpath(node), id(node), node[N_ISSUE])
+    return '%s:%s (%s) %s %s' % (NODES_TYPES[node.type], node.value,
+                                 f_xpath(node), id(node), node.issue)
 
 
 def f_xpath(node, x=''):
     """ compute node's xpath """
-    name = node[N_NAME]
+    name = node.name
     if '{' in name:
         # We have a namespace
         pre, rest = name.split('{', 1)
         uri, local_name = rest.split('}', 1)
-        prefix = node[N_NSPREFIX]
+        prefix = node.prefix
         if prefix is None:
             # Default namespace
             name = pre + local_name
@@ -134,13 +140,14 @@ def f_xpath(node, x=''):
             name = '%s%s:%s' % (pre, prefix, local_name)
 
     if name != '/':
-        if node[N_TYPE] == NT_ATTN:
-            return f_xpath(node[N_PARENT],
+        if node.type == NT_ATTN:
+            return f_xpath(node.parent,
                            '/%s' % name[:len(name) - 4])
-        if node[N_TYPE] == NT_ATTV:
-            return f_xpath(node[N_PARENT])  # [N_PARENT], '/%s'%name)
-        return f_xpath(node[N_PARENT], '/%s[%d]%s' % (
-            name, node[N_XNUM], x))
+        if node.type == NT_ATTV:
+            return f_xpath(node.parent)
+        return f_xpath(node.parent, '/%s[%d]%s' % (
+            name, node.xnum, x))
+
     elif not x:
         return '/'
     return x
@@ -149,7 +156,7 @@ def f_xpath(node, x=''):
 def node_repr(node):
     """ return a string which represents the given node """
     s = '%s\n' % caract(node)
-    for child in node[N_CHILDS]:
+    for child in node.children:
         s = '%s%s' % (s, _indent(child, '  '))
     return s
 
@@ -160,7 +167,7 @@ def _indent(node, indent_str):
         indent_str = '%s| ' % indent_str
     else:
         indent_str = '%s  ' % indent_str
-    for child in node[N_CHILDS]:
+    for child in node.children:
         s = '%s%s' % (s, _indent(child, indent_str))
     return s
 
@@ -176,35 +183,35 @@ def xml_print(node, indent='', stream=None):
 
 
 def _xml_print_internal_format(node, indent, stream):
-    if node[N_TYPE] == NT_NODE:
+    if node.type == NT_NODE:
         attrs_s = ''
         i = 0
-        while i < len(node[N_CHILDS]):
-            n = node[N_CHILDS][i]
-            if n[N_TYPE] == NT_ATTN:
+        while i < len(node.children):
+            n = node.children[i]
+            if n.type == NT_ATTN:
                 i += 1
-                attrs_s = '%s %s="%s"' % (attrs_s, n[N_VALUE],
-                                          n[N_CHILDS][0][N_VALUE])
+                attrs_s = '%s %s="%s"' % (attrs_s, n.value,
+                                          n.children[0].value)
             else:
                 break
-        if len(node[N_CHILDS]) > i:
-            stream.write('%s<%s%s>\n' % (indent, node[N_VALUE], attrs_s))
-            for _curr_node in node[N_CHILDS][i:]:
+        if len(node.children) > i:
+            stream.write('%s<%s%s>\n' % (indent, node.value, attrs_s))
+            for _curr_node in node.children[i:]:
                 _xml_print_internal_format(
                     _curr_node, indent + '  ', stream=stream)
-            stream.write('%s</%s>\n' % (indent, node[N_VALUE]))
+            stream.write('%s</%s>\n' % (indent, node.value))
         else:
-            stream.write('%s<%s%s/>\n' % (indent, node[N_VALUE], attrs_s))
-    elif node[N_TYPE] == NT_ATTN:
-        stream.write('%s<@%s>\n' % (indent, node[N_VALUE]))
-        stream.write(node[N_CHILDS][0][N_VALUE] + '\n')
-        stream.write('%s</%s>\n' % (indent, node[N_VALUE]))
-    elif node[N_TYPE] == NT_COMM:
-        stream.write('%s<!-- %s -->\n' % (indent, node[N_VALUE]))
-    elif node[N_TYPE] == NT_TEXT:
-        stream.write(node[N_VALUE] + '\n')
+            stream.write('%s<%s%s/>\n' % (indent, node.value, attrs_s))
+    elif node.type == NT_ATTN:
+        stream.write('%s<@%s>\n' % (indent, node.value))
+        stream.write(node.children[0].value + '\n')
+        stream.write('%s</%s>\n' % (indent, node.value))
+    elif node.type == NT_COMM:
+        stream.write('%s<!-- %s -->\n' % (indent, node.value))
+    elif node.type == NT_TEXT:
+        stream.write(node.value + '\n')
     else:
-        stream.write('unknown node type', str(node[N_TYPE]))
+        stream.write('unknown node type', str(node.type))
 
 
 ################## OPERATIONS GIVING INFOS ON NODES ###########################
@@ -215,7 +222,7 @@ def get_pos(node):
              node is a recursive list
     """
     try:
-        childs = node[N_PARENT][N_CHILDS]
+        childs = node.parent.children
         for i, child in enumerate(childs):
             if child is node:
                 return i
@@ -227,8 +234,8 @@ def get_pos(node):
 
 def nb_attrs(node):
     """ return the number of attributes of the given node """
-    for i, child in enumerate(node[N_CHILDS]):
-        if child[N_TYPE] != NT_ATTN:
+    for i, child in enumerate(node.children):
+        if child.type != NT_ATTN:
             break
     else:
         try:
@@ -241,19 +248,19 @@ def nb_attrs(node):
 ################## MISCELLANEOUS OPERATIONS ON NODES ##########################
 def next_sibling(node):
     """ return the node's right sibling """
-    if node[N_PARENT] is None:
+    if node.parent is None:
         return None
     myindex = get_pos(node)
-    if len(node[N_PARENT][N_CHILDS]) > myindex + 1:
-        return node[N_PARENT][N_CHILDS][myindex + 1]
+    if len(node.parent.children) > myindex + 1:
+        return node.parent.children[myindex + 1]
     return None
 
 
 def get_ancestors(node, l):
     """ append to l all the ancestors from node """
-    while node[N_PARENT]:
+    while node.parent:
         l.append(node)
-        node = node[N_PARENT]
+        node = node.parent
     return l
 
 
@@ -268,12 +275,12 @@ def get_labels(tree, labels, leaf_labels):
     /!\  /!\
     since this isn't binary tree, post order traversal (?)
     """
-    if tree and tree[N_CHILDS]:
-        for node in tree[N_CHILDS]:
+    if tree and tree.children:
+        for node in tree.children:
             get_labels(node, labels, leaf_labels)
-        labels.setdefault(NODES_TYPES[tree[N_TYPE]], []).append(tree)
+        labels.setdefault(NODES_TYPES[tree.type], []).append(tree)
     elif tree:
-        leaf_labels.setdefault(NODES_TYPES[tree[N_TYPE]], []).append(tree)
+        leaf_labels.setdefault(NODES_TYPES[tree.type], []).append(tree)
 
 
 def make_bfo_list(tree):
@@ -282,6 +289,6 @@ def make_bfo_list(tree):
     lst = [tree]
     while queue:
         node = queue.pop(0)
-        lst.extend(node[N_CHILDS])
-        queue.extend([n for n in node[N_CHILDS] if n[N_CHILDS]])
+        lst.extend(node.children)
+        queue.extend([n for n in node.children if n.children])
     return lst

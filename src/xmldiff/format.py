@@ -26,6 +26,7 @@ try:
 except ImportError:  # pragma: no cover
     NO_NS = None
 from xmldiff.objects import A_N1, A_N2, A_DESC, xml_print, f_xpath
+from xmldiff.parser import Node
 
 
 ## Formatter interface ########################################################
@@ -56,6 +57,9 @@ class AbstractFormatter(object):
 
     def end(self):
         """ method called at the end of the tree 2 tree correction """
+        if self._stream is None:
+            self._stream = sys.stdout
+
         for action in self.edit_s:
             self.format_action(action)
 
@@ -68,8 +72,8 @@ class InternalPrinter(AbstractFormatter):
         """
         See AbstractFormatter interface
         """
-        if len(action) > 2 and isinstance(action[A_N2], list):
-            if isinstance(action[A_N1], list):
+        if len(action) > 2 and isinstance(action[A_N2], Node):
+            if isinstance(action[A_N1], Node):
                 # swap or move node
                 action[A_N1] = f_xpath(action[A_N1])
                 action[A_N2] = f_xpath(action[A_N2])
@@ -79,17 +83,13 @@ class InternalPrinter(AbstractFormatter):
         """
         See AbstractFormatter interface
         """
-        stream = self._stream
-        if stream is None:
-            stream = sys.stdout
-
-        if len(action) > 2 and isinstance(action[A_N2], list):
-            stream.write('[%s, %s,\n' % (action[A_DESC], action[A_N1]))
-            xml_print(action[A_N2], stream=stream)
-            stream.write("]\n")
+        if len(action) > 2 and isinstance(action[A_N2], Node):
+            self._stream.write('[%s, %s,\n' % (action[A_DESC], action[A_N1]))
+            xml_print(action[A_N2], stream=self._stream)
+            self._stream.write("]\n")
         elif len(action) > 2:
-            stream.write('[%s, %s, %s]\n' % (action[A_DESC],
-                                             action[A_N1],
-                                             action[A_N2]))
+            self._stream.write('[%s, %s, %s]\n' % (action[A_DESC],
+                                                   action[A_N1],
+                                                   action[A_N2]))
         else:
-            stream.write('[%s, %s]\n' % (action[A_DESC], action[A_N1]))
+            self._stream.write('[%s, %s]\n' % (action[A_DESC], action[A_N1]))
