@@ -14,6 +14,9 @@ XML Diff
 .. image:: https://img.shields.io/pypi/pyversions/xmldiff.svg
     :target: https://pypi.python.org/pypi/xmldiff/
 
+.. image:: https://api.codeclimate.com/v1/badges/b5a94d8f61fdff1e3214/maintainability
+   :target: https://codeclimate.com/github/Shoobx/xmldiff/maintainability
+   :alt: Maintainability
 
 Xmldiff is a utility for extracting differences between two xml files. It
 returns a set of primitives to apply on source tree to obtain the destination
