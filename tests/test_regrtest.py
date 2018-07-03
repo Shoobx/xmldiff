@@ -34,15 +34,15 @@ def get_output(options):
     backup = sys.stdout
 
     # capture stdout
-    sys.stdout = six.StringIO()
+    sys.stdout = out = six.StringIO()
     try:
         main.run(options)
     except SystemExit:
         pass
     finally:
-        output = sys.stdout.getvalue().strip()
-        sys.stdout.close()
         sys.stdout = backup
+        output = out.getvalue().strip()
+        out.close()
 
     return output
 
@@ -157,9 +157,8 @@ def test_known(fnames, lcs2_type):
     old = fnames['old']
     new = fnames['new']
     res_file = fnames['result']
-    f = open(res_file)
-    expected = f.read().strip()
-    f.close()
+    with open(res_file) as f:
+        expected = f.read().strip()
     options = [old, new]
     data = get_output(options)
     assert data == expected, '%s:\n%r != %r' % (options, data, expected)

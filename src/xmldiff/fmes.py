@@ -384,7 +384,7 @@ class FmesCorrector:
         return attr_name
 
     FAKE_TAG = [NT_NODE, 'LogilabXMLDIFFFAKETag', 'LogilabXMLDIFFFAKETag',
-                [], None, 0, 0, True, False]
+                [], None, 0, 0, None, True, False]
 
     def _before_insert_text(self, parent, new_text, k):
         """ check if a text node that will be remove has two sibbling text

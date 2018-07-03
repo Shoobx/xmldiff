@@ -41,7 +41,8 @@ N_CHILDS = 3  # nodes's childs list
 N_PARENT = 4  # node's parent
 N_ISSUE = 5  # node's total issue number
 N_XNUM = 6  # to compute node's xpath
-NSIZE = 7  # number of items in a list which represent a node
+N_NSPREFIX = 7  # node's namespace prefix (if any)
+NSIZE = 8  # number of items in a list which represent a node
 
 # NODE TYPES
 # NT_SYST = 0 # SYSTEM node (added by parser) /!\ deprecated
@@ -120,14 +121,26 @@ def caract(node):
 
 def f_xpath(node, x=''):
     """ compute node's xpath """
-    if node[N_NAME] != '/':
+    name = node[N_NAME]
+    if '{' in name:
+        # We have a namespace
+        pre, rest = name.split('{', 1)
+        uri, local_name = rest.split('}', 1)
+        prefix = node[N_NSPREFIX]
+        if prefix is None:
+            # Default namespace
+            name = pre + local_name
+        else:
+            name = '%s%s:%s' % (pre, prefix, local_name)
+
+    if name != '/':
         if node[N_TYPE] == NT_ATTN:
             return f_xpath(node[N_PARENT],
-                           '/%s' % node[N_NAME][:len(node[N_NAME]) - 4])
+                           '/%s' % name[:len(name) - 4])
         if node[N_TYPE] == NT_ATTV:
-            return f_xpath(node[N_PARENT])  # [N_PARENT], '/%s'%node[N_NAME])
+            return f_xpath(node[N_PARENT])  # [N_PARENT], '/%s'%name)
         return f_xpath(node[N_PARENT], '/%s[%d]%s' % (
-            node[N_NAME], node[N_XNUM], x))
+            name, node[N_XNUM], x))
     elif not x:
         return '/'
     return x

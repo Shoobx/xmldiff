@@ -43,7 +43,7 @@ class SaxHandler(ContentHandler):
     """
 
     def __init__(self, normalize_space, include_comment):
-        self._p_stack = [[NT_ROOT, '/', '', [], None, 0, 0]]
+        self._p_stack = [[NT_ROOT, '/', '', [], None, 0, 0, None]]
         self._norm_sp = normalize_space or None
         self._incl_comm = include_comment or None
         self._xpath = ''
@@ -70,40 +70,59 @@ class SaxHandler(ContentHandler):
 
     def _buildTag(self, ns_name_tuple):
         ns_uri, local_name = ns_name_tuple
+        if ns_uri:
+            el_tag = "{%s}%s" % ns_name_tuple
+        else:
+            el_tag = local_name
+        return el_tag
 
-        if ns_uri and ns_uri != self._default_ns:
-            ns_name = [x[0] for x in self._ns_mapping.items()
-                       if ns_uri in x[1]][0]
-            return "%s:%s" % (ns_name, local_name)
+    def _getPrefix(self, ns_uri):
+        if not ns_uri:
+            return None
+        for (prefix, uri) in self._ns_mapping.items():
+            if ns_uri in uri:
+                return prefix
+        if ns_uri == 'http://www.w3.org/XML/1998/namespace':
+            # It's the xml: namespace, undeclared.
+            return 'xml'
+        raise ValueError("No prefix found for namespace URI %s" % ns_uri)
 
+    # Don't know if I need this
+    def _buildXPath(self, ns_name_tuple):
+        ns_uri, local_name = ns_name_tuple
+        if ns_uri:
+            prefix = self._getPrefix(ns_uri)
+            return '%s:%s' % (prefix, local_name)
         return local_name
 
     ## method of the ContentHandler interface #################################
-    def startElementNS(self, name, qname, attributes):
-        if attributes:
-            attributes = dict(
-                [(self._buildTag(k), v) for k, v in attributes.items()])
-        self.startElement(self._buildTag(name), attributes)
-
     def startElement(self, name, attrs):
+        self.startElementNS((None, name), None, attrs)
+
+    def startElementNS(self, name, qname, attrs):
+        tagName = self._buildTag(name)
+        prefix = self._getPrefix(name[0])
+
         # process xpath
         self._xpath = "%s%s%s" % (self._xpath, '/', name)
         _inc_xpath(self._h, self._xpath)
         # nodes construction for element
-        node = [NT_NODE, name, name, [], None, self._n_elmt + 1,
-                self._h[self._xpath]]
+        node = [NT_NODE, tagName, tagName, [], None, self._n_elmt + 1,
+                self._h[self._xpath], prefix]
         self._n_elmt += 1
         self._xpath = "%s%s%s%s" % (
             self._xpath, '[', self._h[self._xpath], ']')
         # nodes construction for element's attributes
         # sort attributes to avoid further moves
-        for key in sorted(attrs.keys()):
+        for key, value in sorted(attrs.items()):
             self._n_elmt += 2
-            attr_node = [NT_ATTN, '@%sName' % key, key, [], None, 1, 0]
+            attrName = self._buildTag(key)
+            prefix = self._getPrefix(key[0])
+            attr_node = [NT_ATTN, '@%sName' % attrName, attrName, [], None,
+                         1, 0, prefix]
             link_node(node, attr_node)
-            link_node(attr_node, [NT_ATTV, '@%s' % key,
-                                  attrs.get(key, ''),
-                                  [], None, 0, 0])
+            link_node(attr_node, [NT_ATTV, '@%s' % attrName, value,
+                                  [], None, 0, 0, prefix])
 
         link_node(self._p_stack[-1], node)
         # set current element on the top of the father stack
@@ -138,7 +157,8 @@ class SaxHandler(ContentHandler):
                 xpath = '%s/text()' % self._xpath
                 _inc_xpath(self._h, xpath)
                 # nodes construction for text
-                node = [NT_TEXT, 'text()', ch, [], None, 0, self._h[xpath]]
+                node = [NT_TEXT, 'text()', ch, [], None, 0,
+                        self._h[xpath], None]
                 link_node(parent, node)
 
     ## method of the LexicalHandler interface #################################
@@ -153,7 +173,7 @@ class SaxHandler(ContentHandler):
             _inc_xpath(self._h, xpath)
             # nodes construction for comment
             node = [NT_COMM, 'comment()', content, [], None,
-                    0, self._h[xpath]]
+                    0, self._h[xpath], None]
             link_node(self._p_stack[-1], node)
 
     # methods from xml.sax.saxlib.LexicalHandler (avoid dependency on pyxml)
