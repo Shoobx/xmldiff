@@ -10,6 +10,10 @@ CHANGES
   that contains the prefix. This is used by the differ to return correct
   xpaths without changing the tags.
 
+- The AbstractFormatter.init() method made exactly zero sense and made it
+  practically impossible to set the output stream to anything but sys.stdout.
+  Fixed and deprecated.
+
 
 1.1.1 (2018-06-20)
 ------------------

@@ -64,9 +64,9 @@ class SaxHandler(ContentHandler):
 
     def endPrefixMapping(self, prefix):
         ns_uri_list = self._ns_mapping[prefix]
-        ns_uri_list.pop()
         if prefix is None:
             self._default_ns = ns_uri_list[-1]
+            ns_uri_list.pop()
 
     def _buildTag(self, ns_name_tuple):
         ns_uri, local_name = ns_name_tuple

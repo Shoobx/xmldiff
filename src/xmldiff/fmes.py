@@ -87,7 +87,6 @@ class FmesCorrector:
         self._dict = {}
         self._tmp_attrs_dict = {}
         self._pending = []
-        self._formatter.init()
         # step 0: mapping
         self._fast_match(tree1, tree2)
         # free matching variables

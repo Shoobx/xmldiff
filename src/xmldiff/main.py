@@ -17,6 +17,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import argparse
+import logging
 import sys
 import os
 import pkg_resources
@@ -28,6 +29,7 @@ from xmldiff.misc import process_dirs, list_print
 from xmldiff.objects import node_repr, N_ISSUE
 from xml.sax import SAXParseException
 
+logging.basicConfig()
 
 def process_files(file1, file2, norm_sp, verbose,
                   ext_ges, ext_pes, include_comment,
