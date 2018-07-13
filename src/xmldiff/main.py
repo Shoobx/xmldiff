@@ -31,6 +31,7 @@ from xml.sax import SAXParseException
 
 logging.basicConfig()
 
+
 def process_files(file1, file2, norm_sp, verbose,
                   ext_ges, ext_pes, include_comment,
                   html):

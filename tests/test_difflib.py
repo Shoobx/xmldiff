@@ -33,23 +33,23 @@ def help_test(seq1, seq2, res):
     assert seq == list(zip(res, res))
 
 
-def test_lcs_1(lcs2_type):
+def test_lcs_1():
     help_test("abcdefghijkl", "bcdeghijk", "bcdeghijk")
 
 
-def test_lcs_2(lcs2_type):
+def test_lcs_2():
     help_test("abdefghijkl", "bcdeghijk", "bdeghijk")
 
 
-def test_lcs_3(lcs2_type):
+def test_lcs_3():
     help_test("abdefghijkl", "bxcydzewgzhijk", "bdeghijk")
 
 
-def test_lcs_4(lcs2_type):
+def test_lcs_4():
     help_test("abdefghijkl", "zzzbcdeghijk", "bdeghijk")
 
 
-def test_lcs_5(lcs2_type):
+def test_lcs_5():
     help_test("", "", [])
 
 
@@ -106,10 +106,8 @@ def randstr(lmin, lmax, alphabet):
     return "".join(S)
 
 
-def test_random_string(lcs2_type):
-    """Generate random test sequences and compare lcs2, lcs3, lcs4"""
-    import xmldiff.maplookup
-    lcsm = xmldiff.maplookup.lcs2
+def test_random_string():
+    """Generate random test sequences and compare lcs2, lcs4"""
 
     _alpha = "abcdefghijklmnopqrstuvwxyz"
     for i in range(100):
@@ -120,8 +118,4 @@ def test_random_string(lcs2_type):
         # print "lcs2:", "".join([x[0] for x in R1])
         R2 = xmldiff.difflib.lcs4(S1, S2, _cmp)
         # print "lcs4", "".join([x[0] for x in R2])
-        R3 = lcsm(S1, S2, _cmp)
-        # print "lcsm", "".join([x[0] for x in R3])
-        # print
         assert R1 == R2, (S1, S2)
-        assert R1 == R3, (S1, S2)
