@@ -6,6 +6,11 @@ CHANGES
 - Get rid of the C-extensions in preparation of major refactoring to make the
   code maintainable.
 
+- Refactored from using hierarcical infinitely recursing lists of lists to an
+  object hierarchy.
+
+- Renamed the difflib module to helpers so it doesn't shadow stdlib.
+
 
 1.1.2 (unreleased)
 ------------------

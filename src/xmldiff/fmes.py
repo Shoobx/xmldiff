@@ -28,7 +28,7 @@ from xmldiff.objects import (
 from xmldiff.objects import (
     get_labels, get_ancestors, make_bfo_list, insert_node, delete_node,
     rename_node, get_pos, f_xpath, nb_attrs)
-from xmldiff.difflib import lcs2, quick_ratio
+from xmldiff.helpers import lcs2, quick_ratio
 from xmldiff.misc import intersection, in_ref, index_ref
 from xmldiff.parser import Node
 
