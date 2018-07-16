@@ -153,7 +153,7 @@ def fnames(request):
     return request.param
 
 
-def test_known(fnames, lcs2_type):
+def test_known(fnames):
     old = fnames['old']
     new = fnames['new']
     res_file = fnames['result']

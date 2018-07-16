@@ -24,16 +24,12 @@
 
 from xmldiff.objects import (
     NT_ROOT, NT_NODE, NT_ATTN, NT_ATTV, NT_TEXT, N_TYPE, N_NAME, N_VALUE,
-    N_CHILDS, N_PARENT, NSIZE)
+    N_CHILDS, N_PARENT, NSIZE, N_ISSUE)
 from xmldiff.objects import (
     get_labels, get_ancestors, make_bfo_list, insert_node, delete_node,
     rename_node, get_pos, f_xpath, nb_attrs)
 from xmldiff.difflib import lcs2, quick_ratio
 from xmldiff.misc import intersection, in_ref, index_ref
-
-# c extensions
-from xmldiff.maplookup import (
-    has_couple, partner, fmes_init, fmes_node_equal, match_end, fmes_end)
 
 # node's attributes for fmes algorithm
 N_INORDER = NSIZE
@@ -82,15 +78,11 @@ class FmesCorrector:
         self._mapping = []  # empty mapping
         self.add_action = self._formatter.add_action
         self._d1, self._d2 = {}, {}
-        # give references to the C extensions specific to fmes
-        fmes_init(self._mapping, self._d1, self._d2, self.T)
         self._dict = {}
         self._tmp_attrs_dict = {}
         self._pending = []
         # step 0: mapping
         self._fast_match(tree1, tree2)
-        # free matching variables
-        match_end()
         del self._d1
         del self._d2
         # step 1: breadth first search tree2
@@ -100,8 +92,6 @@ class FmesCorrector:
         # step 3: rename tmp attributes
         for tmp_name, real_name in self._tmp_attrs_dict.items():
             self.add_action(['rename', '//@%s' % tmp_name, real_name])
-        # free mapping ref in C extensions
-        fmes_end()
         self._formatter.end()
 
     ## Private functions ######################################################
@@ -122,7 +112,7 @@ class FmesCorrector:
         self._mapping.append((tree1, tree2))
         # mark node as mapped
         tree1[N_MAPPED] = True
-        self._match(labl1, labl2, fmes_node_equal)  # self._n_equal
+        self._match(labl1, labl2, self._fmes_node_equal)  # self._n_equal
 
     def _match(self, lab_l1, lab_l2, equal):
         """do the actual matching"""
@@ -154,8 +144,8 @@ class FmesCorrector:
         # x the current node in the breadth-first order traversal
         for x in make_bfo_list(tree2):
             y = x[N_PARENT]
-            z = partner(1, y)
-            w = partner(1, x)
+            z = self._partner(1, y)
+            w = self._partner(1, x)
             # insert
             if not w:
                 todo = 1
@@ -236,7 +226,7 @@ class FmesCorrector:
                     if needs_rename:
                         rename_node(w, x[N_NAME])
                 # move x if parents not mapped together
-                if not has_couple(v, y):
+                if not self._has_couple(v, y):
                     x[N_INORDER] = True
                     k = self._find_pos(x)
                     self._make_move(w, z, k)
@@ -296,18 +286,18 @@ class FmesCorrector:
         self._childs_out_of_order(w)
         self._childs_out_of_order(x)
         # s1: children of w whose partner is children of x
-        s1 = [n for n in w[N_CHILDS] if in_ref(x[N_CHILDS], partner(0, n))]
+        s1 = [n for n in w[N_CHILDS] if in_ref(x[N_CHILDS], self._partner(0, n))]
         # s2: children of x whose partners are children of w
-        s2 = [n for n in x[N_CHILDS] if in_ref(w[N_CHILDS], partner(1, n))]
+        s2 = [n for n in x[N_CHILDS] if in_ref(w[N_CHILDS], self._partner(1, n))]
         # compute the longest common subsequence
-        s = lcs2(s1, s2, has_couple)
+        s = lcs2(s1, s2, self._has_couple)
         # mark each (a,b) from lcs in order
         for a, b in s:
             a[N_INORDER] = b[N_INORDER] = True
             s1.pop(index_ref(s1, a))
         # s: a E T1, b E T2, (a,b) E M, (a;b) not E s
         for a in s1:
-            b = partner(0, a)
+            b = self._partner(0, a)
             # mark a and b in order
             a[N_INORDER] = b[N_INORDER] = True
             k = self._find_pos(b)
@@ -334,7 +324,7 @@ class FmesCorrector:
             if v[N_INORDER]:
                 break
             i -= 1
-        u = partner(1, v)
+        u = self._partner(1, v)
         if u is not None:
             return get_pos(u) + 1
 
@@ -436,4 +426,37 @@ class FmesCorrector:
             # print 'MATCH (%s): %s / %s' %(ratio, n1[N_VALUE],n2[N_VALUE])
             return True
         # print 'UNMATCH (%s): %s / %s' %(ratio, n1[N_VALUE],n2[N_VALUE])
+        return False
+
+    def _fmes_node_equal(self, n1, n2):
+        """ function to compare subtree during mapping """
+        mapping = self._mapping
+
+        length = 0
+        i = 0
+        for a, b in mapping:
+            i += 1
+            if (id(n1), id(a)) in self._d1:
+                if (id(n2), id(b)) in self._d2:
+                    length += 1
+
+        # factor 2.5 for tree expansion compensation
+        fact = 2.5 * length / float(max(n1[N_ISSUE], n2[N_ISSUE]))
+        if fact >= self.T:
+            return True
+        return False
+
+    def _partner(self, index, node):
+        if node is None:
+            return None
+        partners = [e for e in self._mapping if e[index] is node]
+        if not partners:
+            return None
+
+        return partners[0][1 - index]
+
+    def _has_couple(self, a, b):
+        for couple in self._mapping:
+            if a is couple[0] and b is couple[1]:
+                return True
         return False

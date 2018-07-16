@@ -35,13 +35,6 @@ TESTS_REQUIRE = [
     'flake8',
    ]
 
-try:
-    from distutils.core import Extension
-    ext_modules = [Extension('xmldiff.maplookup',
-                             ['extensions/maplookup.c'])]
-except:
-    ext_modules = []
-
 
 setup(
     name='xmldiff',
@@ -90,6 +83,5 @@ setup(
     [console_scripts]
     xmldiff = xmldiff.main:run
     ''',
-    ext_modules=ext_modules,
     tests_require=TESTS_REQUIRE,
 )

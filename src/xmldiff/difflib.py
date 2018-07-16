@@ -125,13 +125,6 @@ def lcs4(X, Y, equal):
 lcs2_python = lcs2
 have_c_extension = False
 
-try:
-    import xmldiff.maplookup
-    lcs2 = xmldiff.maplookup.lcs2
-    have_c_extension = True
-except ImportError:  # pragma: no cover
-    pass
-
 
 def quick_ratio(a, b):
     """

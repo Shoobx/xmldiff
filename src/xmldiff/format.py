@@ -89,7 +89,7 @@ class InternalPrinter(AbstractFormatter):
             stream.write("]\n")
         elif len(action) > 2:
             stream.write('[%s, %s, %s]\n' % (action[A_DESC],
-                                                   action[A_N1],
-                                                   action[A_N2]))
+                                             action[A_N1],
+                                             action[A_N2]))
         else:
             stream.write('[%s, %s]\n' % (action[A_DESC], action[A_N1]))
