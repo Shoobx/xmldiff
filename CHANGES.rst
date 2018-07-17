@@ -1,5 +1,16 @@
 CHANGES
 =======
+2.0.0 (unreleased)
+------------------
+
+- Get rid of the C-extensions in preparation of major refactoring to make the
+  code maintainable.
+
+- Refactored from using hierarcical infinitely recursing lists of lists to an
+  object hierarchy.
+
+- Renamed the difflib module to helpers so it doesn't shadow stdlib.
+
 
 1.1.2 (unreleased)
 ------------------
@@ -106,7 +117,7 @@ CHANGES
 
 - WARNING: xmldiff is no longer a logilab subpackage. Users may have to
   manually remove the old logilab/xmldiff directory.
-
+maplookup
 - fixed debian bug #275750, also reported by Christopher R Newman on the
   xml-projects mailing list
 
