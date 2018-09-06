@@ -21,7 +21,7 @@ of course Python with pip installed. You also should have the Python tools
 
 Then you need to clone the repository, and install it's dependencies::
 
-  git clone git@github.com:regebro/xmldiff2.git
+  git clone git@github.com:Shoobx/xmldiff.git
   cd xmldiff2
   pip install -e .
 
