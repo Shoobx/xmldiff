@@ -1,0 +1,5 @@
+<document xmlns:diff="http://namespaces.shoobx.com/diff" title="insert-node">
+  <story id="id">
+    <para><diff:insert>Let's see. </diff:insert>This is some simple text demonstrating the features of the <b diff:delete-formatting=""><i diff:insert-formatting="">human text differ</i></b>. This <u diff:delete-formatting="">feature</u> attempts to make changelog readable for humans. The <i diff:insert-formatting="">human text differ</i> uses sentences as its first order matching.<diff:delete> Let's see.</diff:delete></para>
+  </story>
+</document>

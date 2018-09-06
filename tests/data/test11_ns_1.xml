@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<Tests xmlns:tns="urn:test_ns">
-	<Test tns:type="Change mixed element with text">
-		<Nine>This is <b tns:name="NineName">now</b> the Ninth sentence.</Nine>
-	</Test>
-</Tests>

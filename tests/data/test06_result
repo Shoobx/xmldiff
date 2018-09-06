@@ -1,6 +1,0 @@
-[insert-after, /a[1]/text()[1],
-<LogilabXMLDIFFFAKETag/>
-]
-[move-after, /a[1]/b[1], /a[1]/text()[2]]
-[remove, /a[1]/text()[1]]
-[remove, /a[1]/LogilabXMLDIFFFAKETag[1]]

@@ -1,3 +1,4 @@
 [run]
 source = xmldiff
-omit = */test*
+omit = tests*
+       xmldiff/*diff_match_patch*.py
