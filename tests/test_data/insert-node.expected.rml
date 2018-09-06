@@ -1,0 +1,7 @@
+<document xmlns:diff="http://namespaces.shoobx.com/diff" title="insert-node">
+  <story id="id">
+    <h1 diff:insert="">
+      <diff:insert>Inserted <i>Node</i></diff:insert>
+    </h1>
+  </story>
+</document>

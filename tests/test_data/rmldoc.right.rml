@@ -1,0 +1,519 @@
+<document xmlns:app="http://namespaces.shoobx.com/application" xmlns:preview="http://namespaces.shoobx.com/preview" filename="offer-letter.pdf" title="Offer Letter" subject="Legal Document" author="Shoobx, Inc." creator="Shoobx, Inc.">
+
+  <docinit>
+    <registerTTFont faceName="Garamond" fileName="[shoobx.app]/resources/Garamond/AGaramondPro-Regular.ttf"/>
+    <registerTTFont faceName="Garamond-Italic" fileName="[shoobx.app]/resources/Garamond/AGaramondPro-Italic.ttf"/>
+    <registerTTFont faceName="Garamond-Bold" fileName="[shoobx.app]/resources/Garamond/AGaramondPro-Bold.ttf"/>
+    <registerTTFont faceName="Garamond-BoldItalic" fileName="[shoobx.app]/resources/Garamond/AGaramondPro-BoldItalic.ttf"/>
+    <registerTTFont faceName="Source-Sans-Light" fileName="[shoobx.app]/../frontend/fonts/SourceSansPro-Light.ttf"/>
+    <registerTTFont faceName="Source-Sans-Regular" fileName="[shoobx.app]/../frontend/fonts/SourceSansPro-Regular.ttf"/>
+    <registerTTFont faceName="Source-Sans-Semibold" fileName="[shoobx.app]/../frontend/fonts/SourceSansPro-Semibold.ttf"/>
+    <registerTTFont faceName="Shoobx" fileName="[shoobx.app]/../frontend/fonts/shoobx.ttf"/>
+    <registerFontFamily name="Garamond" normal="Garamond" bold="Garamond-Bold" italic="Garamond-Italic" boldItalic="Garamond-BoldItalic"/>
+
+    <color id="TableHeaderBackgroundColor" value="#EEEEEE"/>
+    <color id="SbGrayLight" value="#CFD9D9"/>
+    <color id="SbGrayDark" value="#566165"/>
+
+    
+      
+    
+  </docinit>
+
+  <stylesheet>
+    <paraStyle name="Normal" parent="style.Normal" fontName="Garamond" fontSize="12pt" leading="14pt" alignment="justify" spaceAfter="12pt"/>
+
+    <paraStyle name="Small" parent="style.Normal" fontName="Garamond" fontSize="10pt" leading="12pt" alignment="justify" spaceAfter="8pt"/>
+
+    <paraStyle name="Indent" parent="Normal" leftIndent="0.75in"/>
+
+    <paraStyle name="Right" parent="Normal" alignment="right"/>
+
+    <paraStyle name="Left" parent="Normal" alignment="left" fontSize="12pt"/>
+
+    <paraStyle name="Center" parent="Normal" alignment="center" fontSize="12pt"/>
+
+    <paraStyle name="HalfSpaceAfter" parent="Normal" spaceAfter="6pt"/>
+
+    <paraStyle name="QuarterSpaceAfter" parent="Normal" spaceAfter="3pt"/>
+
+    <paraStyle name="NoSpaceAfter" parent="Normal" spaceAfter="0pt"/>
+
+    <paraStyle name="BlankMessage" parent="Normal" fontName="Garamond-Italic" alignment="center"/>
+
+    <!-- Used by Signature -->
+    <paraStyle name="code" fontName="Courier" fontSize="10pt"/>
+    <paraStyle name="signature-byword"/>
+    <paraStyle name="code uuid" fontName="Courier" fontSize="10pt"/>
+    <paraStyle name="sig-small-text" fontSize="7pt" leading="9pt" fontName="Source-Sans-Regular" textColor="SbGrayDark"/>
+    <paraStyle name="sig-small-logo" fontSize="28pt" leading="9pt" fontName="Shoobx" textColor="SbGrayDark"/>
+
+    <paraStyle name="style.Heading1" parent="style.Heading1" fontName="Garamond-Bold" fontSize="14pt" leading="16pt" alignment="center" spaceAfter="14pt" keepWithNext="true"/>
+
+    <paraStyle name="style.Heading2" parent="style.Heading2" fontName="Garamond-BoldItalic" fontSize="12pt"/>
+
+    <paraStyle name="style.Heading3" parent="style.Heading3" fontName="Garamond-BoldItalic" fontSize="10pt"/>
+
+    <paraStyle name="style.Heading4" parent="style.Heading4" fontName="Garamond-BoldItalic" fontSize="8pt"/>
+
+    <paraStyle name="style.Heading5" parent="style.Heading5" fontName="Garamond-Bold" fontSize="8pt"/>
+
+    <paraStyle name="style.Heading6" parent="style.Heading6" fontName="Garamond-Bold" fontSize="7pt"/>
+
+    <paraStyle name="ExhibitTitle" parent="style.Heading1" fontName="Garamond-Bold" fontSize="12pt" alignment="center"/>
+
+    <paraStyle name="SectionTitle" parent="Normal" fontName="Garamond-Bold" fontSize="12pt" keepWithNext="true"/>
+
+   <listStyle name="SectionEnum" bulletFontName="Garamond" bulletFontSize="12pt" bulletFormat="(%s)"/>
+
+   <listStyle name="SubSectionEnum" bulletFontName="Garamond" bulletFontSize="12pt" bulletFormat="(%s)" bulletType="a"/>
+
+   <listStyle name="RomanEnum" bulletFontName="Garamond" bulletFontSize="12pt" bulletFormat="(%s)" bulletType="i" rightIndent="60pt" leftIndent="24pt"/>
+
+   <paraStyle name="MultiHeading" parent="Normal" fontName="Garamond-Bold" fontSize="12pt" keepWithNext="true" alignment="Center"/>
+   <paraStyle name="ArticleTitle" parent="Normal" fontName="Garamond-Bold" fontSize="12pt" keepWithNext="true"/>
+   <paraStyle name="ArticleEnum" parent="Normal" fontName="Garamond-Bold" fontSize="12pt" keepWithNext="true" alignment="Center" spaceBefore="24pt"/>
+   <paraStyle name="ArticleHeading" parent="Normal" fontName="Garamond-Bold" fontSize="12pt" keepWithNext="true" alignment="Center"/>
+    <paraStyle name="Legend" parent="Normal" fontName="Garamond-Bold" fontSize="12pt" alignment="justify"/>
+    <paraStyle name="LegendSmall" parent="Normal" fontName="Garamond-Bold" fontSize="8pt" alignment="justify"/>
+
+    <spanStyle name="DiffInsert" textColor="#7AB031"/>
+    <spanStyle name="DiffDelete" textColor="#C42126"/>
+    <spanStyle name="DiffInsertFormatting" textColor="#5F9DC0"/>
+    <spanStyle name="DiffDeleteFormatting" textColor="#5F9DC0"/>
+
+
+    <listStyle name="Simple" bulletFontName="Helvetica" bulletFontSize="6pt" bulletType="bullet" bulletOffsetY="-5pt" bulletDedent="12" leftIndent="24" start="circle"/>
+
+    <listStyle name="Whereases" bulletFontName="Garamond-Bold" bulletFontSize="12pt" bulletType="bullet" bulletDedent="80" leftIndent="80" start="WHEREAS:"/>
+    <listStyle name="Resolutions" bulletFontName="Garamond-Bold" bulletFontSize="12pt" bulletType="bullet" bulletDedent="80" leftIndent="80" start="RESOLVED:"/>
+   <paraStyle name="ResolutionIndent" parent="Normal" leftIndent="80pt"/>
+
+    <listStyle name="Articles" bulletFontName="Garamond-Bold" bulletFontSize="12pt" bulletType="O" bulletFormat="%s:" bulletDedent="80" leftIndent="80"/>
+
+    <blockTableStyle id="SimpleTable">
+      <blockFont start="0,0" stop="-1,-1" name="Garamond" size="12pt"/>
+      <blockLeftPadding start="0,0" stop="-1,-1" length="0"/>
+      <blockRightPadding start="0,0" stop="-1,-1" length="0"/>
+      <blockTopPadding start="0,0" stop="-1,-1" length="0"/>
+      <blockValign start="0,0" stop="-1,-1" value="top"/>
+    </blockTableStyle>
+
+    <blockTableStyle id="TableMiddle">
+      <blockFont start="0,0" stop="-1,-1" name="Garamond" size="12pt"/>
+      <blockLeftPadding start="0,0" stop="-1,-1" length="0"/>
+      <blockTopPadding start="0,0" stop="-1,-1" length="0"/>
+      <blockValign value="MIDDLE"/>
+      <blockBottomPadding length=".3cm"/>
+    </blockTableStyle>
+
+    <blockTableStyle id="SignatureTable">
+      <blockFont start="0,0" stop="-1,-1" name="Garamond" size="12pt"/>
+      <blockLeftPadding start="0,0" stop="-1,-1" length="0"/>
+      <blockRightPadding start="0,0" stop="-1,-1" length="0"/>
+      <blockTopPadding start="0,0" stop="-1,-1" length="0"/>
+      <blockValign start="0,0" stop="-1,-1" value="top"/>
+    </blockTableStyle>
+
+    <blockTableStyle id="SignaturesTable">
+       <blockLeftPadding length="0"/>
+       <blockRightPadding length="0"/>
+       <blockTopPadding length="0"/>
+       <blockBottomPadding length="0"/>
+       <blockValign value="bottom"/>
+       <blockRightPadding length="5" start="0,0" stop="0,-1"/>
+    </blockTableStyle>
+
+    <blockTableStyle id="sig-main">
+       <lineStyle kind="LINEABOVE" colorName="SbGrayLight" start="0,0" stop="-1,0" thicknes="5"/>
+       <lineStyle kind="LINEBELOW" colorName="SbGrayLight" start="0,-1" stop="-1,-1" thicknes="5"/>
+       <blockSpan start="0,0" stop="1,0"/>
+       <blockSpan start="0,1" stop="1,1"/>
+       <blockSpan start="1,2" stop="2,2"/>
+       <blockSpan start="2,0" stop="2,1"/>
+       <blockLeftPadding length="0"/>
+       <blockRightPadding length="0"/>
+       <blockTopPadding length="0"/>
+       <blockBottomPadding length="0"/>
+    </blockTableStyle>
+
+    <blockTableStyle id="GridTable">
+      <blockFont start="0,0" stop="-1,-1" name="Garamond" size="12pt" leading="14pt"/>
+      <blockLeftPadding start="0,0" stop="-1,-1" length="3pt"/>
+      <blockTopPadding start="0,0" stop="-1,-1" length="3pt"/>
+      <lineStyle start="0,0" stop="-1,-1" kind="GRID" colorName="Black" thickness="0.7"/>
+      <blockAlignment start="0,0" stop="-1,-1" value="left"/>
+      <blockValign start="0,0" stop="-1,-1" value="top"/>
+    </blockTableStyle>
+
+    <blockTableStyle id="GridTableWithHeader">
+      <blockFont start="0,0" stop="-1,0" name="Garamond-Bold" size="12pt"/>
+      <blockFont start="0,1" stop="-1,-1" name="Garamond" size="12pt"/>
+      <blockBackground start="0,0" stop="-1,0" colorName="TableHeaderBackgroundColor"/>
+      <blockLeftPadding start="0,0" stop="-1,-1" length="3pt"/>
+      <blockTopPadding start="0,0" stop="-1,-1" length="3pt"/>
+      <lineStyle start="0,0" stop="-1,-1" kind="GRID" colorName="Black" thickness="0.7"/>
+      <blockValign start="0,0" stop="-1,-1" value="top"/>
+    </blockTableStyle>
+
+    
+      
+    
+  </stylesheet>
+
+  <template pagesize="(8.5in, 11in)" rotation="0" leftMargin="1in" rightMargin="1in" topMargin="1in" bottomMargin="1in" showBoundary="false" allowSplitting="true">
+
+    <pageTemplate id="FirstPage">
+      <frame id="main" x1="1.0in" y1="1.2in" width="6.5in" height="8.0in"/>
+      
+    </pageTemplate>
+
+    <pageTemplate id="Main">
+      <frame id="main" x1="1.0in" y1="1.2in" width="6.5in" height="9.0in"/>
+      
+      <pageGraphics>
+    	<setFont name="Garamond" size="12pt"/>
+        <drawCentredString x="4.25in" y="0.75in">
+          <pageNumber/>
+        </drawCentredString>
+      </pageGraphics>
+    </pageTemplate>
+
+    <pageTemplate id="Signatures">
+      <frame id="main" x1="0.5in" y1="0.5in" width="7.5in" height="9.5in"/>
+    </pageTemplate>
+
+    <pageTemplate id="Exhibit">
+      <frame id="main" x1="0.5in" y1="0.5in" width="7.5in" height="9.5in"/>
+    </pageTemplate>
+
+    
+
+  </template>
+
+  
+
+  <story firstPageTemplate="FirstPage">
+    <setNextTemplate name="Main"/>
+
+    
+
+  
+  
+  
+  
+  
+
+  
+
+  
+
+      
+
+      <app:section name="general" title="General Section" count="false" allowCustom="False" hidden="false" removed="false">
+        <app:term name="offer_expiration" set="ol"/>
+        <app:term set="ol" name="custom_content" type="Optional Choice">
+          
+          
+          
+        
+        </app:term>
+        <para>
+          <app:placeholder field="ol.effective_date">July 25, 2018</app:placeholder>
+          <br/>
+          
+        </para>
+        <para>
+          Dear <app:placeholder field="ol.employee_fullname">Second Name</app:placeholder>:
+        </para>
+        <!--I have checked wage and hours laws only for NH, MA, NY, IL, TX,
+            CA, DE and WA, but will need to look at other states when there
+            are employees in other states.-->
+
+        
+
+        <para>
+          On behalf of <app:placeholder field="entity_corporate.legal_name">Acme, Inc.</app:placeholder> (the "<b>Company</b>"),
+          I am pleased to offer you employment with the Company. In addition
+          to confirming our offer, this letter will detail certain terms and
+          conditions of your employment. Please confirm your acceptance of
+          this offer by signing and returning it to me on or before
+          <app:placeholder field="ol.expiration_date" missing="Offer Expiration Date"/>.
+        </para>
+
+
+      </app:section>
+
+      <app:section ref="1" single-ref="1" name="title" title="Title" count="true" allowCustom="False" hidden="false" removed="false">
+        <app:section-help>
+          This section welcomes the new employee and informs them of their
+          start date, position, and manager (if provided).
+        </app:section-help>
+        <app:term name="start_date" set="ol" type="Date"/>
+        <app:term name="end_date" set="ol" type="Date"/>
+        <app:term name="new_title" set="ol" type="Text Line"/>
+        <app:term name="employee_type" set="ol" type="Optional Choice"/>
+
+        <para>
+          <app:ref name="title" preview:body="&lt;Ref&gt;">1</app:ref>. <u><b>Title</b></u>.
+          You will be employed, effective <app:placeholder field="ol.start_date" missing="Start Date"/>,
+            in the
+          <app:placeholder field="ol.employee_type">US Full-time Exempt</app:placeholder> position of <app:placeholder field="ol.new_title" missing="New Employee Title"/>.
+          You agree to devote your best efforts, skill, knowledge, attention
+          and energies to the advancement of the Company's business and
+          interests and to the performance of your duties and responsibilities
+          as an employee of the Company.
+        </para>
+
+      </app:section>
+
+      <app:section ref="2" single-ref="2" name="base_comp" title="Base Compensation" allowCustom="False" hidden="false" removed="false">
+        <app:term name="employee_type" set="ol" type="Optional Choice"/>
+        <app:section-help>
+          Under Federal and state labor laws, there are certain jobs that are
+          subject to overtime pay requirements and these are generally
+          referred to as “non-exempt” positions. Employees in “exempt”
+          positions are not covered by these requirements and therefore are
+          not entitled to overtime under labor laws. Whether an employee is
+          exempt or non-exempt generally depends on (a) how much they are
+          paid, (b) how they are paid, and (c) what kind of work they do.
+        </app:section-help>
+
+        <para>
+          <app:ref name="base_comp" preview:body="&lt;Ref&gt;">2</app:ref>. <u><b>Base Compensation</b></u>.
+          Your base rate of compensation will be
+          
+            <app:placeholder field="ol.employee_type_exempt_FT_monthly_salary" missing="Monthly Salary"/> per month (or <app:placeholder field="ol.employee_type_exempt_FT_salary" missing="Annual Salary"/>
+              on an annualized basis),
+          
+          
+          
+          
+            
+          
+          which will be paid in accordance with the Company's standard payroll
+          practices as established or modified from time to time.
+          
+        </para>
+      </app:section>
+
+      <app:section ref="3" single-ref="3" name="sign" title="Signing Bonus" hidden="false" removed="false">
+        <app:term name="sign_bonus" set="ol"/>
+        
+            <para>
+              <app:ref name="sign" preview:body="&lt;Ref&gt;">3</app:ref>. <u><b>Signing Bonus</b></u>.
+              You will also be paid a <app:placeholder field="ol.sign_bonus_include_amt" missing="Signing Bonus Amount"/> signing
+              bonus, which will be paid on the next regularly scheduled pay date
+              after you start employment with the Company.
+              
+            </para>
+        
+      </app:section>
+
+      
+
+      
+
+      
+
+      <!--added new field/choice/metadata for PTO with 3 options, accrued,
+          open-ended or custom-->
+
+      <!--NOTE the open-ended option should only be available for exempt
+          employees. Can we build this check in?  I attempted to do so below.-->
+
+      
+
+      <app:section ref="4" single-ref="4" name="withholding_taxes" title="Withholding Taxes" hidden="false" removed="false">
+        <para>
+          <app:ref name="withholding_taxes" preview:body="&lt;Ref&gt;">4</app:ref>. <u><b>Withholding Taxes</b></u>.
+          All forms of compensation referred to in this letter are subject to
+          all of the required and elected taxes and withholdings.
+        </para>
+      </app:section>
+
+      <app:section ref="5" single-ref="5" name="at_will" title="At Will Employment" hidden="false" removed="false">
+        <para>
+          <app:ref name="at_will" preview:body="&lt;Ref&gt;">5</app:ref>. <u><b>At Will Employment</b></u>.
+          Your employment with the Company is “at-will” and either you or the
+          Company may terminate your employment at any time, with or without
+          cause or advance notice. As a result, nothing in this letter is a
+          promise or guarantee of employment for any specific period of time
+          or continued employment. The Company also retains the right to make
+          decisions concerning your employment (e.g., changes to your
+          position, title, level, responsibilities, compensation, job duties,
+          reporting structure, work location, work schedule, goals or any
+          other managerial decisions) at any time, with or without cause or
+          advance notice, as it deems appropriate in its sole discretion.
+          Although your job duties, title, compensation and benefits, as well
+          as the Company’s personnel policies and procedures, may change from
+          time to time, the “at will” nature of your employment may only be
+          changed by a written agreement signed by you and a duly authorized
+          officer of the Company, which expressly states the intention to
+          modify the at-will nature of your employment.
+        </para>
+      </app:section>
+
+      <app:section ref="6" single-ref="6" name="confidentiality_agreement" title="Confidentiality and Assignment Agreement" hidden="false" removed="false">
+        <para>
+          <app:ref name="confidentiality_agreement" preview:body="&lt;Ref&gt;">6</app:ref>.
+          <u><b>Confidentiality and Assignment Agreement</b></u>.
+          The Company views the protection of its trade secrets and other
+          confidential and proprietary information, such as customer or
+          product information, as a matter of great importance and intends to
+          train you and expose you to such information. Therefore, as a
+          condition of this offer, your employment with the Company, the
+          training the Company will provide you, the receipt of the
+          compensation and benefits contained herein and the receipt of the
+          Company's confidential and proprietary information during your
+          employment, you are required to review and sign the Company's
+          Confidentiality and Assignment Agreement. We urge you to review the
+          Company's Confidentiality and Assignment Agreement closely because
+          it contains obligations you will have as an employee relating to the
+          Company's confidential and proprietary information
+          and
+        
+          
+          
+            <app:placeholder field="eca_terms.non_solicit">a restriction limiting your ability to solicit or disrupt certain of the Company's existing relationships</app:placeholder>,
+          during your employment and for a period of time after your
+          employment with the Company ends. We understand that you may have
+          obligations to your present and/or prior employers to safeguard the
+          confidential and proprietary information of those organizations, and
+          we expect and require that you will honor them. To that end, we
+          expect that you will not take any documents or other confidential
+          and/or proprietary information from your current employer when you
+          depart. We also expect that you will not use any proprietary
+          information, materials or documents of a former employer while
+          performing your responsibilities for the Company.
+        </para>
+      </app:section>
+
+      <app:section ref="7" single-ref="7" name="work_authorization" title="Work Authorization" allowCustom="False" hidden="false" removed="false">
+        <para>
+          <app:ref name="work_authorization" preview:body="&lt;Ref&gt;">7</app:ref>.
+          <u><b>Work Authorization</b></u>.
+          Under federal immigration laws, the Company is required to verify
+          each new employee's identity and legal authority to work in the
+          United States. Accordingly, please be prepared to furnish
+          appropriate documents on your first day of employment satisfying
+          those requirements (e.g., a valid U.S. passport). This offer of
+          employment is conditional on submission of satisfactory
+          documentation regarding your identity and authorization to work in
+          the United States.
+        </para>
+      </app:section>
+      
+
+        
+
+      <!--there is a note for CA based employees and i included a note in help
+          text.-->
+      <app:section ref="8" single-ref="8" name="company_policies" title="Company Policies and Procedures" hidden="false" removed="false">
+        <para>
+          <app:ref name="company_policies" preview:body="&lt;Ref&gt;">8</app:ref>.
+          <u><b>Company Policies and Procedures</b></u>.
+          As an employee of the Company, you will be required to comply with
+          (a) all Company policies and procedures and (b) all laws and
+          regulations applicable to the Company’s business and performance of
+          your duties for the Company. Violations of the Company's policies or
+          applicable law may lead to immediate termination of your employment.
+        </para>
+      </app:section>
+
+    <app:section ref="9" single-ref="9" name="reference_check" title="Background/Reference Checks" hidden="false" removed="false">
+      <app:term name="background" set="ol"/>
+      
+          <para>
+            <app:ref name="reference_check" preview:body="&lt;Ref&gt;">9</app:ref>.
+            <u><b>Background/Reference Checks</b></u>.
+            
+              You may need to complete an employment application or allow the
+              Company to complete a background and/or reference check to its
+              satisfaction as a condition of your employment. You agree to
+              execute the forms necessary for the processing of any such
+              background and/or reference checks.
+            
+            
+          </para>
+        
+      </app:section>
+
+      <app:section ref="10" single-ref="10" name="electronic_delivery" title="Electronic Delivery" hidden="false" removed="false">
+        <para>
+          <app:ref name="electronic_delivery" preview:body="&lt;Ref&gt;">10</app:ref>.
+          <u><b>Electronic Delivery</b></u>.
+          The Company may, in its sole discretion, decide to deliver to you by
+          email or any other electronic means any documents or notices related
+          to this letter, your employment with the Company, securities of the
+          Company or any of its affiliates or any other matter, including
+          documents and/or notices required to be delivered to you by
+          applicable laws. You consent to receive such documents or notices by
+          electronic means and also agree to participate through any on-line
+          or electronic system that may be established and maintained by the
+          Company or a third party designated by the Company.
+        </para>
+      </app:section>
+
+      <app:section ref="11" single-ref="11" name="integration" title="Integration" hidden="false" removed="false">
+        <para>
+          <app:ref name="integration" preview:body="&lt;Ref&gt;">11</app:ref>. <u><b>Integration</b></u>.
+          This offer letter and the agreements, policies, rules and procedures
+          referenced herein are our complete understanding regarding your
+          employment with the Company. Accordingly, it supersedes and
+          completely replaces any prior oral or written communications on the
+          subject.
+        </para>
+      </app:section>
+      <app:section name="custom-content" count="false" allowCustom="False" hidden="false" removed="false">
+        <app:term set="ol" name="custom_content" type="Optional Choice">
+          
+          
+          
+        
+        </app:term>
+        
+      </app:section>
+      <app:section ref="12" single-ref="12" name="signature" title="Signature Blocks" allowCustom="False" hidden="false" removed="false">
+          <app:term name="offer_expiration" set="ol"/>
+      <para>
+		We are very excited about you joining our team and know that you will 
+		make outstanding contributions to <app:placeholder field="entity_corporate.legal_name">Acme, Inc.</app:placeholder>! 
+		Kindly indicate your acceptance of our offer by signing this letter 
+		together with the Employee Confidentiality and Assignment Agreement and 
+		returning both of these signed documents to me. Feel free to give 
+		 me a 
+		call to discuss any particular details or questions you might 
+		have.        
+      </para>
+      <para>
+        Very truly yours,
+      </para>
+      <blockTable style="SignaturesTable">
+        <tr>
+          <td><app:placeholder field="ol.representative_signature">By: _________________________</app:placeholder></td>
+          <td/>
+        </tr>
+      </blockTable>
+      <setNextTemplate name="Signatures"/>
+      <nextPage/>
+      <para>
+        This offer will expire on <app:placeholder field="ol.expiration_date" missing="Offer Expiration Date"/>, unless extended by
+        mutual agreement.
+      </para>
+      <para>
+        I hereby accept the offer of employment with
+        <app:placeholder field="entity_corporate.legal_name">Acme, Inc.</app:placeholder> on the terms and conditions set forth
+        above.
+      </para>
+      <blockTable style="SignaturesTable">
+        <tr>
+          <td><app:placeholder field="ol.employee_signature">By: _________________________</app:placeholder></td>
+          <td/>
+        </tr>
+      </blockTable>
+      </app:section>
+    
+
+  </story>
+</document>

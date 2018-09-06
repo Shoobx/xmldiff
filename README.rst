@@ -1,62 +1,73 @@
+xmldiff
 ========
-XML Diff
-========
 
-.. image:: https://travis-ci.org/Shoobx/xmldiff.png?branch=master
-   :target: https://travis-ci.org/Shoobx/xmldiff
+.. image:: https://travis-ci.org/regebro/xmldiff2.svg?branch=master
 
-.. image:: https://coveralls.io/repos/github/Shoobx/xmldiff/badge.svg?branch=master
-   :target: https://coveralls.io/github/Shoobx/xmldiff?branch=master
+.. image:: https://coveralls.io/repos/github/regebro/xmldiff2/badge.svg
 
-.. image:: https://img.shields.io/pypi/v/xmldiff.svg
-    :target: https://pypi.python.org/pypi/xmldiff
+``xmldiff`` is a library and a command line utility for making diffs out of XML.
+This may seem like something that doesn't need a dedicated utility,
+but change detection in hierarchical data is very different from change detection in flat data.
+XML type formats are also not only used for computer readable data,
+it is also often used as a format for hierarchical data that can be rendered into human readable formats.
+A traditional diff on such a format would tell you line by line the differences,
+but this would not be be readable by a human.
+This library provides tools to make human readable diffs in those situations.
 
-.. image:: https://img.shields.io/pypi/pyversions/xmldiff.svg
-    :target: https://pypi.python.org/pypi/xmldiff/
 
-.. image:: https://api.codeclimate.com/v1/badges/b5a94d8f61fdff1e3214/maintainability
-   :target: https://codeclimate.com/github/Shoobx/xmldiff/maintainability
-   :alt: Maintainability
+Quick usage
+-----------
 
-Xmldiff is a utility for extracting differences between two xml files. It
-returns a set of primitives to apply on source tree to obtain the destination
-tree.
+``xmldiff`` is both a command line tool and a Python library.
+To use it from the commandline, just run ``xmldiff`` with two input files::
 
-The implementation is based on `Change detection in hierarchically structured
-information`, by S. Chawathe, A. Rajaraman, H. Garcia-Molina and J. Widom,
-Stanford University, 1996
+  $ xmldiff file1.xml file2.xml
 
-Installation
+As a library::
+
+  from lxml import etree
+  from xmldiff import main, formatting
+
+  differ = diff.Differ()
+  diff = main.diff_files('file1.xml', 'file2.xml',
+                         formatter=formatting.XMLFormatter())
+
+  print(diff)
+
+There is also a method ``diff_trees()`` that take two lxml trees,
+and a method ``diff_texts()`` that will take strings containing XML.
+
+
+Changes from ``xmldiff`` 1.x
+-----------------------------
+
+  * A complete, ground up, pure-Python rewrite
+
+  * Easier to maintain, the code is less complex and more Pythonic,
+    and uses more custom classes instead of just nesting lists and dicts.
+
+  * Fixes the problems with certain large files and solves the memory leaks.
+
+  * A nice, easy to use Python API for using it as a library.
+
+  * Adds support for showing the diffs in different formats,
+    mainly one where differences are marked up in the XML,
+    useful for making human readable diffs.
+
+  * These formats can show text differences in a semantically meaningful way.
+
+  * 2.0 is urrently significantly slower than ``xmldiff`` 2.x,
+    but this may change in the future.
+    Currently we make no effort to make ``xmldiff`` 2.0 fast,
+    we concentrate on making it correct and usable.
+
+
+Contributors
 ------------
 
-To install the latest release:
+ * Lennart Regebro, lregebro@shoobx.com (main author)
 
-.. code:: bash
+ * Stephan Richter, srichter@shoobx.com
 
-    pip install xmldiff
-
-
-To install the development version:
-
-.. code:: bash
-
-    git clone https://github.com/Shoobx/xmldiff.git
-    cd xmldiff
-    virtualenv ./.venv
-    ./.venv/bin/python setup.py install
-
-Then to compare two given XML files:
-
-.. code:: bash
-
-    ./.venv/bin/xmldiff 1.xml 2.xml
-
-
-Running tests
--------------
-
-To run the test suite for all python versions:
-
-.. code:: bash
-
-    tox
+The diff algorithm is based on "`Change Detection in Hierarchically Structured Information <http://ilpubs.stanford.edu/115/1/1995-46.pdf>`_",
+and the text diff is using Google's ``diff_match_patch`` algorithm.
