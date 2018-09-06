@@ -1,7 +1,7 @@
 Changes
 =======
 
-2.0b2 (unreleased)
+2.0b2 (2018-09-06)
 ------------------
 
 - Documentation
