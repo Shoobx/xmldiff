@@ -11,13 +11,11 @@ you just import and call one of the three main API methods.
   :options: -ELLIPSIS, +NORMALIZE_WHITESPACE
 
   >>> from xmldiff import main
-  >>> main.diff_files("../tests/test_data/insert-node.left.rml",
-  ...                 "../tests/test_data/insert-node.right.rml")
-  [UpdateTextIn(node='/document/story[1]', text=None),
-   InsertNode(target='/document/story[1]', tag='h1', position=0),
-   UpdateTextIn(node='/document/story/h1[1]', text='Inserted '),
-   InsertNode(target='/document/story/h1[1]', tag='i', position=0),
-   UpdateTextIn(node='/document/story/h1/i[1]', text='Node')]
+  >>> main.diff_files("../tests/test_data/insert-node.left.html",
+  ...                 "../tests/test_data/insert-node.right.html")
+  [UpdateTextIn(node='/body/div[1]', text=None),
+   InsertNode(target='/body/div[1]', tag='p', position=0),
+   UpdateTextIn(node='/body/div/p[1]', text='Simple text')]
 
 Which one you choose depends on if the XML is contained in files,
 text strings or ``lxml`` trees.
@@ -62,7 +60,7 @@ If no formatter is specified the diff functions will return a list of actions.
 Such a list is called an edit script and contains all changes needed to transform the "left" XML into the "right" XML.
 
 If a formatter is specified that formatter determines the result.
-The included formatters, ``diff``, ``xml``, and ``rml`` all return a Unicode string.
+The included formatters, ``diff``, ``xml``, and ``html`` all return a Unicode string.
 
 
 Unique Attributes
@@ -88,7 +86,7 @@ Using Formatters
 By default the diff functions will return an edit script,
 but if you pass in a formatter the result will be whatever that formatter returns.
 
-The three included formatters, ``diff``, ``xml`` and ``rml``,
+The three included formatters, ``diff``, ``xml`` and ``html``,
 all return Unicode strings.
 The ``diff`` formatter will return a string with the edit script printed out,
 one action per line.
@@ -103,14 +101,12 @@ so the output is not compatible.
 
   >>> from xmldiff import formatting
   >>> formatter = formatting.DiffFormatter()
-  >>> print(main.diff_files("../tests/test_data/insert-node.left.rml",
-  ...                       "../tests/test_data/insert-node.right.rml",
+  >>> print(main.diff_files("../tests/test_data/insert-node.left.html",
+  ...                       "../tests/test_data/insert-node.right.html",
   ...                       formatter=formatter))
-  [update-text, /document/story[1], null]
-  [insert, /document/story[1], h1, 0]
-  [update-text, /document/story/h1[1], "Inserted "]
-  [insert, /document/story/h1[1], i, 0]
-  [update-text, /document/story/h1/i[1], "Node"]
+  [update-text, /body/div[1], null]
+  [insert, /body/div[1], p, 0]
+  [update-text, /body/div/p[1], "Simple text"]
 
 
 The other two differs return XML with tags describing the changes.
@@ -121,17 +117,17 @@ for example with XSLT replacing the tags with the format you need.
   :options: -ELLIPSIS, +NORMALIZE_WHITESPACE
 
   >>> from xmldiff import formatting
-  >>> formatter = formatting.RMLFormatter()
-  >>> print(main.diff_files("../tests/test_data/insert-node.left.rml",
-  ...                       "../tests/test_data/insert-node.right.rml",
+  >>> formatter = formatting.HTMLFormatter()
+  >>> print(main.diff_files("../tests/test_data/insert-node.left.html",
+  ...                       "../tests/test_data/insert-node.right.html",
   ...                       formatter=formatter))
-  <document xmlns:diff="http://namespaces.shoobx.com/diff" title="insert-node">
-    <story id="id">
-      <h1 diff:insert="">
-        <diff:insert>Inserted <i>Node</i></diff:insert>
-      </h1>
-    </story>
-  </document>
+  <body xmlns:diff="http://namespaces.shoobx.com/diff">
+    <div id="id">
+      <p diff:insert="">
+        <diff:insert>Simple text</diff:insert>
+      </p>
+    </div>
+  </body>
 
 
 The Edit Script

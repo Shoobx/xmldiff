@@ -360,16 +360,16 @@ class XMLFormatterFileTests(FormatterFileTests):
                                         normalize=formatting.WS_TEXT)
 
 
-class RMLFormatterFileTests(FormatterFileTests):
+class HTMLFormatterFileTests(FormatterFileTests):
 
-    # We use the RMLFormatter for the placeholder tests
-    formatter = formatting.RMLFormatter()
+    # We use the HTMLFormatter for the placeholder tests
+    formatter = formatting.HTMLFormatter()
 
 
 # Add tests that use no placeholder replacement (ie plain XML)
 data_dir = os.path.join(os.path.dirname(__file__), 'test_data')
 generate_filebased_cases(data_dir, XMLFormatterFileTests)
 
-# Add tests that use placeholder replacement (ie RML)
+# Add tests that use placeholder replacement (ie HTML)
 data_dir = os.path.join(os.path.dirname(__file__), 'test_data')
-generate_filebased_cases(data_dir, RMLFormatterFileTests, suffix='rml')
+generate_filebased_cases(data_dir, HTMLFormatterFileTests, suffix='html')
