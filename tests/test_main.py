@@ -98,19 +98,19 @@ class MainCLITests(unittest.TestCase):
     def test_cli_simple(self):
         curdir = os.path.dirname(__file__)
         filepath = os.path.join(curdir, 'test_data')
-        file1 = os.path.join(filepath, 'insert-node.left.rml')
-        file2 = os.path.join(filepath, 'insert-node.right.rml')
+        file1 = os.path.join(filepath, 'insert-node.left.html')
+        file2 = os.path.join(filepath, 'insert-node.right.html')
 
         output, errors = self.call_run([file1, file2])
-        self.assertEqual(len(output.splitlines()), 5)
+        self.assertEqual(len(output.splitlines()), 3)
         # This should default to the diff formatter:
         self.assertEqual(output[0], '[')
 
     def test_cli_args(self):
         curdir = os.path.dirname(__file__)
         filepath = os.path.join(curdir, 'test_data')
-        file1 = os.path.join(filepath, 'insert-node.left.rml')
-        file2 = os.path.join(filepath, 'insert-node.right.rml')
+        file1 = os.path.join(filepath, 'insert-node.left.html')
+        file2 = os.path.join(filepath, 'insert-node.right.html')
 
         # Select a formatter:
         output, errors = self.call_run([file1, file2, '--formatter', 'xml'])
@@ -122,9 +122,9 @@ class MainCLITests(unittest.TestCase):
         # Don't strip the whitespace keeps the formatting from the source:
         output, errors = self.call_run([file1, file2, '--keep-whitespace',
                                         '--formatter', 'xml'])
-        self.assertEqual(len(output.splitlines()), 7)
+        self.assertEqual(len(output.splitlines()), 5)
 
         # And stripping and pretty printing gives a longer readable output
         output, errors = self.call_run([file1, file2, '--pretty-print',
-                                        '--formatter', 'xml'])
-        self.assertEqual(len(output.splitlines()), 11)
+                                        '--formatter', 'html'])
+        self.assertEqual(len(output.splitlines()), 8)

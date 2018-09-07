@@ -5,7 +5,7 @@ include .coveragerc
 include Makefile
 recursive-include tests *.py
 recursive-include tests *.xml
-recursive-include tests *.rml
+recursive-include tests *.html
 recursive-include docs *.bat
 recursive-include docs *.py
 recursive-include docs *.rst

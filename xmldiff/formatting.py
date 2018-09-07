@@ -41,7 +41,7 @@ class BaseFormatter(object):
         normalized with the included formatters.
 
         pretty_print is used to choose between a compact and a pretty output.
-        This is currently only used by the XML and RML formatters.
+        This is currently only used by the XML and HTML formatters.
 
         Formatters may of course have more options than these, but these
         two are the ones that can be set from the command line.
@@ -312,6 +312,11 @@ class XMLFormatter(BaseFormatter):
         # and also because we don't want to modify the original tree.
 
         result = deepcopy(orig_tree)
+        if isinstance(result, etree._ElementTree):
+            root = result.getroot()
+        else:
+            root = result
+
         etree.register_namespace(DIFF_PREFIX, DIFF_NS)
 
         deferred = []
@@ -320,12 +325,12 @@ class XMLFormatter(BaseFormatter):
                 # We need to do text updates last
                 deferred.append(action)
                 continue
-            self.handle_action(action, result)
+            self.handle_action(action, root)
 
         for action in reversed(deferred):
-            self.handle_action(action, result)
+            self.handle_action(action, root)
 
-        self.finalize(result)
+        self.finalize(root)
 
         etree.cleanup_namespaces(result, top_nsmap={DIFF_PREFIX: DIFF_NS})
         return etree.tounicode(result, pretty_print=self.pretty_print)
@@ -555,13 +560,14 @@ class XMLFormatter(BaseFormatter):
         return node
 
 
-class RMLFormatter(XMLFormatter):
+class HTMLFormatter(XMLFormatter):
+    """A formatter that understands HTML snippets"""
 
     def __init__(self, normalize=WS_BOTH, pretty_print=True,
-                 text_tags=('para', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6'),
+                 text_tags=('p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'li'),
                  formatting_tags=('b', 'u', 'i', 'strike', 'em', 'super',
                                   'sup', 'sub', 'link', 'a', 'span')):
-        super(RMLFormatter, self).__init__(
+        super(HTMLFormatter, self).__init__(
             normalize=normalize, pretty_print=pretty_print,
             text_tags=text_tags, formatting_tags=formatting_tags)
 

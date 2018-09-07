@@ -7,13 +7,15 @@ from xmldiff import diff, formatting
 
 __version__ = pkg_resources.require("xmldiff")[0].version
 
+FORMATTERS = {
+    'diff': formatting.DiffFormatter,
+    'xml': formatting.XMLFormatter,
+    'html': formatting.HTMLFormatter,
+}
+
 
 def diff_trees(left, right, F=0.5, uniqueattrs=None, formatter=None):
     """Takes two lxml root elements or element trees"""
-    if isinstance(left, etree._ElementTree):
-        left = left.getroot()
-    if isinstance(right, etree._ElementTree):
-        right = right.getroot()
     if formatter is not None:
         formatter.prepare(left, right)
     differ = diff.Differ(F=F, uniqueattrs=uniqueattrs)
@@ -52,7 +54,7 @@ def make_parser():
     parser.add_argument('file2', type=FileType('r'),
                         help='the second input file')
     parser.add_argument('-f', '--formatter', default='diff',
-                        choices=['diff', 'xml', 'rml'],
+                        choices=list(FORMATTERS.keys()),
                         help='formatter selection')
     parser.add_argument('-w', '--keep-whitespace', action='store_true',
                         help="do not strip ignorable whitespace")
@@ -72,12 +74,6 @@ def run(args=None):
         normalize = formatting.WS_NONE
     else:
         normalize = formatting.WS_BOTH
-
-    FORMATTERS = {
-        'diff': formatting.DiffFormatter,
-        'xml': formatting.XMLFormatter,
-        'rml': formatting.RMLFormatter,
-    }
 
     formatter = FORMATTERS[args.formatter](normalize=normalize,
                                            pretty_print=args.pretty_print)

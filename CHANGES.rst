@@ -4,7 +4,8 @@ Changes
 2.0b3 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Replaced the example RMLFormatter with a more generic HTML formatter,
+  although it only handles HTML snippets at the moment.
 
 
 2.0b2 (2018-09-06)

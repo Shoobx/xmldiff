@@ -63,14 +63,11 @@ since the whitespace there occurs inside a tag:
   <data count="1">    </data><data count="2"></data>
 
 In some XML formats, whitespace inside some tags is also not significant.
-The ``rml`` formatter is an example of this.
-It's a format that can be used to generate documents,
-and has a ``<para>`` tag for formatted text,
-similar to HTML's ``<p>`` tag.
-The ``rml`` formatter is aware of this,
+The ``html`` formatter is an example of this.
+ It is aware of that ``<p>`` tags contain text where whitespace isn't significant,
 and will by default normalize whitespace inside these tags before comparing it,
 effectively replacing any whitespace inside those tags to a single space.
-This is so that when diffing two versions of RML files you will not see changes that would not be visible in the final document.
+This is so that when diffing two versions of HTML files you will not see changes that would not be visible in the final document.
 
 Both of these types of whitespace can be preserved with the ``--keep-whitespace`` argument.
 The third case of whitespace,
@@ -87,7 +84,7 @@ The term "pretty printing" refers to making an output a bit more human readable 
 In the case of XML this means inserting ignorable whitespace into the XML,
 yes, the same in-between whitespace that is ignored by ``xmldiff`` when detecting changes between two files.
 
-``xmldiff``'s ``xml`` and ``rml`` formatters understand the ``--pretty-print`` argument and will insert whitespace to make the output more readable.
+``xmldiff``'s ``xml`` and ``html`` formatters understand the ``--pretty-print`` argument and will insert whitespace to make the output more readable.
 
 For example, an XML output that would normally look like this:
 
