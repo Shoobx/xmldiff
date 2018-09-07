@@ -22,7 +22,7 @@ of course Python with pip installed. You also should have the Python tools
 Then you need to clone the repository, and install it's dependencies::
 
   git clone git@github.com:Shoobx/xmldiff.git
-  cd xmldiff2
+  cd xmldiff
   pip install -e .
 
 You should now be able to test your setup by running a few ``make`` commands::

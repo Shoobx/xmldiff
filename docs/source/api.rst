@@ -41,15 +41,15 @@ Parameters
 ``right``:
   The "right", "new" or "target" XML.
 
-``F``: float
+``F``:
   A value between 0 and 1 that determines how similar two XML nodes must be to match as the same in both trees. Defaults to 0.5.
 
-``uniqueattrs``: list of strings
+``uniqueattrs``:
   A list of XML node attributes that will uniquely identify a node.
   Defaults to ``['{http://www.w3.org/XML/1998/namespace}id']``.
   See `Unique Attributes`_
 
-``formatter``: instance
+``formatter``:
   The formatter to use, see `Using Formatters`_.
   If no formatter is specified the function will return a list of edit actions,
   see `The Edit Script`_.
@@ -149,7 +149,7 @@ They are specified with an XPATH expression that will uniquely identify the node
 The other arguments vary depending on the action.
 
 
-``InsertNode(target, tag, position')``
+``InsertNode(target, tag, position)``
 ......................................
 
 The ``InsertNode`` action means that the node specified in ``target`` needs a new subnode.
