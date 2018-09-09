@@ -48,6 +48,11 @@ class Differ(object):
         self.clear()
 
         # Make sure we were passed two lxml elements:
+        if isinstance(left, etree._ElementTree):
+            left = left.getroot()
+        if isinstance(right, etree._ElementTree):
+            right = right.getroot()
+
         if not (etree.iselement(left) and etree.iselement(right)):
             raise TypeError("The 'left' and 'right' parameters must be "
                             "lxml Elements.")

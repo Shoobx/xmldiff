@@ -312,6 +312,11 @@ class XMLFormatter(BaseFormatter):
         # and also because we don't want to modify the original tree.
 
         result = deepcopy(orig_tree)
+        if isinstance(result, etree._ElementTree):
+            root = result.getroot()
+        else:
+            root = result
+
         etree.register_namespace(DIFF_PREFIX, DIFF_NS)
 
         deferred = []
@@ -320,12 +325,12 @@ class XMLFormatter(BaseFormatter):
                 # We need to do text updates last
                 deferred.append(action)
                 continue
-            self.handle_action(action, result)
+            self.handle_action(action, root)
 
         for action in reversed(deferred):
-            self.handle_action(action, result)
+            self.handle_action(action, root)
 
-        self.finalize(result)
+        self.finalize(root)
 
         etree.cleanup_namespaces(result, top_nsmap={DIFF_PREFIX: DIFF_NS})
         return etree.tounicode(result, pretty_print=self.pretty_print)

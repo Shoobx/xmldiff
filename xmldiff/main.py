@@ -16,10 +16,6 @@ FORMATTERS = {
 
 def diff_trees(left, right, F=0.5, uniqueattrs=None, formatter=None):
     """Takes two lxml root elements or element trees"""
-    if isinstance(left, etree._ElementTree):
-        left = left.getroot()
-    if isinstance(right, etree._ElementTree):
-        right = right.getroot()
     if formatter is not None:
         formatter.prepare(left, right)
     differ = diff.Differ(F=F, uniqueattrs=uniqueattrs)
