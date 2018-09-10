@@ -64,7 +64,7 @@ since the whitespace there occurs inside a tag:
 
 In some XML formats, whitespace inside some tags is also not significant.
 The ``html`` formatter is an example of this.
- It is aware of that ``<p>`` tags contain text where whitespace isn't significant,
+It is aware of that ``<p>`` tags contain text where whitespace isn't significant,
 and will by default normalize whitespace inside these tags before comparing it,
 effectively replacing any whitespace inside those tags to a single space.
 This is so that when diffing two versions of HTML files you will not see changes that would not be visible in the final document.

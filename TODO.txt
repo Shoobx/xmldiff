@@ -23,7 +23,7 @@ First Beta:
 First Final:
 ------------
 
-* Documentation
+* Documentation - Done
 
 
 Future releases:

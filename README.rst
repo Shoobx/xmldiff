@@ -56,7 +56,7 @@ Changes from ``xmldiff`` 1.x
 
   * These formats can show text differences in a semantically meaningful way.
 
-  * 2.0 is urrently significantly slower than ``xmldiff`` 2.x,
+  * 2.0 is urrently significantly slower than ``xmldiff`` 1.x,
     but this may change in the future.
     Currently we make no effort to make ``xmldiff`` 2.0 fast,
     we concentrate on making it correct and usable.
