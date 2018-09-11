@@ -1,7 +1,7 @@
 Changes
 =======
 
-2.0b3 (unreleased)
+2.0b3 (2018-09-11)
 ------------------
 
 - Replaced the example RMLFormatter with a more generic HTML formatter,
