@@ -10,6 +10,7 @@ from xmldiff import utils
 # Update, Move, Delete and Insert are the edit script actions:
 DeleteNode = namedtuple('DeleteNode', 'node')
 InsertNode = namedtuple('InsertNode', 'target tag position')
+RenameNode = namedtuple('RenameNode', 'node tag')
 MoveNode = namedtuple('MoveNode', 'node target position')
 
 UpdateTextIn = namedtuple('UpdateTextIn', 'node text')
@@ -97,8 +98,8 @@ class Differ(object):
 
         rroot = self.right.getroottree()
         rnodes = list(utils.post_order_traverse(self.right))
-
         for lnode in lnodes:
+
             max_match = 0
             match_node = None
 
@@ -121,9 +122,9 @@ class Differ(object):
             if max_match >= self.F:
                 self.append_match(lnode, match_node, max_match)
 
-            # We don't want to check nodes that already are matched
-            if match_node is not None:
-                rnodes.remove(match_node)
+                # We don't want to check nodes that already are matched
+                if match_node is not None:
+                    rnodes.remove(match_node)
 
         # TODO: If the roots do not match, we should create new roots, and
         # have the old roots be children of the new roots, but let's skip
@@ -137,11 +138,15 @@ class Differ(object):
         return self._matches
 
     def node_text(self, node):
+        # Get the texts and the tag as a start
         texts = node.xpath('text()')
+        texts.append(node.tag)
 
+        # Then add attributes and values
         for each in sorted(node.attrib.items()):
             texts.append(':'.join(each))
 
+        # Finally make one string, useful to see how similar two nodes are
         text = u' '.join(texts).strip()
         return utils.cleanup_whitespace(text)
 
@@ -155,16 +160,6 @@ class Differ(object):
                 self._sequencematcher.set_seqs(left.text, right.text)
                 return self._sequencematcher.ratio()
             # One is a comment the other is not:
-            return 0
-
-        # Get rid of the URN in the tag for comparison:
-        ltag = left.tag.rsplit('}')[-1]
-        rtag = right.tag.rsplit('}')[-1]
-        #  If the prefix and the tag is the same, that's OK. But if the prefix
-        # or the tag has changed, then it's definitely not the same.
-        # However, this way we allow changing the URN of the prefix.
-        if (left.prefix, ltag) != (right.prefix, rtag):
-            # Different tags == not the same node at all
             return 0
 
         for attr in self.uniqueattrs:
@@ -184,7 +179,7 @@ class Differ(object):
         # How similar the children of two nodes are
         left_children = left.getchildren()
         right_children = right.getchildren()
-        if not left_children and not right_children:
+        if not left_children or not right_children:
             return None
         count = 0
         child_count = max((len(left_children), len(right_children)))
@@ -196,6 +191,12 @@ class Differ(object):
                     break
 
         return count / child_count
+
+    def update_node_tag(self, left, right):
+        if left.tag != right.tag:
+            left_xpath = utils.getpath(left)
+            yield RenameNode(left_xpath, right.tag)
+            left.tag = right.tag
 
     def update_node_attr(self, left, right):
         left_xpath = utils.getpath(left)
@@ -370,6 +371,8 @@ class Differ(object):
                 # (ii) Update
                 # XXX If they are exactly equal, we can skip this,
                 # maybe store match results in a cache?
+                for action in self.update_node_tag(lnode, rnode):
+                    yield action
                 for action in self.update_node_attr(lnode, rnode):
                     yield action
 

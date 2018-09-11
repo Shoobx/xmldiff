@@ -13,7 +13,7 @@ unpack it with you favourite unpacking tool and then run::
 
 That's it, ``xmldiff`` should now be available for you to use.
 
-Several Unix distributions also include xmldiff so you can install it with your distrubutions package manager.
+Several Unix distributions also include ``xmldiff`` so you can install it with your distrubutions package manager.
 Be aware that currently most distribute an earlier version,
 typically 0.6.10, which is very different from 2.x,
 which this documentation is written for.

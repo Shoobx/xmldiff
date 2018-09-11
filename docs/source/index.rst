@@ -1,7 +1,7 @@
 xmldiff
 =======
 
-``xmldiff`` is a library and a command line utility for making diffs out of XML.
+``xmldiff`` is a library and a command-line utility for making diffs out of XML.
 This may seem like something that doesn't need a dedicated utility,
 but change detection in hierarchical data is very different from change detection in flat data.
 XML type formats are also not only used for computer readable data,
@@ -18,6 +18,7 @@ Contents:
    installation
    commandline
    api
+   advanced
    contributing
 
 

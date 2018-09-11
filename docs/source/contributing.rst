@@ -10,8 +10,8 @@ There are some extremely complex issues deep down in ``xmldiff``, but don't
 let that scare you away, there's easy things to do as well.
 
 
-Setting up a dev environment
-----------------------------
+Setting Up a Development Environment
+------------------------------------
 
 To set up a development environment you need a github account, git, and
 of course Python with pip installed. You also should have the Python tools
@@ -57,7 +57,7 @@ which doesn't require any extra configuration in the normal case,
 and will run the tests on all versions that are defined as supported in ``setup.py``.
 
 
-Pull requests
+Pull Requests
 -------------
 
 Even if you have write permissions to the repository we discourage pushing changes to master.
@@ -74,7 +74,7 @@ You pull requests should:
   * Add yourself to the contributors list in ``README.txt`` if you aren't already there.
 
 
-Code quality and conventions
+Code Quality and Conventions
 ----------------------------
 
 ``xmldiff`` aims to have 100% test coverage.
@@ -111,7 +111,7 @@ The documentation is hosted on `Read the Docs <https://readthedocs.org/>`_,
 the official URL is https://readthedocs.org/projects/xmldiff/.
 
 
-Implementation details
+Implementation Details
 ----------------------
 
 ``xmldiff`` is based on `"Change Detection in Hierarchically StructuredS Information" <http://ilpubs.stanford.edu/115/1/1995-46.pdf>`_

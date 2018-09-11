@@ -1,8 +1,8 @@
-Command line usage
+Command-line Usage
 ==================
 
-``xmldiff`` is both a command line tool and a Python library.
-To use it from the commandline, just run ``xmldiff`` with two input files:
+``xmldiff`` is both a command-line tool and a Python library.
+To use it from the command-line, just run ``xmldiff`` with two input files:
 
 .. code-block:: bash
 
@@ -33,7 +33,7 @@ but may not give you a useful output.
 If you are using ``xmldiff`` as a library,
 you can create your own formatters that is suited for your particular usage of XML.
 
-Whitespace handling
+Whitespace Handling
 -------------------
 
 Formatters are also responsable for whitespace handling,
@@ -77,7 +77,7 @@ Both the ``diff`` and ``xml`` formatters don't know of any text formatting,
 and will therefore always preserve all whitespace inside tags.
 
 
-Pretty printing
+Pretty Printing
 ---------------
 
 The term "pretty printing" refers to making an output a bit more human readable by structuring it with whitespace.

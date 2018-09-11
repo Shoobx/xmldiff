@@ -29,6 +29,7 @@ text strings or ``lxml`` trees.
 
 The arguments to these functions are the same:
 
+
 Parameters
 ..........
 
@@ -117,7 +118,7 @@ for example with XSLT replacing the tags with the format you need.
   :options: -ELLIPSIS, +NORMALIZE_WHITESPACE
 
   >>> from xmldiff import formatting
-  >>> formatter = formatting.HTMLFormatter()
+  >>> formatter = formatting.XMLFormatter(normalize=formatting.WS_BOTH)
   >>> print(main.diff_files("../tests/test_data/insert-node.left.html",
   ...                       "../tests/test_data/insert-node.right.html",
   ...                       formatter=formatter))

@@ -7,6 +7,9 @@ Changes
 - Replaced the example RMLFormatter with a more generic HTML formatter,
   although it only handles HTML snippets at the moment.
 
+- Added a RenameNodeAction, to get rid of an edge case of a node
+  tail appearing twice.
+
 
 2.0b2 (2018-09-06)
 ------------------
