@@ -1,11 +1,20 @@
 Changes
 =======
 
-2.0b3 (unreleased)
+2.0b4 (unreleased)
+------------------
+
+- Nothing changed yet.
+
+
+2.0b3 (2018-09-11)
 ------------------
 
 - Replaced the example RMLFormatter with a more generic HTML formatter,
   although it only handles HTML snippets at the moment.
+
+- Added a RenameNodeAction, to get rid of an edge case of a node
+  tail appearing twice.
 
 
 2.0b2 (2018-09-06)

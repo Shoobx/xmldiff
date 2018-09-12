@@ -19,7 +19,8 @@ install:
 script:
   - make flake
   - make coverage
-  - cd docs; make doctest; make html; cd ..
+  - make -C docs doctest
+  - make -C docs html
 
 after_success:
   - coveralls

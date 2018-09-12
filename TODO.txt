@@ -2,7 +2,7 @@ TODO
 ====
 
 First Alpha:
---------------
+------------
 
 * 100% coverage, trafis, coveralls, pep8 - Done
 
@@ -23,17 +23,17 @@ First Beta:
 First Final:
 ------------
 
-* Documentation
+* Documentation - Done
 
 
 Future releases:
 ----------------
 
-* An xmlpatch2 utility/command that can apply the diffs.
+* An xmlpatch2 utility/command that can apply the diffs. - Issue #10
 
 * Support for the xmldiff diff format.
 
 * Maybe a diff format that looks like a text diff, but understands XML
   structure and ignores ignorable whitespace? But that is also doable by
   just reformatting the XML and pretty printing it and then using a text
-  diff, so maybe that's pointless.
+  diff, so maybe that's pointless. - Done

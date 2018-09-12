@@ -5,7 +5,7 @@ xmldiff
 
 .. image:: https://coveralls.io/repos/github/Shoobx/xmldiff/badge.svg
 
-``xmldiff`` is a library and a command line utility for making diffs out of XML.
+``xmldiff`` is a library and a command-line utility for making diffs out of XML.
 This may seem like something that doesn't need a dedicated utility,
 but change detection in hierarchical data is very different from change detection in flat data.
 XML type formats are also not only used for computer readable data,
@@ -18,8 +18,8 @@ This library provides tools to make human readable diffs in those situations.
 Quick usage
 -----------
 
-``xmldiff`` is both a command line tool and a Python library.
-To use it from the commandline, just run ``xmldiff`` with two input files::
+``xmldiff`` is both a command-line tool and a Python library.
+To use it from the command-line, just run ``xmldiff`` with two input files::
 
   $ xmldiff file1.xml file2.xml
 
@@ -56,7 +56,7 @@ Changes from ``xmldiff`` 1.x
 
   * These formats can show text differences in a semantically meaningful way.
 
-  * 2.0 is urrently significantly slower than ``xmldiff`` 2.x,
+  * 2.0 is urrently significantly slower than ``xmldiff`` 1.x,
     but this may change in the future.
     Currently we make no effort to make ``xmldiff`` 2.0 fast,
     we concentrate on making it correct and usable.

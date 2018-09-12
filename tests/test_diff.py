@@ -6,7 +6,7 @@ from lxml import etree
 from xmldiff import utils
 from xmldiff.diff import (Differ, UpdateTextIn, InsertNode, MoveNode,
                           DeleteNode, UpdateAttrib, InsertAttrib, RenameAttrib,
-                          DeleteAttrib, UpdateTextAfter)
+                          DeleteAttrib, UpdateTextAfter, RenameNode)
 
 
 class APITests(unittest.TestCase):
@@ -164,13 +164,13 @@ class NodeRatioTests(unittest.TestCase):
         right = righttree.xpath('/document/story/section[2]/para')[0]
 
         self.assertAlmostEqual(differ.leaf_ratio(left, right),
-                               0.6875)
+                               0.7619047619047619)
 
         # These nodes should not be very similar
         left = lefttree.xpath('/document/story/section[1]/para')[0]
         right = righttree.xpath('/document/story/section[1]/para')[0]
         self.assertAlmostEqual(differ.leaf_ratio(left, right),
-                               0.24)
+                               0.366666666666)
 
     def test_compare_different_nodes(self):
         left = u"""<document>
@@ -293,6 +293,76 @@ class NodeRatioTests(unittest.TestCase):
         right = differ.right.xpath('/document/story/section[3]')[0]
         self.assertEqual(differ.leaf_ratio(left, right), 0)
         self.assertEqual(differ.child_ratio(left, right), 1.0)
+
+    def test_compare_node_rename(self):
+        left = u"""<document>
+  <para>First paragraph</para>
+  <para attr="value">Second paragraph</para>
+  <para attr="value">Third paragraph</para>
+</document>
+"""
+
+        right = u"""<document>
+  <section>First paragraph</section>
+  <section attr="something else">Second paragraph</section>
+  <section attr="something else">A different text</section>
+</document>
+"""
+
+        differ = Differ()
+        differ.set_trees(etree.fromstring(left), etree.fromstring(right))
+        differ.match()
+
+        # Make some choice comparisons here.
+        left = differ.left.xpath('/document/para[1]')[0]
+        right = differ.right.xpath('/document/section[1]')[0]
+
+        # These have different tags, but should still match
+        self.assertEqual(differ.leaf_ratio(left, right),
+                         0.7441860465116279)
+
+        # These have different tags, and different attribute value,
+        # but still similar enough
+        left = differ.left.xpath('/document/para[2]')[0]
+        right = differ.right.xpath('/document/section[2]')[0]
+
+        # These have different tags, but should still match
+        self.assertEqual(differ.leaf_ratio(left, right),
+                         0.6578947368421053)
+
+        # These have different tags, and different attribute value,
+        # but still similar enough
+        left = differ.left.xpath('/document/para[3]')[0]
+        right = differ.right.xpath('/document/section[3]')[0]
+
+        # These are too different
+        self.assertEqual(differ.leaf_ratio(left, right),
+                         0.32)
+
+    def test_compare_namespaces(self):
+        left = u"""<document>
+  <foo:para xmlns:foo="someuri">First paragraph</foo:para>
+</document>
+"""
+
+        right = u"""<document>
+  <foo:para xmlns:foo="otheruri">First paragraph</foo:para>
+</document>
+"""
+
+        differ = Differ()
+        differ.set_trees(etree.fromstring(left), etree.fromstring(right))
+        differ.match()
+
+        # Make some choice comparisons here.
+        left = differ.left.xpath('/document/foo:para[1]',
+                                 namespaces={'foo': 'someuri'})[0]
+        right = differ.right.xpath('/document/foo:para[1]',
+                                   namespaces={'foo': 'otheruri'})[0]
+
+        # These have different namespaces, but should still match
+        self.assertEqual(differ.leaf_ratio(left, right),
+                         0.9152542372881356)
 
 
 class MatchTests(unittest.TestCase):
@@ -1021,19 +1091,11 @@ class DiffTests(unittest.TestCase):
         self.assertEqual(
             result,
             [
-                InsertNode(
-                    '/document/story/app:section[1]',
-                    '{someuri}para',
-                    0),
-                UpdateTextIn(
-                    '/document/story/app:section/app:para[1]',
-                    'Lorem ipsum dolor sit amet,\n                consectetur '
-                    'adipiscing elit. Pellentesque feugiat metus quam.\n'
-                    '                Suspendisse potenti. Vestibulum quis '
-                    'ornare felis,\n                ac elementum sem.'),
+                RenameNode(
+                    '/document/story/app:section/foo:para[1]',
+                    '{someuri}para'),
                 InsertAttrib('/document/story/app:section/app:para[3]',
                              '{someuri}attrib', 'value'),
-                DeleteNode('/document/story/app:section/foo:para[1]'),
             ]
         )
 

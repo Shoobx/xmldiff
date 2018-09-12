@@ -1,4 +1,5 @@
 import json
+import os
 import re
 import six
 
@@ -12,6 +13,7 @@ from xmldiff.utils import cleanup_whitespace
 
 DIFF_NS = 'http://namespaces.shoobx.com/diff'
 DIFF_PREFIX = 'diff'
+XSLT_FILE = os.path.join(os.path.split(__file__)[0], 'htmlformatter.xslt')
 
 # Flags for whitespace handling in the text aware formatters:
 WS_BOTH = 3  # Normalize ignorable whitespace and text whitespace
@@ -44,7 +46,7 @@ class BaseFormatter(object):
         This is currently only used by the XML and HTML formatters.
 
         Formatters may of course have more options than these, but these
-        two are the ones that can be set from the command line.
+        two are the ones that can be set from the command-line.
         """
 
     def prepare(self, left_tree, right_tree):
@@ -333,6 +335,9 @@ class XMLFormatter(BaseFormatter):
         self.finalize(root)
 
         etree.cleanup_namespaces(result, top_nsmap={DIFF_PREFIX: DIFF_NS})
+        return self.render(result)
+
+    def render(self, result):
         return etree.tounicode(result, pretty_print=self.pretty_print)
 
     def handle_action(self, action, result):
@@ -420,6 +425,19 @@ class XMLFormatter(BaseFormatter):
         target = self._xpath(tree, action.target)
         self._delete_node(node)
         self._insert_node(target, inserted, action.position)
+
+    def _handle_RenameNode(self, action, tree):
+        node = self._xpath(tree, action.node)
+        # Make a copy of the node and set it's tag to the new tag
+        new_node = deepcopy(node)
+        new_node.tag = action.tag
+        # The old node that are to be deleted must now have no tail, the new
+        # node keeps the tail.
+        node.tail = None
+        parent = node.getparent()
+        pos = parent.index(node)
+        self._delete_node(node)
+        self._insert_node(parent, new_node, pos)
 
     def _update_attrib(self, node, name, value):
         oldval = node.attrib[name]
@@ -560,18 +578,6 @@ class XMLFormatter(BaseFormatter):
         return node
 
 
-class HTMLFormatter(XMLFormatter):
-    """A formatter that understands HTML snippets"""
-
-    def __init__(self, normalize=WS_BOTH, pretty_print=True,
-                 text_tags=('p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'li'),
-                 formatting_tags=('b', 'u', 'i', 'strike', 'em', 'super',
-                                  'sup', 'sub', 'link', 'a', 'span')):
-        super(HTMLFormatter, self).__init__(
-            normalize=normalize, pretty_print=pretty_print,
-            text_tags=text_tags, formatting_tags=formatting_tags)
-
-
 class DiffFormatter(BaseFormatter):
 
     def __init__(self, normalize=WS_TAGS, pretty_print=False):
@@ -625,3 +631,6 @@ class DiffFormatter(BaseFormatter):
 
     def _handle_UpdateTextAfter(self, action):
         return u"update-text-after", action.node, json.dumps(action.text)
+
+    def _handle_RenameNode(self, action):
+        return u"rename", action.node, action.tag

@@ -223,6 +223,14 @@ class XMLFormatTests(unittest.TestCase):
 
         self._format_test(left, action, expected)
 
+    def test_rename_node(self):
+        left = u'<document><node><para>Content</para>Tail</node></document>'
+        action = diff.RenameNode('/document/node[1]/para[1]', 'newtag')
+        expected = START + u'><para diff:delete="">Content</para><newtag '\
+            u'diff:insert="">Content</newtag>Tail' + END
+
+        self._format_test(left, action, expected)
+
     def test_update_attr(self):
         left = u'<document><node attr="val"/></document>'
         action = diff.UpdateAttrib('/document/node', 'attr', 'newval')
@@ -315,6 +323,18 @@ class DiffFormatTests(unittest.TestCase):
 
         self._format_test(action, expected)
 
+    def test_rename_node(self):
+        # Move 1 down
+        action = diff.RenameNode('/document/node[1]', 'newtag')
+        expected = '[rename, /document/node[1], newtag]'
+        self._format_test(action, expected)
+
+        # Move 2 up (same result, different diff)
+        action = diff.MoveNode('/document/node[2]', '/document', 0)
+        expected = '[move, /document/node[2], /document, 0]'
+
+        self._format_test(action, expected)
+
     def test_update_attr(self):
         action = diff.UpdateAttrib('/document/node', 'attr', 'newval')
         expected = '[update-attribute, /document/node, attr, "newval"]'
@@ -360,10 +380,17 @@ class XMLFormatterFileTests(FormatterFileTests):
                                         normalize=formatting.WS_TEXT)
 
 
+# Also test the bits that handle text tags:
+
 class HTMLFormatterFileTests(FormatterFileTests):
 
     # We use the HTMLFormatter for the placeholder tests
-    formatter = formatting.HTMLFormatter()
+    formatter = formatting.XMLFormatter(
+        normalize=formatting.WS_BOTH,
+        pretty_print=True,
+        text_tags=('p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'li'),
+        formatting_tags=('b', 'u', 'i', 'strike', 'em', 'super',
+                         'sup', 'sub', 'link', 'a', 'span'))
 
 
 # Add tests that use no placeholder replacement (ie plain XML)

@@ -1,4 +1,4 @@
-"""All major API points and command line tools"""
+"""All major API points and command-line tools"""
 import pkg_resources
 
 from argparse import ArgumentParser, FileType
@@ -10,7 +10,6 @@ __version__ = pkg_resources.require("xmldiff")[0].version
 FORMATTERS = {
     'diff': formatting.DiffFormatter,
     'xml': formatting.XMLFormatter,
-    'html': formatting.HTMLFormatter,
 }
 
 

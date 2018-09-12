@@ -3,10 +3,13 @@ include *.txt
 include *.yml
 include .coveragerc
 include Makefile
+include docs/requirements.txt
 recursive-include tests *.py
 recursive-include tests *.xml
 recursive-include tests *.html
 recursive-include docs *.bat
 recursive-include docs *.py
 recursive-include docs *.rst
+recursive-include docs *.xslt
 recursive-include docs Makefile
+recursive-exclude docs/build *

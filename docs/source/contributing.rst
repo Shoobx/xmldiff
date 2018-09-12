@@ -10,8 +10,8 @@ There are some extremely complex issues deep down in ``xmldiff``, but don't
 let that scare you away, there's easy things to do as well.
 
 
-Setting up a dev environment
-----------------------------
+Setting Up a Development Environment
+------------------------------------
 
 To set up a development environment you need a github account, git, and
 of course Python with pip installed. You also should have the Python tools
@@ -52,12 +52,12 @@ There is no support for ``tox`` to run test under different Python versions.
 This is because Travis will run all supported versions on pull requests in any case,
 and having yet another list of supported Python versions to maintain seems unnecessary.
 You can either create your own tox.ini file,
-or you can install ```spiny`` <https://pypi.org/project/spiny/>`_,
+or you can install `Spiny <https://pypi.org/project/spiny/>`_,
 which doesn't require any extra configuration in the normal case,
-and will run the tests on all versions that are defined as supported in ``setup.py``:
+and will run the tests on all versions that are defined as supported in ``setup.py``.
 
 
-Pull requests
+Pull Requests
 -------------
 
 Even if you have write permissions to the repository we discourage pushing changes to master.
@@ -71,18 +71,18 @@ You pull requests should:
 
   * Include an description of the change in ``CHANGES.txt``
 
-  * Sdd you to the contributors list in ``README.txt`` if you aren't already there.
+  * Add yourself to the contributors list in ``README.txt`` if you aren't already there.
 
 
-Code quality and conventions
+Code Quality and Conventions
 ----------------------------
 
 ``xmldiff`` aims to have 100% test coverage.
-You run a coverage report with ``$ make coverage``.
+You run a coverage report with ``make coverage``.
 This will generate a HTML coverage report in ``htmlcov/index.html``
 
 We run flake8 as a part of all Travis test runs,
-the correct way to run it is ``$ make flake``,
+the correct way to run it is ``make flake``,
 as this includes only the files that should be covered.
 
 
@@ -97,7 +97,8 @@ This is so that adding one word to a paragraph will not cause several lines of c
 as that will make any pull request harder to read.
 
 That means that every sentence and most commas should be followed by a new line,
-except in cases where this obviously do not make sense.
+except in cases where this obviously do not make sense,
+for example when using commas to separate things you list.
 As a result of this there is no limits on line length,
 but if a line becomes very long you might consider rewriting it to make it more understandable.
 
@@ -106,10 +107,11 @@ You generate the documentation with a make command::
   cd docs
   make html
 
-We will be using (but aren't yet) `Read the Docs <https://readthedocs.org/>`_ to host the documentation.
+The documentation is hosted on `Read the Docs <https://readthedocs.org/>`_,
+the official URL is https://readthedocs.org/projects/xmldiff/.
 
 
-Implementation details
+Implementation Details
 ----------------------
 
 ``xmldiff`` is based on `"Change Detection in Hierarchically StructuredS Information" <http://ilpubs.stanford.edu/115/1/1995-46.pdf>`_
