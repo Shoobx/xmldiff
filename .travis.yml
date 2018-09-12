@@ -18,7 +18,7 @@ install:
 
 script:
   - make flake
-  - make coverage
+  - coverage run setup.py test
   - make -C docs doctest
   - make -C docs html
 

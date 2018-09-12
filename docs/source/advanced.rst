@@ -47,10 +47,19 @@ especially in the case where formatting is added:
   >>> result = main.diff_texts(left, right, formatter=formatter)
   >>> print(result)
   <body xmlns:diff="http://namespaces.shoobx.com/diff">
-    <p>My <diff:delete>Fine Content</diff:delete><i diff:insert=""><diff:insert>Fine</diff:insert></i><diff:insert> Content</diff:insert></p>
+    <p diff:insert="">
+      <diff:insert>My </diff:insert>
+      <i diff:insert="">
+        <diff:insert>Fine</diff:insert>
+      </i>
+      <diff:insert> Content</diff:insert>
+    </p>
+    <p diff:delete="">My Fine Content</p>
   </body>
+  <BLANKLINE>
 
-Notice how the the whole text was deleted and then reinserted with formatting.
+Notice how the the whole text was inserted with formatting,
+and the whole unformatted text was deleted.
 The XMLFormatter supports a better handling of text with the ``text_tags`` and ``formatting_tags`` parameters. Here is a simple and incomplete example with some common HTML tags:
 
 .. doctest::

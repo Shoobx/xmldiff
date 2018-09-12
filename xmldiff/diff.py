@@ -99,7 +99,6 @@ class Differ(object):
         rroot = self.right.getroottree()
         rnodes = list(utils.post_order_traverse(self.right))
         for lnode in lnodes:
-
             max_match = 0
             match_node = None
 
@@ -179,7 +178,7 @@ class Differ(object):
         # How similar the children of two nodes are
         left_children = left.getchildren()
         right_children = right.getchildren()
-        if not left_children or not right_children:
+        if not left_children and not right_children:
             return None
         count = 0
         child_count = max((len(left_children), len(right_children)))

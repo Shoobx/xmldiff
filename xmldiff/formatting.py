@@ -179,8 +179,8 @@ class PlaceholderMaker(object):
                         next_seg = segments.pop(0)
                     element.text = new_text
 
-                new_text = etree.tounicode(element)
-                result += self.undo_string(new_text)
+                self.undo_element(element)
+                result += etree.tounicode(element)
             else:
                 result += seg
         return result
@@ -190,26 +190,30 @@ class PlaceholderMaker(object):
             if elem.text:
                 index = 0
                 new_text = self.undo_string(elem.text)
-                content = etree.fromstring(u'<wrap>%s</wrap>' % new_text)
-                elem.text = content.text
-                for child in content:
-                    self.undo_element(child)
-                    elem.insert(index, child)
-                    index += 1
+                if new_text != elem.text:
+                    # Placeholders was replaced
+                    content = etree.fromstring(u'<wrap>%s</wrap>' % new_text)
+                    elem.text = content.text
+                    for child in content:
+                        self.undo_element(child)
+                        elem.insert(index, child)
+                        index += 1
 
             for child in elem:
                 self.undo_element(child)
 
             if elem.tail:
                 new_text = self.undo_string(elem.tail)
-                content = etree.fromstring(u'<wrap>%s</wrap>' % new_text)
-                elem.tail = content.text
-                parent = elem.getparent()
-                index = parent.index(elem) + 1
-                for child in content:
-                    self.undo_element(child)
-                    parent.insert(index, child)
-                    index += 1
+                if new_text != elem.tail:
+                    # Placeholders was replaced
+                    content = etree.fromstring(u'<wrap>%s</wrap>' % new_text)
+                    elem.tail = content.text
+                    parent = elem.getparent()
+                    index = parent.index(elem) + 1
+                    for child in content:
+                        self.undo_element(child)
+                        parent.insert(index, child)
+                        index += 1
 
     def undo_tree(self, tree):
         self.undo_element(tree)
@@ -315,7 +319,6 @@ class XMLFormatter(BaseFormatter):
     def format(self, diff, orig_tree):
         # Make a new tree, both because we want to add the diff namespace
         # and also because we don't want to modify the original tree.
-
         result = deepcopy(orig_tree)
         if isinstance(result, etree._ElementTree):
             root = result.getroot()
@@ -483,7 +486,7 @@ class XMLFormatter(BaseFormatter):
                     # needs to be closed when. We are assuming that tags are
                     # opened in the desired order.
                     stack.append((op, entry))
-                    new_text += seg
+                    new_diff.append((op, seg))
                     continue
                 elif entry.ttype == T_CLOSE:
                     # Due to the nature of the text diffing algorithm, closing
@@ -511,7 +514,7 @@ class XMLFormatter(BaseFormatter):
                     # put in an assert
                     if stack_entry is not None:
                         assert stack_op <= op
-                        new_text += seg
+                        new_diff.append((op, seg))
             if new_text:
                 new_diff.append((op, new_text))
         return new_diff
