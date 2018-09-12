@@ -228,9 +228,12 @@ class PlaceholderMaker(object):
             # Formatting element, add a diff attribute
             action += '-formatting'
             elem.attrib['{%s}%s' % (DIFF_NS, action)] = ''
-        else:
-            # Not formatting, wrap content
+        elif elem.text:
+            # Not formatting, but it has content, wrap content
             elem.text = self.wrap_diff(elem.text, action)
+        else:
+            # No content, not formatting
+            elem.attrib['{%s}%s' % (DIFF_NS, action)] = ''
 
         # And make a new placeholder for this new entry:
         return self.get_placeholder(elem, entry.ttype, entry.close_ph)

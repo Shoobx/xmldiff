@@ -1,0 +1,27 @@
+
+<!DOCTYPE document SYSTEM "rml.dtd">
+<metal:block
+        xmlns:app="http://namespaces.shoobx.com/application"
+        xmlns:tal="http://xml.zope.org/namespaces/tal"
+        xmlns:metal="http://xml.zope.org/namespaces/metal"
+        xmlns:preview="http://namespaces.shoobx.com/preview"
+        tal:define="
+        filename string:advisor-agreement.pdf;
+        title string:Advisor Agreement;">
+  <metal:block use-macro="macros/document">
+    <metal:block fill-slot="content">
+
+  <app:section name="payment" title="Payment"
+               hidden="advisor.stock_award == 'exclude'"  allowCustom="False">
+    <tal:if condition="python: advisor.stock_award != 'exclude'">
+      <para>
+        We write <b>stuff here</b> that has nothing in common with the new text.
+      </para>
+    </tal:if>
+  </app:section>
+
+  <!--need to add company address and advisor address to signature block-->
+
+    </metal:block>
+  </metal:block>
+</metal:block>

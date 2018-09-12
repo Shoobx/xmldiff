@@ -200,7 +200,6 @@ class Differ(object):
 
     def update_node_attr(self, left, right):
         left_xpath = utils.getpath(left)
-        right_xpath = utils.getpath(right)
 
         # Update: Look for differences in attributes
 
@@ -238,7 +237,7 @@ class Differ(object):
 
         # Insert: Find new attributes
         for key in sorted(new_keys):
-            yield InsertAttrib(right_xpath, key, right.attrib[key])
+            yield InsertAttrib(left_xpath, key, right.attrib[key])
             left.attrib[key] = right.attrib[key]
 
         # Delete: remove removed attributes
@@ -270,13 +269,13 @@ class Differ(object):
         # deals with the case of no child being in order.
 
         # Find the last sibling before the child that is in order
-        i = parent.index(child) - 1
-        while i >= 0:
+        i = parent.index(child)
+        while i >= 1:
+            i -= 1
             sibling = parent[i]
             if sibling in self._inorder:
                 # That's it
                 break
-            i -= 1
         else:
             # No previous sibling in order.
             return 0
@@ -387,6 +386,8 @@ class Differ(object):
                     # Move the node from current parent to target
                     lparent.remove(lnode)
                     ltarget.insert(pos, lnode)
+                    self._inorder.add(lnode)
+                    self._inorder.add(rnode)
 
             # (d) Align
             for action in self.align_children(lnode, rnode):

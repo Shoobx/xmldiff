@@ -8,6 +8,8 @@ from xmldiff.diff import (Differ, UpdateTextIn, InsertNode, MoveNode,
                           DeleteNode, UpdateAttrib, InsertAttrib, RenameAttrib,
                           DeleteAttrib, UpdateTextAfter, RenameNode)
 
+from .testing import compare_elements
+
 
 class APITests(unittest.TestCase):
     left = u"<document><p>Text</p><p>More</p></document>"
@@ -828,6 +830,7 @@ class DiffTests(unittest.TestCase):
         differ = Differ()
         differ.set_trees(left_tree, right_tree)
         editscript = list(differ.diff())
+        compare_elements(differ.left, differ.right)
         return editscript
 
     def test_process(self):
@@ -867,8 +870,8 @@ class DiffTests(unittest.TestCase):
                 InsertAttrib('/document/story/section[2]', 'single-ref', '4'),
                 MoveNode('/document/story/section[1]/para[3]',
                          '/document/story/section[2]', 0),
-                InsertNode('/document/story/section[2]', 'para', 0),
-                UpdateTextIn('/document/story/section[2]/para[1]',
+                InsertNode('/document/story/section[2]', 'para', 1),
+                UpdateTextIn('/document/story/section[2]/para[2]',
                              'Fourth paragraph'),
                 DeleteNode('/document/story/deleteme/para[1]'),
                 DeleteNode('/document/story/deleteme[1]'),
@@ -895,7 +898,7 @@ class DiffTests(unittest.TestCase):
         self.assertEqual(
             result,
             [
-                DeleteAttrib(node='/root[1]', name='attr'),
+                DeleteAttrib('/root[1]', 'attr'),
                 MoveNode('/root/n[1]', '/root[1]', 1),
                 MoveNode('/root/n[2]/p[2]', '/root/n[1]', 0),
             ]
@@ -1040,6 +1043,115 @@ class DiffTests(unittest.TestCase):
             ]
         )
 
+    def test_sbt_template(self):
+        here = os.path.split(__file__)[0]
+        lfile = os.path.join(here, 'test_data', 'sbt_template.left.xml')
+        rfile = os.path.join(here, 'test_data', 'sbt_template.right.xml')
+        with open(lfile, 'rt', encoding='utf8') as infile:
+            left = infile.read()
+        with open(rfile, 'rt', encoding='utf8') as infile:
+            right = infile.read()
+
+        result = self._diff(left, right)
+
+        # Most lines get too long and flake8 complains because of this part:
+        bm_bm_bm = '/metal:block/metal:block/metal:block'
+        self.assertEqual(
+            result,
+            [
+                InsertNode(
+                    bm_bm_bm + '[1]',
+                    '{http://namespaces.shoobx.com/application}section',
+                    0),
+                InsertAttrib(
+                    bm_bm_bm + '/app:section[1]',
+                    'allowCustom',
+                    'False'),
+                InsertAttrib(
+                    bm_bm_bm + '/app:section[1]',
+                    'hidden',
+                    "advisor.payment_type == 'none'"),
+                InsertAttrib(
+                    bm_bm_bm + '/app:section[1]',
+                    'name',
+                    'payment'),
+                InsertAttrib(
+                    bm_bm_bm + '/app:section[1]',
+                    'title',
+                    'Payment'),
+                InsertNode(
+                    bm_bm_bm + '/app:section[1]',
+                    '{http://xml.zope.org/namespaces/tal}if',
+                    0),
+                InsertAttrib(
+                    bm_bm_bm + '/app:section[1]/tal:if[1]',
+                    'condition',
+                    "python: advisor.payment_type == 'stock_award'"),
+                InsertNode(
+                    bm_bm_bm + '/app:section[1]',
+                    '{http://xml.zope.org/namespaces/tal}if',
+                    1),
+                InsertAttrib(
+                    bm_bm_bm + '/app:section[1]/tal:if[2]',
+                    'condition',
+                    "python: advisor.payment_type == 'cash'"),
+                InsertNode(
+                    bm_bm_bm + '/app:section[1]',
+                    '{http://xml.zope.org/namespaces/tal}if',
+                    2),
+                InsertAttrib(
+                    bm_bm_bm + '/app:section[1]/tal:if[3]',
+                    'condition',
+                    "python: advisor.payment_type == 'stock_award_and_cash'"),
+                InsertNode(
+                    bm_bm_bm + '/app:section[1]/tal:if[1]',
+                    'para',
+                    0),
+                UpdateTextIn(
+                    bm_bm_bm + '/app:section[1]/tal:if[1]/para[1]',
+                    '\n\tA '),
+                InsertNode(
+                    bm_bm_bm + '/app:section[1]/tal:if[1]/para[1]',
+                    'i',
+                    0),
+                UpdateTextIn(
+                    bm_bm_bm + '/app:section[1]/tal:if[1]/para/i[1]',
+                    'whole'),
+                UpdateTextAfter(
+                    bm_bm_bm + '/app:section[1]/tal:if[1]/para/i[1]',
+                    ' load of formatted text and '),
+                InsertNode(
+                    bm_bm_bm + '/app:section[1]/tal:if[1]/para[1]',
+                    'br',
+                    1),
+                UpdateTextAfter(
+                    bm_bm_bm + '/app:section[1]/tal:if[1]/para/br[1]',
+                    ' other stuff.\n      '),
+                InsertNode(
+                    bm_bm_bm + '/app:section[1]/tal:if[2]',
+                    'para',
+                    0),
+                UpdateTextIn(
+                    bm_bm_bm + '/app:section[1]/tal:if[2]/para[1]',
+                    '\n\tMore text for diffing purposes\n      '),
+                InsertNode(
+                    bm_bm_bm + '/app:section[1]/tal:if[3]',
+                    'para',
+                    0),
+                UpdateTextIn(
+                    bm_bm_bm + '/app:section[1]/tal:if[3]/para[1]',
+                    '\n\tLorem hipster ipso facto\n      '),
+                DeleteNode(
+                    bm_bm_bm + '/app:section[2]/tal:if/para/b[1]'),
+                DeleteNode(
+                    bm_bm_bm + '/app:section[2]/tal:if/para[1]'),
+                DeleteNode(
+                    bm_bm_bm + '/app:section[2]/tal:if[1]'),
+                DeleteNode(
+                    bm_bm_bm + '/app:section[2]')
+            ]
+        )
+
     def test_namespace(self):
         # Test changing nodes and attributes with namespaces
         left = u"""<document xmlns:app="someuri">
@@ -1094,8 +1206,9 @@ class DiffTests(unittest.TestCase):
                 RenameNode(
                     '/document/story/app:section/foo:para[1]',
                     '{someuri}para'),
-                InsertAttrib('/document/story/app:section/app:para[3]',
-                             '{someuri}attrib', 'value'),
+                InsertAttrib(
+                    '/document/story/app:section/app:para[3]',
+                    '{someuri}attrib', 'value'),
             ]
         )
 
@@ -1120,10 +1233,10 @@ class DiffTests(unittest.TestCase):
         result = self._diff(left, right)
         self.assertEqual(
             result,
-            [UpdateTextIn(node='/document/story[1]', text='\n    '),
-             DeleteNode(node='/document/story/ul/li[3]'),
-             DeleteNode(node='/document/story/ul/li[2]'),
-             DeleteNode(node='/document/story/ul/li[1]'),
-             DeleteNode(node='/document/story/ul[1]'),
+            [UpdateTextIn('/document/story[1]', '\n    '),
+             DeleteNode('/document/story/ul/li[3]'),
+             DeleteNode('/document/story/ul/li[2]'),
+             DeleteNode('/document/story/ul/li[1]'),
+             DeleteNode('/document/story/ul[1]'),
              ]
         )
