@@ -385,6 +385,8 @@ class XMLFormatterFileTests(FormatterFileTests):
 class HTMLFormatterFileTests(FormatterFileTests):
 
     # We use the HTMLFormatter for the placeholder tests
+    # <br/> is missing from this intentionally, to test an edge case
+    # with empty non-formatting tags in text.
     formatter = formatting.XMLFormatter(
         normalize=formatting.WS_BOTH,
         pretty_print=True,

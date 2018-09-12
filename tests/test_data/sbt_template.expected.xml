@@ -1,0 +1,17 @@
+<metal:block xmlns:app="http://namespaces.shoobx.com/application" xmlns:tal="http://xml.zope.org/namespaces/tal" xmlns:metal="http://xml.zope.org/namespaces/metal" xmlns:diff="http://namespaces.shoobx.com/diff" tal:define="         filename string:advisor-agreement.pdf;         title string:Advisor Agreement;">
+  <metal:block use-macro="macros/document">
+    <metal:block fill-slot="content">
+
+  <app:section diff:insert="" allowCustom="False" diff:add-attr="allowCustom;hidden;name;title" hidden="advisor.payment_type == 'none'" name="payment" title="Payment"><tal:if diff:insert="" condition="python: advisor.payment_type == 'stock_award'" diff:add-attr="condition"><para diff:insert=""><diff:insert>A</diff:insert><i diff:insert=""><diff:insert>whole</diff:insert></i><diff:insert>load of formatted text and</diff:insert><br diff:insert=""/><diff:insert>other stuff.</diff:insert></para></tal:if><tal:if diff:insert="" condition="python: advisor.payment_type == 'cash'" diff:add-attr="condition"><para diff:insert=""><diff:insert>More text for diffing purposes</diff:insert></para></tal:if><tal:if diff:insert="" condition="python: advisor.payment_type == 'stock_award_and_cash'" diff:add-attr="condition"><para diff:insert=""><diff:insert>Lorem hipster ipso facto</diff:insert></para></tal:if></app:section><app:section name="payment" title="Payment" hidden="advisor.stock_award == 'exclude'" allowCustom="False" diff:delete="">
+    <tal:if condition="python: advisor.stock_award != 'exclude'" diff:delete="">
+      <para diff:delete="">
+        We write <b diff:delete="">stuff here</b> that has nothing in common with the new text.
+      </para>
+    </tal:if>
+  </app:section>
+
+  <!--need to add company address and advisor address to signature block-->
+
+    </metal:block>
+  </metal:block>
+</metal:block>

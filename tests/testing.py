@@ -35,3 +35,14 @@ def generate_filebased_cases(data_dir, test_class, suffix='xml', ignore=()):
         function_name = os.path.split(left_filename)[-1].replace('.', '-')
         test_name = 'test_' + function_name
         setattr(test_class, test_name, test_function)
+
+
+def compare_elements(left, right):
+    path = left.getroottree().getpath(left)
+    assert left.text == right.text, "Texts differ: %s" % path
+    assert left.tail == right.tail, "Tails differ: %s" % path
+    assert left.attrib == right.attrib, "Attributes differ: %s" % path
+    # We intentionally do NOT compare namespaces, they are allowed to differ
+    assert len(left) == len(right), "Children differ" % path
+    for l, r in zip(left.getchildren(), right.getchildren()):
+        compare_elements(l, r)

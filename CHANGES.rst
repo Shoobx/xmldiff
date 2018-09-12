@@ -4,7 +4,7 @@ Changes
 2.0b4 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Fixed some edge case bugs
 
 
 2.0b3 (2018-09-11)
