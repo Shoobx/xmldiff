@@ -7,8 +7,7 @@ from collections import namedtuple
 from copy import deepcopy
 from lxml import etree
 from xmldiff.diff_match_patch import diff_match_patch
-from xmldiff.diff import UpdateTextIn, UpdateTextAfter
-from xmldiff.utils import cleanup_whitespace
+from xmldiff import utils
 
 
 DIFF_NS = 'http://namespaces.shoobx.com/diff'
@@ -313,6 +312,10 @@ class XMLFormatter(BaseFormatter):
         """prepare() is run on the trees before diffing
 
         This is so the formatter can apply magic before diffing."""
+        # We don't want to diff comments:
+        self._remove_comments(left_tree)
+        self._remove_comments(right_tree)
+
         self.placeholderer.do_tree(left_tree)
         self.placeholderer.do_tree(right_tree)
 
@@ -322,7 +325,7 @@ class XMLFormatter(BaseFormatter):
         This is so the formatter cab apply magic after diffing."""
         self.placeholderer.undo_tree(result_tree)
 
-    def format(self, diff, orig_tree):
+    def format(self, diff, orig_tree, differ=None):
         # Make a new tree, both because we want to add the diff namespace
         # and also because we don't want to modify the original tree.
         result = deepcopy(orig_tree)
@@ -333,15 +336,7 @@ class XMLFormatter(BaseFormatter):
 
         etree.register_namespace(DIFF_PREFIX, DIFF_NS)
 
-        deferred = []
         for action in diff:
-            if isinstance(action, (UpdateTextIn, UpdateTextAfter)):
-                # We need to do text updates last
-                deferred.append(action)
-                continue
-            self.handle_action(action, root)
-
-        for action in reversed(deferred):
             self.handle_action(action, root)
 
         self.finalize(root)
@@ -357,17 +352,58 @@ class XMLFormatter(BaseFormatter):
         method = getattr(self, '_handle_' + action_type.__name__)
         method(action, result)
 
+    def _remove_comments(self, tree):
+        comments = tree.xpath('//comment()')
+
+        for element in comments:
+            element.getparent().remove(element)
+
     def _xpath(self, node, xpath):
         # This method finds an element with xpath and makes sure that
         # one and exactly one element is found. This is to protect against
         # formatting a diff on the wrong tree, or against using ambigous
         # edit script xpaths.
-        result = node.xpath(xpath, namespaces=node.nsmap)
-        if len(result) == 0:
-            raise ValueError('xpath %s not found.' % xpath)
-        if len(result) > 1:
-            raise ValueError('Multiple nodes found for xpath %s.' % xpath)
-        return result[0]
+        if xpath[0] == '/':
+            root = True
+            xpath = xpath[1:]
+        else:
+            root = False
+
+        if '/' in xpath:
+            path, rest = xpath.split('/', 1)
+        else:
+            path = xpath
+            rest = ''
+
+        if '[' in path:
+            path, index = path[:-1].split('[')
+            index = int(index) - 1
+            multiple = False
+        else:
+            index = 0
+            multiple = True
+
+        if root:
+            path = '/' + path
+
+        delete_attrib = '{%s}%s' % (DIFF_NS, 'delete')
+
+        matches = []
+        for match in node.xpath(path, namespaces=node.nsmap):
+            # Skip nodes that have been deleted
+            if delete_attrib not in match.attrib:
+                matches.append(match)
+
+        if index >= len(matches):
+            raise ValueError('xpath %s[%s] not found at %s.' % (
+                path, index + 1, utils.getpath(node)))
+        if len(matches) > 1 and multiple:
+            raise ValueError('Multiple nodes found for xpath %s at %s.' % (
+                path, utils.getpath(node)))
+        match = matches[index]
+        if rest:
+            return self._xpath(match, rest)
+        return match
 
     def _extend_diff_attr(self, node, action, value):
         diffattr = '{%s}%s-attr' % (DIFF_NS, action)
@@ -400,9 +436,11 @@ class XMLFormatter(BaseFormatter):
         self._insert_attrib(node, action.name, action.value)
 
     def _insert_node(self, target, node, position):
-        # Insert node as a child. However, position is the position in the
-        # new tree, and the diff tree may have deleted children, so we must
-        # adjust the position for that.
+        node.attrib['{%s}insert' % DIFF_NS] = ''
+        target.insert(position, node)
+
+    def _get_real_insert_position(self, target, position):
+        # Find the real position:
         pos = 0
         offset = 0
         for child in target.getchildren():
@@ -413,14 +451,17 @@ class XMLFormatter(BaseFormatter):
             if pos > position:
                 # We found the right offset
                 break
-
-        node.attrib['{%s}insert' % DIFF_NS] = ''
-        target.insert(position + offset, node)
+        # Real position
+        return position + offset
 
     def _handle_InsertNode(self, action, tree):
+        # Insert node as a child. However, position is the position in the
+        # new tree, and the diff tree may have deleted children, so we must
+        # adjust the position for that.
         target = self._xpath(tree, action.target)
+        position = self._get_real_insert_position(target, action.position)
         new_node = target.makeelement(action.tag, nsmap=target.nsmap)
-        self._insert_node(target, new_node, action.position)
+        self._insert_node(target, new_node, position)
 
     def _rename_attrib(self, node, oldname, newname):
         node.attrib[newname] = node.attrib[oldname]
@@ -436,7 +477,8 @@ class XMLFormatter(BaseFormatter):
         inserted = deepcopy(node)
         target = self._xpath(tree, action.target)
         self._delete_node(node)
-        self._insert_node(target, inserted, action.position)
+        position = self._get_real_insert_position(target, action.position)
+        self._insert_node(target, inserted, position)
 
     def _handle_RenameNode(self, action, tree):
         node = self._xpath(tree, action.node)
@@ -447,7 +489,7 @@ class XMLFormatter(BaseFormatter):
         # node keeps the tail.
         node.tail = None
         parent = node.getparent()
-        pos = parent.index(node)
+        pos = parent.index(node) + 1
         self._delete_node(node)
         self._insert_node(parent, new_node, pos)
 
@@ -527,8 +569,8 @@ class XMLFormatter(BaseFormatter):
 
     def _make_diff_tags(self, left_value, right_value, node, target=None):
         if bool(self.normalize & WS_TEXT):
-            left_value = cleanup_whitespace(left_value or u'').strip()
-            right_value = cleanup_whitespace(right_value or u'').strip()
+            left_value = utils.cleanup_whitespace(left_value or u'').strip()
+            right_value = utils.cleanup_whitespace(right_value or u'').strip()
 
         text_diff = diff_match_patch()
         diff = text_diff.diff_main(left_value or '', right_value or '')
@@ -646,3 +688,14 @@ class DiffFormatter(BaseFormatter):
 
     def _handle_RenameNode(self, action):
         return u"rename", action.node, action.tag
+
+
+class RMLFormatter(XMLFormatter):
+
+    def __init__(self, normalize=WS_BOTH, pretty_print=True,
+                 text_tags=('para', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6'),
+                 formatting_tags=('b', 'u', 'i', 'strike', 'em', 'super',
+                                  'sup', 'sub', 'link', 'a', 'span')):
+        super(RMLFormatter, self).__init__(
+            normalize=normalize, pretty_print=pretty_print,
+            text_tags=text_tags, formatting_tags=formatting_tags)

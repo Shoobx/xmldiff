@@ -891,16 +891,18 @@ class DiffTests(unittest.TestCase):
         )
 
     def test_no_root_match(self):
-        left = '<root attr="val"><n><p>1</p><p>2</p><p>3</p></n>'\
-            '<n><p>4</p></n></root>'
+        left = '<root attr="val"><root><n><p>1</p><p>2</p><p>3</p></n>'\
+            '<n><p>4</p></n></root></root>'
         right = '<root><n><p>2</p><p>4</p></n><n><p>1</p><p>3</p></n></root>'
         result = self._diff(left, right)
         self.assertEqual(
             result,
             [
                 DeleteAttrib('/root[1]', 'attr'),
-                MoveNode('/root/n[1]', '/root[1]', 1),
+                MoveNode('/root/root/n[2]', '/root[1]', 0),
+                MoveNode('/root/root/n[1]', '/root[1]', 1),
                 MoveNode('/root/n[2]/p[2]', '/root/n[1]', 0),
+                DeleteNode('/root/root[1]')
             ]
         )
 
@@ -960,20 +962,20 @@ class DiffTests(unittest.TestCase):
                 UpdateAttrib('/document/story/app:section[14]', 'ref', '12'),
                 UpdateAttrib(
                     '/document/story/app:section[14]', 'single-ref', '12'),
-                UpdateTextIn(
-                    '/document/story/app:section[1]/para[2]/'
-                    'app:placeholder[1]',
-                    'Second Name'),
                 InsertNode(
-                 '/document/story/app:section[4]',
-                 '{http://namespaces.shoobx.com/application}term',
-                 0),
+                    '/document/story/app:section[4]',
+                    '{http://namespaces.shoobx.com/application}term',
+                    0),
                 InsertAttrib(
                  '/document/story/app:section[4]/app:term[1]', 'name',
                  'sign_bonus'),
                 InsertAttrib(
                     '/document/story/app:section[4]/app:term[1]', 'set', 'ol'),
                 InsertNode('/document/story/app:section[4]', 'para', 1),
+                UpdateTextIn(
+                    '/document/story/app:section[1]/para[2]/'
+                    'app:placeholder[1]',
+                    'Second Name'),
                 InsertNode(
                  '/document/story/app:section[4]/para[1]',
                  '{http://namespaces.shoobx.com/application}ref',
@@ -1009,13 +1011,8 @@ class DiffTests(unittest.TestCase):
                     '/document/story/app:section[4]/para/app:placeholder[1]',
                     ' signing\n              bonus, which will be paid on the '
                     'next regularly scheduled pay date\n              after '
-                    'you start employment with the Company.\n              \n'
-                    '            '
+                    'you start employment with the Company.\n\n            '
                 ),
-                InsertNode('/document/story/app:section[4]/para/u[1]', 'b', 0),
-                UpdateTextIn(
-                    '/document/story/app:section[4]/para/u/b[1]',
-                    'Signing Bonus'),
                 UpdateTextIn(
                  '/document/story/app:section[5]/para/app:ref[1]',
                  '4'),
@@ -1039,7 +1036,11 @@ class DiffTests(unittest.TestCase):
                  '10'),
                 UpdateTextIn(
                  '/document/story/app:section[12]/para/app:ref[1]',
-                 '11')
+                 '11'),
+                InsertNode('/document/story/app:section[4]/para/u[1]', 'b', 0),
+                UpdateTextIn(
+                    '/document/story/app:section[4]/para/u/b[1]',
+                    'Signing Bonus'),
             ]
         )
 
@@ -1111,6 +1112,20 @@ class DiffTests(unittest.TestCase):
                     bm_bm_bm + '/app:section[1]/tal:if[1]/para[1]',
                     '\n\tA '),
                 InsertNode(
+                    bm_bm_bm + '/app:section[1]/tal:if[2]',
+                    'para',
+                    0),
+                UpdateTextIn(
+                    bm_bm_bm + '/app:section[1]/tal:if[2]/para[1]',
+                    '\n\tMore text for diffing purposes\n      '),
+                InsertNode(
+                    bm_bm_bm + '/app:section[1]/tal:if[3]',
+                    'para',
+                    0),
+                UpdateTextIn(
+                    bm_bm_bm + '/app:section[1]/tal:if[3]/para[1]',
+                    '\n\tLorem hipster ipso facto\n      '),
+                InsertNode(
                     bm_bm_bm + '/app:section[1]/tal:if[1]/para[1]',
                     'i',
                     0),
@@ -1127,20 +1142,6 @@ class DiffTests(unittest.TestCase):
                 UpdateTextAfter(
                     bm_bm_bm + '/app:section[1]/tal:if[1]/para/br[1]',
                     ' other stuff.\n      '),
-                InsertNode(
-                    bm_bm_bm + '/app:section[1]/tal:if[2]',
-                    'para',
-                    0),
-                UpdateTextIn(
-                    bm_bm_bm + '/app:section[1]/tal:if[2]/para[1]',
-                    '\n\tMore text for diffing purposes\n      '),
-                InsertNode(
-                    bm_bm_bm + '/app:section[1]/tal:if[3]',
-                    'para',
-                    0),
-                UpdateTextIn(
-                    bm_bm_bm + '/app:section[1]/tal:if[3]/para[1]',
-                    '\n\tLorem hipster ipso facto\n      '),
                 DeleteNode(
                     bm_bm_bm + '/app:section[2]/tal:if/para/b[1]'),
                 DeleteNode(

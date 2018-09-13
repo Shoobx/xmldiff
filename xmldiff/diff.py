@@ -24,8 +24,10 @@ RenameAttrib = namedtuple('RenameAttrib', 'node oldname newname')
 
 class Differ(object):
 
-    def __init__(self, F=0.5, uniqueattrs=None):
+    def __init__(self, F=None, uniqueattrs=None):
         # The minimum similarity between two nodes to consider them equal
+        if F is None:
+            F = 0.5
         self.F = F
         # uniquattrs is a list of attributes that uniquely identifies a node
         # inside a document. Defaults to 'xml:id'.
@@ -98,7 +100,23 @@ class Differ(object):
 
         rroot = self.right.getroottree()
         rnodes = list(utils.post_order_traverse(self.right))
+
+        # TODO: If the roots do not match, we should create new roots, and
+        # have the old roots be children of the new roots, but let's skip
+        # that for now, we don't need it. That's strictly a part of the
+        # insert phase, but hey, even the paper defining the phases
+        # ignores the phases, so...
+        # For now, just make sure the roots are matched, we do that by removing
+        # self.right from the list of rnodes, so it can't match, and later
+        # we special case for the left root.
+        rnodes.remove(self.right)
+
         for lnode in lnodes:
+            if lnode is self.left:
+                # Special case for the left root, see above.
+                self.append_match(self.left, self.right, 1.0)
+                continue
+
             max_match = 0
             match_node = None
 
@@ -125,15 +143,6 @@ class Differ(object):
                 if match_node is not None:
                     rnodes.remove(match_node)
 
-        # TODO: If the roots do not match, we should create new roots, and
-        # have the old roots be children of the new roots, but let's skip
-        # that for now, we don't need it. That's strictly a part of the
-        # insert phase, but hey, even the paper defining the phases
-        # ignores the phases, so...
-        # For now, just make sure the roots are matched:
-        if id(self.left) not in self._l2rmap:
-            self.append_match(self.left, self.right, 1.0)
-
         return self._matches
 
     def node_text(self, node):
@@ -142,8 +151,10 @@ class Differ(object):
         texts.append(node.tag)
 
         # Then add attributes and values
-        for each in sorted(node.attrib.items()):
-            texts.append(':'.join(each))
+        for tag, value in sorted(node.attrib.items()):
+            if tag[0] == '{':
+                tag = tag.split('}',)[-1]
+            texts.append('%s:%s' % (tag, value))
 
         # Finally make one string, useful to see how similar two nodes are
         text = u' '.join(texts).strip()
@@ -250,8 +261,6 @@ class Differ(object):
     def update_node_text(self, left, right):
         left_xpath = utils.getpath(left)
 
-        # Lastly, do the differences in texts. This inserts nodes
-        # when making an XML diff, so it's best to have this last.
         if left.text != right.text:
             yield UpdateTextIn(left_xpath, right.text)
             left.text = right.text
