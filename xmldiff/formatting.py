@@ -159,16 +159,19 @@ class PlaceholderMaker(object):
         return re.split(regexp, text, flags=re.MULTILINE)
 
     def undo_string(self, text):
-        result = u''
-        segments = self.split_string(text)
+        result = etree.Element('wrap')
+        element = None
 
+        segments = self.split_string(text)
         while segments:
             seg = segments.pop(0)
+            if not seg:
+                continue
 
             # Segments can be either plain string or placeholders.
             if self.is_placeholder(seg):
                 entry = self.placeholder2tag[seg]
-                element = entry.element
+                element = deepcopy(entry.element)
                 # Is this a open/close segment?
                 if entry.ttype == T_OPEN:
                     # Yup
@@ -177,22 +180,26 @@ class PlaceholderMaker(object):
                     while next_seg != entry.close_ph:
                         new_text += next_seg
                         next_seg = segments.pop(0)
-                    element.text = new_text
+                    element.text = new_text or None
+                    element.tail = None
 
                 self.undo_element(element)
-                result += etree.tounicode(element)
+                result.append(element)
             else:
-                result += seg
+                if element is not None:
+                    element.tail = element.tail or u'' + seg
+                else:
+                    result.text = result.text or u'' + seg
+
         return result
 
     def undo_element(self, elem):
         if self.placeholder2tag:
             if elem.text:
                 index = 0
-                new_text = self.undo_string(elem.text)
-                if new_text != elem.text:
+                content = self.undo_string(elem.text)
+                if elem.text != content.text:
                     # Placeholders was replaced
-                    content = etree.fromstring(u'<wrap>%s</wrap>' % new_text)
                     elem.text = content.text
                     for child in content:
                         self.undo_element(child)
@@ -203,10 +210,9 @@ class PlaceholderMaker(object):
                 self.undo_element(child)
 
             if elem.tail:
-                new_text = self.undo_string(elem.tail)
-                if new_text != elem.tail:
+                content = self.undo_string(elem.tail)
+                if elem.tail != content.text:
                     # Placeholders was replaced
-                    content = etree.fromstring(u'<wrap>%s</wrap>' % new_text)
                     elem.tail = content.text
                     parent = elem.getparent()
                     index = parent.index(elem) + 1

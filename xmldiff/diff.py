@@ -317,7 +317,7 @@ class Differ(object):
             ltarget = self._r2lmap[id(rtarget)]
             yield MoveNode(
                 utils.getpath(unaligned_left),
-                utils.getpath(rtarget),
+                utils.getpath(ltarget),
                 right_pos)
             # Do the actual move:
             left.remove(unaligned_left)
@@ -332,7 +332,6 @@ class Differ(object):
         # in one phase, in a different order that described. This
         # implementation in turn differs in order yet again.
         ltree = self.left.getroottree()
-        rtree = self.right.getroottree()
 
         for rnode in utils.breadth_first_traverse(self.right):
             # (a)
@@ -380,7 +379,7 @@ class Differ(object):
                     pos = self.find_pos(rnode)
                     yield MoveNode(
                         utils.getpath(lnode, ltree),
-                        utils.getpath(rparent, rtree),
+                        utils.getpath(ltarget, ltree),
                         pos)
                     # Move the node from current parent to target
                     lparent.remove(lnode)
