@@ -1,10 +1,10 @@
 Changes
 =======
 
-2.0b5 (unreleased)
+2.0b5 (2018-09-13)
 ------------------
 
-- Nothing changed yet.
+- Many more edge case bugs
 
 
 2.0b4 (2018-09-12)
