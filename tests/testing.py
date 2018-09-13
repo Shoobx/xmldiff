@@ -43,6 +43,6 @@ def compare_elements(left, right):
     assert left.tail == right.tail, "Tails differ: %s" % path
     assert left.attrib == right.attrib, "Attributes differ: %s" % path
     # We intentionally do NOT compare namespaces, they are allowed to differ
-    assert len(left) == len(right), "Children differ" % path
+    assert len(left) == len(right), "Children differ: %s" % path
     for l, r in zip(left.getchildren(), right.getchildren()):
         compare_elements(l, r)

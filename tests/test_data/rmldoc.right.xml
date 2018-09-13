@@ -15,9 +15,9 @@
     <color id="SbGrayLight" value="#CFD9D9"/>
     <color id="SbGrayDark" value="#566165"/>
 
-    
-      
-    
+
+
+
   </docinit>
 
   <stylesheet>
@@ -156,21 +156,21 @@
       <blockValign start="0,0" stop="-1,-1" value="top"/>
     </blockTableStyle>
 
-    
-      
-    
+
+
+
   </stylesheet>
 
   <template pagesize="(8.5in, 11in)" rotation="0" leftMargin="1in" rightMargin="1in" topMargin="1in" bottomMargin="1in" showBoundary="false" allowSplitting="true">
 
     <pageTemplate id="FirstPage">
       <frame id="main" x1="1.0in" y1="1.2in" width="6.5in" height="8.0in"/>
-      
+
     </pageTemplate>
 
     <pageTemplate id="Main">
       <frame id="main" x1="1.0in" y1="1.2in" width="6.5in" height="9.0in"/>
-      
+
       <pageGraphics>
     	<setFont name="Garamond" size="12pt"/>
         <drawCentredString x="4.25in" y="0.75in">
@@ -187,41 +187,41 @@
       <frame id="main" x1="0.5in" y1="0.5in" width="7.5in" height="9.5in"/>
     </pageTemplate>
 
-    
+
 
   </template>
 
-  
+
 
   <story firstPageTemplate="FirstPage">
     <setNextTemplate name="Main"/>
 
-    
 
-  
-  
-  
-  
-  
 
-  
 
-  
 
-      
+
+
+
+
+
+
+
+
+
 
       <app:section name="general" title="General Section" count="false" allowCustom="False" hidden="false" removed="false">
         <app:term name="offer_expiration" set="ol"/>
         <app:term set="ol" name="custom_content" type="Optional Choice">
-          
-          
-          
-        
+
+
+
+
         </app:term>
         <para>
           <app:placeholder field="ol.effective_date">July 25, 2018</app:placeholder>
           <br/>
-          
+
         </para>
         <para>
           Dear <app:placeholder field="ol.employee_fullname">Second Name</app:placeholder>:
@@ -230,7 +230,7 @@
             CA, DE and WA, but will need to look at other states when there
             are employees in other states.-->
 
-        
+
 
         <para>
           On behalf of <app:placeholder field="entity_corporate.legal_name">Acme, Inc.</app:placeholder> (the "<b>Company</b>"),
@@ -282,39 +282,39 @@
         <para>
           <app:ref name="base_comp" preview:body="&lt;Ref&gt;">2</app:ref>. <u><b>Base Compensation</b></u>.
           Your base rate of compensation will be
-          
+
             <app:placeholder field="ol.employee_type_exempt_FT_monthly_salary" missing="Monthly Salary"/> per month (or <app:placeholder field="ol.employee_type_exempt_FT_salary" missing="Annual Salary"/>
               on an annualized basis),
-          
-          
-          
-          
-            
-          
+
+
+
+
+
+
           which will be paid in accordance with the Company's standard payroll
           practices as established or modified from time to time.
-          
+
         </para>
       </app:section>
 
       <app:section ref="3" single-ref="3" name="sign" title="Signing Bonus" hidden="false" removed="false">
         <app:term name="sign_bonus" set="ol"/>
-        
+
             <para>
               <app:ref name="sign" preview:body="&lt;Ref&gt;">3</app:ref>. <u><b>Signing Bonus</b></u>.
               You will also be paid a <app:placeholder field="ol.sign_bonus_include_amt" missing="Signing Bonus Amount"/> signing
               bonus, which will be paid on the next regularly scheduled pay date
               after you start employment with the Company.
-              
+
             </para>
-        
+
       </app:section>
 
-      
 
-      
 
-      
+
+
+
 
       <!--added new field/choice/metadata for PTO with 3 options, accrued,
           open-ended or custom-->
@@ -322,7 +322,7 @@
       <!--NOTE the open-ended option should only be available for exempt
           employees. Can we build this check in?  I attempted to do so below.-->
 
-      
+
 
       <app:section ref="4" single-ref="4" name="withholding_taxes" title="Withholding Taxes" hidden="false" removed="false">
         <para>
@@ -372,9 +372,9 @@
           it contains obligations you will have as an employee relating to the
           Company's confidential and proprietary information
           and
-        
-          
-          
+
+
+
             <app:placeholder field="eca_terms.non_solicit">a restriction limiting your ability to solicit or disrupt certain of the Company's existing relationships</app:placeholder>,
           during your employment and for a period of time after your
           employment with the Company ends. We understand that you may have
@@ -403,9 +403,9 @@
           the United States.
         </para>
       </app:section>
-      
 
-        
+
+
 
       <!--there is a note for CA based employees and i included a note in help
           text.-->
@@ -423,20 +423,20 @@
 
     <app:section ref="9" single-ref="9" name="reference_check" title="Background/Reference Checks" hidden="false" removed="false">
       <app:term name="background" set="ol"/>
-      
+
           <para>
             <app:ref name="reference_check" preview:body="&lt;Ref&gt;">9</app:ref>.
             <u><b>Background/Reference Checks</b></u>.
-            
+
               You may need to complete an employment application or allow the
               Company to complete a background and/or reference check to its
               satisfaction as a condition of your employment. You agree to
               execute the forms necessary for the processing of any such
               background and/or reference checks.
-            
-            
+
+
           </para>
-        
+
       </app:section>
 
       <app:section ref="10" single-ref="10" name="electronic_delivery" title="Electronic Delivery" hidden="false" removed="false">
@@ -467,24 +467,24 @@
       </app:section>
       <app:section name="custom-content" count="false" allowCustom="False" hidden="false" removed="false">
         <app:term set="ol" name="custom_content" type="Optional Choice">
-          
-          
-          
-        
+
+
+
+
         </app:term>
-        
+
       </app:section>
       <app:section ref="12" single-ref="12" name="signature" title="Signature Blocks" allowCustom="False" hidden="false" removed="false">
           <app:term name="offer_expiration" set="ol"/>
       <para>
-		We are very excited about you joining our team and know that you will 
-		make outstanding contributions to <app:placeholder field="entity_corporate.legal_name">Acme, Inc.</app:placeholder>! 
-		Kindly indicate your acceptance of our offer by signing this letter 
-		together with the Employee Confidentiality and Assignment Agreement and 
-		returning both of these signed documents to me. Feel free to give 
-		 me a 
-		call to discuss any particular details or questions you might 
-		have.        
+		We are very excited about you joining our team and know that you will
+		make outstanding contributions to <app:placeholder field="entity_corporate.legal_name">Acme, Inc.</app:placeholder>!
+		Kindly indicate your acceptance of our offer by signing this letter
+		together with the Employee Confidentiality and Assignment Agreement and
+		returning both of these signed documents to me. Feel free to give
+		 me a
+		call to discuss any particular details or questions you might
+		have.
       </para>
       <para>
         Very truly yours,
@@ -513,7 +513,7 @@
         </tr>
       </blockTable>
       </app:section>
-    
+
 
   </story>
 </document>

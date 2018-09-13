@@ -9,11 +9,11 @@ __version__ = pkg_resources.require("xmldiff")[0].version
 
 FORMATTERS = {
     'diff': formatting.DiffFormatter,
-    'xml': formatting.XMLFormatter,
+    'xml': formatting.RMLFormatter,
 }
 
 
-def diff_trees(left, right, F=0.5, uniqueattrs=None, formatter=None):
+def diff_trees(left, right, F=None, uniqueattrs=None, formatter=None):
     """Takes two lxml root elements or element trees"""
     if formatter is not None:
         formatter.prepare(left, right)
@@ -26,7 +26,7 @@ def diff_trees(left, right, F=0.5, uniqueattrs=None, formatter=None):
     return formatter.format(diffs, left)
 
 
-def diff_texts(left, right, F=0.5, uniqueattrs=None, formatter=None):
+def diff_texts(left, right, F=None, uniqueattrs=None, formatter=None):
     """Takes two Unicode strings containing XML"""
     normalize = bool(getattr(formatter, 'normalize', 1) & formatting.WS_TAGS)
     parser = etree.XMLParser(remove_blank_text=normalize)
@@ -36,7 +36,7 @@ def diff_texts(left, right, F=0.5, uniqueattrs=None, formatter=None):
                       formatter=formatter)
 
 
-def diff_files(left, right, F=0.5, uniqueattrs=None, formatter=None):
+def diff_files(left, right, F=None, uniqueattrs=None, formatter=None):
     """Takes two filenames or streams, and diffs the XML in those files"""
     normalize = bool(getattr(formatter, 'normalize', 1) & formatting.WS_TAGS)
     parser = etree.XMLParser(remove_blank_text=normalize)
