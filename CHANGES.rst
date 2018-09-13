@@ -1,10 +1,10 @@
 Changes
 =======
 
-2.0b6 (unreleased)
+2.0b6 (2018-09-13)
 ------------------
 
-- Nothing changed yet.
+- Release of 2.0b5 failed, re-releasing.
 
 
 2.0b5 (2018-09-13)
