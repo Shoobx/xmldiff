@@ -1,6 +1,7 @@
 from __future__ import division
 
 import re
+
 from operator import eq
 
 
@@ -22,21 +23,12 @@ def reverse_post_order_traverse(node):
 
 def breadth_first_traverse(node):
     # First yield the root node
-    yield node
+    queue = [node]
 
-    # Then go into the recursing part:
-    for item in _breadth_first_recurse(node):
+    while queue:
+        item = queue.pop(0)
         yield item
-
-
-def _breadth_first_recurse(node):
-    for child in node.getchildren():
-        yield child
-
-    for child in node.getchildren():
-        for item in _breadth_first_recurse(child):
-            # PY3: Man, I want yield from!
-            yield item
+        queue.extend(item.getchildren())
 
 
 # LCS from Myers: An O(ND) Difference Algorithm and Its Variations. This
@@ -119,3 +111,31 @@ def getpath(element, tree=None):
         # want that count, so we add [1].
         xpath = xpath + '[1]'
     return xpath
+
+
+# The remainder of the functions here are helpful when debugging.
+# They aren't documented, nor very well tested.
+def _make_ascii_tree(element, indent=''):
+    from xmldiff.formatting import DIFF_NS  # Avoid circular imports
+    diffns = '{%s}' % DIFF_NS
+    if element.prefix:
+        name = '%s:%s' % (element.prefix, element.tag.split('}')[1])
+    else:
+        name = element.tag
+    diff_attrs = [attr for attr in element.attrib if attr.startswith(diffns)]
+    if diff_attrs:
+        diff = '(%s)' % ', '.join(attr.split('}')[1] for attr in diff_attrs)
+    else:
+        diff = ''
+
+    result = [' '.join((indent, name, diff))]
+    indent = '  ' + indent
+
+    for child in element.getchildren():
+        result.extend(_make_ascii_tree(child, indent))
+    return result
+
+
+def make_ascii_tree(element):
+    result = _make_ascii_tree(element)
+    return '\n'.join(result)

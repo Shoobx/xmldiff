@@ -10,8 +10,6 @@
     </tal:if>
   </app:section>
 
-  <!--need to add company address and advisor address to signature block-->
-
-    </metal:block>
+  </metal:block>
   </metal:block>
 </metal:block>
