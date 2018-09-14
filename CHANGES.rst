@@ -6,6 +6,9 @@ Changes
 
 - Renamed and then moved tags will no longer get both insert and delete tags.
 
+- Added an XmlDiffFormatter that gives a format using the old xmldiff output.
+  This can be used with "-f old" from the command line.
+
 
 2.0b6 (2018-09-13)
 ------------------

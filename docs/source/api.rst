@@ -93,7 +93,7 @@ The ``diff`` formatter will return a string with the edit script printed out,
 one action per line.
 Each line is enclosed in brackets and consists of a string describing the action,
 and the actions arguments.
-This is the output format of xmldiff 1.x,
+This is the output format of xmldiff 0.6/1.x,
 however, the actions and arguments are not the same,
 so the output is not compatible.
 
@@ -153,6 +153,8 @@ The ``InsertNode`` action means that the node specified in ``target`` needs a ne
 ``tag`` specifies which tag that node should have.
 The ``position`` argument specifies which position the new node should have,
 ``0`` means that the new node will be inserted as the first child of the target.
+Note that this is different from XPATH, where the first node is ``1``.
+This is for ease of use, since Python is zero-indexed.
 
 Example:
 
@@ -187,6 +189,8 @@ Example:
 The ``MoveNode`` action means that the node specified in ``node`` should be moved to be a child under the target node.
 The ``position`` argument specifies which position it should have,
 ``0`` means that the new node will be inserted as the first child of the target.
+Note that this is different from XPATH, where the first node is ``1``.
+This is for ease of use, since Python is zero-indexed.
 
 Example:
 

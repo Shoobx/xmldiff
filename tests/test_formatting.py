@@ -364,6 +364,111 @@ class DiffFormatTests(unittest.TestCase):
         self._format_test(action, expected)
 
 
+class XmlDiffFormatTests(unittest.TestCase):
+    # RenameAttr and MoveNode requires an orig_tree, so they
+    # are not tested in the _format_test tests, but in the
+    # all_actions test, which uses test_data files.
+
+    def _format_test(self, action, expected):
+        formatter = formatting.XmlDiffFormatter()
+        result = formatter.format([action], None)
+        self.assertEqual(result, expected)
+
+    def test_del_attr(self):
+        action = diff.DeleteAttrib('/document/node', 'a')
+        expected = '[remove, /document/node/@a]'
+        self._format_test(action, expected)
+
+    def test_del_node(self):
+        action = diff.DeleteNode('/document/node')
+        expected = '[remove, /document/node]'
+        self._format_test(action, expected)
+
+    def test_del_text(self):
+        action = diff.UpdateTextIn('/document/node', None)
+        expected = '[update, /document/node/text()[1], null]'
+        self._format_test(action, expected)
+
+    def test_insert_attr(self):
+        action = diff.InsertAttrib('/document/node', 'attr', 'val')
+        expected = '[insert, /document/node, \n<@attr>\nval\n</@attr>]'
+        self._format_test(action, expected)
+
+    def test_insert_node(self):
+        action = diff.InsertNode('/document', 'node', 0)
+        expected = '[insert-first, /document, \n<node/>]'
+        self._format_test(action, expected)
+
+    def test_rename_node(self):
+        # Move 1 down
+        action = diff.RenameNode('/document/node[1]', 'newtag')
+        expected = '[rename, /document/node[1], newtag]'
+        self._format_test(action, expected)
+
+        # Move 2 up (same result, different diff)
+        action = diff.MoveNode('/document/node[2]', '/document', 0)
+        expected = '[move-first, /document/node[2], /document]'
+        self._format_test(action, expected)
+
+    def test_update_attr(self):
+        action = diff.UpdateAttrib('/document/node', 'attr', 'newval')
+        expected = '[update, /document/node/@attr, "newval"]'
+        self._format_test(action, expected)
+
+    def test_update_text_in(self):
+        action = diff.UpdateTextIn('/document/node', 'Text')
+        expected = '[update, /document/node/text()[1], "Text"]'
+        self._format_test(action, expected)
+
+        action = diff.UpdateTextIn('/document/node',
+                                   'Also a bit of text, "rick"')
+        expected = '[update, /document/node/text()[1], '\
+            u'"Also a bit of text, \\"rick\\""]'
+        self._format_test(action, expected)
+
+    def test_update_text_after_1(self):
+        action = diff.UpdateTextAfter('/document/node[1]', 'Text')
+        expected = '[update, /document/node[1]/text()[2], "Text"]'
+        self._format_test(action, expected)
+
+    def test_update_text_after_2(self):
+        action = diff.UpdateTextAfter('/document/node',
+                                      'Also a bit of text, rick')
+        expected = '[update, /document/node/text()[2], '\
+            u'"Also a bit of text, rick"]'
+        self._format_test(action, expected)
+
+    def test_all_actions(self):
+        here = os.path.split(__file__)[0]
+        lfile = os.path.join(here, 'test_data', 'all_actions.left.xml')
+        rfile = os.path.join(here, 'test_data', 'all_actions.right.xml')
+
+        formatter = formatting.XmlDiffFormatter()
+        result = main.diff_files(lfile, rfile, formatter=formatter)
+        expected = (
+            u'[move-after, /document/node[2], /document/tag[1]]\n'
+            u'[update, /document/node[1]/@name, "was updated"]\n'
+            u'[remove, /document/node[1]/@attribute]\n'
+            u'[insert, /document/node[1], \n'
+            u'<@newtribute>\n'
+            u'renamed\n'
+            u'</@newtribute>]\n'
+            u'[insert, /document/node[1], \n'
+            u'<@this>\n'
+            u'is new\n'
+            u'</@this>]\n'
+            u'[remove, /document/node[1]/@attr]\n'
+            u'[update, /document/node[1]/text()[1], "\\n    Modified\\n  "]\n'
+            u'[update, /document/node[1]/text()[2], "\\n    '
+            u'New tail content\\n  "]\n'
+            u'[rename, /document/node[2], nod]\n'
+            u'[insert-after, /document/node[2], \n'
+            u'<new/>]\n'
+            u'[remove, /document/tail[1]]'
+        )
+        self.assertEqual(result, expected)
+
+
 class FormatterFileTests(unittest.TestCase):
 
     formatter = None  # Override this
@@ -384,8 +489,8 @@ class XMLFormatterFileTests(FormatterFileTests):
 
 class HTMLFormatterFileTests(FormatterFileTests):
 
-    # We use the HTMLFormatter for the placeholder tests
-    # <br/> is missing from this intentionally, to test an edge case
+    # We use a few tags for the placeholder tests.
+    # <br/> is intentionally left out, to test an edge case
     # with empty non-formatting tags in text.
     formatter = formatting.XMLFormatter(
         normalize=formatting.WS_BOTH,

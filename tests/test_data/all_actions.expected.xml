@@ -1,0 +1,16 @@
+<document xmlns:diff="http://namespaces.shoobx.com/diff">
+  <node name="was updated" diff:update-attr="name:updated" newtribute="renamed" diff:rename-attr="attribute:newtribute" this="is new" diff:add-attr="this" diff:delete-attr="attr"><diff:delete>A bit of contained text</diff:delete><diff:insert>Modified</diff:insert></node><diff:delete>This is outside a tag</diff:delete><diff:insert>New tail content</diff:insert><node diff:delete="">
+    Here we have some text.
+  </node>
+  <tag>
+    And something else
+  </tag>
+  <node diff:delete="">
+    Here we have some text.
+  </node><new diff:insert=""/><nod diff:insert="">
+    Here we have some text.
+  </nod>
+  <tail diff:delete="">
+    My last tag
+  </tail>
+</document>

@@ -655,7 +655,7 @@ class DiffFormatter(BaseFormatter):
         res = u'\n'.join(self._format_action(action) for action in diff)
         return res
 
-    def _format_action(self, action):
+    def _format_action(self, action, ):
         return u'[%s]' % self.handle_action(action)
 
     def handle_action(self, action):
@@ -696,12 +696,86 @@ class DiffFormatter(BaseFormatter):
         return u"rename", action.node, action.tag
 
 
-class RMLFormatter(XMLFormatter):
+class XmlDiffFormatter(BaseFormatter):
+    """A formatter for an output trying to be xmldiff 0.6 compatible"""
 
-    def __init__(self, normalize=WS_BOTH, pretty_print=True,
-                 text_tags=('para', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6'),
-                 formatting_tags=('b', 'u', 'i', 'strike', 'em', 'super',
-                                  'sup', 'sub', 'link', 'a', 'span')):
-        super(RMLFormatter, self).__init__(
-            normalize=normalize, pretty_print=pretty_print,
-            text_tags=text_tags, formatting_tags=formatting_tags)
+    def __init__(self, normalize=WS_TAGS, pretty_print=False):
+        self.normalize = normalize
+        # No pretty print support, nothing to be pretty about
+
+    # Nothing to prepare or finalize (one-liners for code coverage)
+    def prepare(self, left, right): return
+
+    def finalize(self, left, right): return
+
+    def format(self, diff, orig_tree):
+        # This Formatter don't need the left tree, but the XMLFormatter
+        # does, so the parameter is required.
+        actions = []
+        for action in diff:
+            actions.extend(self.handle_action(action, orig_tree))
+        res = u'\n'.join(self._format_action(action) for action in actions)
+        return res
+
+    def _format_action(self, action):
+        return u'[%s]' % ', '.join(action)
+
+    def handle_action(self, action, orig_tree):
+        action_type = type(action)
+        method = getattr(self, '_handle_' + action_type.__name__)
+        for item in method(action, orig_tree):
+            yield item
+
+    def _handle_DeleteAttrib(self, action, orig_tree):
+        yield u"remove", '%s/@%s' % (action.node, action.name)
+
+    def _handle_DeleteNode(self, action, orig_tree):
+        yield u"remove", action.node
+
+    def _handle_InsertAttrib(self, action, orig_tree):
+        value_text = "\n<@{0}>\n{1}\n</@{0}>".format(action.name, action.value)
+        yield u"insert", action.node, value_text
+
+    def _handle_InsertNode(self, action, orig_tree):
+        if action.position == 0:
+            yield u"insert-first", action.target, '\n<%s/>' % action.tag
+            return
+        sibling = orig_tree.xpath(action.target)[0][action.position - 1]
+        yield u"insert-after", utils.getpath(sibling), '\n<%s/>' % action.tag
+
+    def _handle_RenameAttrib(self, action, orig_tree):
+        node = orig_tree.xpath(action.node)[0]
+        value = node.attrib[action.oldname]
+        value_text = "\n<@{0}>\n{1}\n</@{0}>".format(action.newname, value)
+        yield u"remove", '%s/@%s' % (action.node, action.oldname)
+        yield u"insert", action.node, value_text
+
+    def _handle_MoveNode(self, action, orig_tree):
+        if action.position == 0:
+            yield u"move-first", action.node, action.target
+            return
+        node = orig_tree.xpath(action.node)[0]
+        target = orig_tree.xpath(action.target)[0]
+        # Get the position of the previous sibling
+        position = action.position - 1
+        if node.getparent() is target:
+            # Moving to a new lower position in the same target,
+            # adjust previous sibling position:
+            if target.index(node) <= position:
+                position += 1
+
+        sibling = target[position]
+        yield u"move-after", action.node, utils.getpath(sibling)
+
+    def _handle_UpdateAttrib(self, action, orig_tree):
+        yield (u"update", '%s/@%s' % (action.node, action.name),
+               json.dumps(action.value))
+
+    def _handle_UpdateTextIn(self, action, orig_tree):
+        yield u"update", action.node + '/text()[1]', json.dumps(action.text)
+
+    def _handle_UpdateTextAfter(self, action, orig_tree):
+        yield u"update", action.node + '/text()[2]', json.dumps(action.text)
+
+    def _handle_RenameNode(self, action, orig_tree):
+        yield u"rename", action.node, action.tag

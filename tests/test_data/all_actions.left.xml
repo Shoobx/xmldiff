@@ -1,0 +1,15 @@
+<document>
+  <node attribute="renamed" attr="deleted" name="updated">
+    A bit of contained text
+  </node>
+    This is outside a tag
+  <node>
+    Here we have some text.
+  </node>
+  <tag>
+    And something else
+  </tag>
+  <tail>
+    My last tag
+  </tail>
+</document>

@@ -1,0 +1,12 @@
+<document>
+  <node newtribute="renamed" name="was updated" this="is new">
+    Modified
+  </node>
+    New tail content
+  <tag>
+    And something else
+  </tag>
+  <nod>
+    Here we have some text.
+  </nod>
+  <new/></document>

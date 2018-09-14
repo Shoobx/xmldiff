@@ -9,7 +9,8 @@ __version__ = pkg_resources.require("xmldiff")[0].version
 
 FORMATTERS = {
     'diff': formatting.DiffFormatter,
-    'xml': formatting.RMLFormatter,
+    'xml': formatting.XMLFormatter,
+    'old': formatting.XmlDiffFormatter,
 }
 
 
