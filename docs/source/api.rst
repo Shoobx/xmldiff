@@ -124,9 +124,7 @@ for example with XSLT replacing the tags with the format you need.
   ...                       formatter=formatter))
   <body xmlns:diff="http://namespaces.shoobx.com/diff">
     <div id="id">
-      <p diff:insert="">
-        <diff:insert>Simple text</diff:insert>
-      </p>
+      <p diff:insert="">Simple text</p>
     </div>
   </body>
 

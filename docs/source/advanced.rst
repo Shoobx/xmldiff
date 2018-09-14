@@ -47,13 +47,7 @@ especially in the case where formatting is added:
   >>> result = main.diff_texts(left, right, formatter=formatter)
   >>> print(result)
   <body xmlns:diff="http://namespaces.shoobx.com/diff">
-    <p diff:insert="">
-      <diff:insert>My </diff:insert>
-      <i diff:insert="">
-        <diff:insert>Fine</diff:insert>
-      </i>
-      <diff:insert> Content</diff:insert>
-    </p>
+    <p diff:insert="">My <i diff:insert="">Fine</i><diff:insert> Content</diff:insert></p>
     <p diff:delete="">My Fine Content</p>
   </body>
   <BLANKLINE>
