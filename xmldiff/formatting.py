@@ -520,7 +520,6 @@ class XMLFormatter(BaseFormatter):
 
         for op, text in diff:
             segments = self.placeholderer.split_string(text)
-            new_text = u''
             for seg in segments:
                 if not seg:
                     continue
