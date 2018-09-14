@@ -526,14 +526,14 @@ class XMLFormatter(BaseFormatter):
                     continue
                 # There is nothing to do for regular text.
                 if not self.placeholderer.is_placeholder(seg):
-                    new_text += seg
+                    new_diff.append((op, seg))
                     continue
                 # Handle all structural replacement elements.
                 entry = self.placeholderer.placeholder2tag[seg]
                 if entry.ttype == T_SINGLE:
                     # There is nothing to do for singletons since they are
                     # fully self-contained.
-                    new_text += seg
+                    new_diff.append((op, seg))
                     continue
                 elif entry.ttype == T_OPEN:
                     # Opening tags are added to the stack, so we know what
@@ -569,8 +569,6 @@ class XMLFormatter(BaseFormatter):
                     if stack_entry is not None:
                         assert stack_op <= op
                         new_diff.append((op, seg))
-            if new_text:
-                new_diff.append((op, new_text))
         return new_diff
 
     def _make_diff_tags(self, left_value, right_value, node, target=None):
@@ -619,6 +617,11 @@ class XMLFormatter(BaseFormatter):
 
     def _handle_UpdateTextIn(self, action, tree):
         node = self._xpath(tree, action.node)
+        if INSERT_NAME in node.attrib:
+            # The whole node is already marked as inserted,
+            # we don't need to diff-wrap the text.
+            node.text = action.text
+            return node
         left_value = node.text
         right_value = action.text
         node.text = None

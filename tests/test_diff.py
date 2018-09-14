@@ -1110,21 +1110,21 @@ class DiffTests(unittest.TestCase):
                     0),
                 UpdateTextIn(
                     bm_bm_bm + '/app:section[1]/tal:if[1]/para[1]',
-                    '\n\tA '),
+                    '\n        A '),
                 InsertNode(
                     bm_bm_bm + '/app:section[1]/tal:if[2]',
                     'para',
                     0),
                 UpdateTextIn(
                     bm_bm_bm + '/app:section[1]/tal:if[2]/para[1]',
-                    '\n\tMore text for diffing purposes\n      '),
+                    '\n        More text for diffing purposes\n      '),
                 InsertNode(
                     bm_bm_bm + '/app:section[1]/tal:if[3]',
                     'para',
                     0),
                 UpdateTextIn(
                     bm_bm_bm + '/app:section[1]/tal:if[3]/para[1]',
-                    '\n\tLorem hipster ipso facto\n      '),
+                    '\n        Lorem hipster ipso facto\n      '),
                 InsertNode(
                     bm_bm_bm + '/app:section[1]/tal:if[1]/para[1]',
                     'i',

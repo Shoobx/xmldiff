@@ -9,6 +9,9 @@ Changes
 - Added an XmlDiffFormatter that gives a format using the old xmldiff output.
   This can be used with "-f old" from the command line.
 
+- UpdateTextIn on a node marked as being inserted will just be inserted,
+  not wrapped in extra insert tags.
+
 
 2.0b6 (2018-09-13)
 ------------------

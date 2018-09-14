@@ -127,4 +127,4 @@ class MainCLITests(unittest.TestCase):
         # And stripping and pretty printing gives a longer readable output
         output, errors = self.call_run([file1, file2, '--pretty-print',
                                         '--formatter', 'xml'])
-        self.assertEqual(len(output.splitlines()), 8)
+        self.assertEqual(len(output.splitlines()), 6)

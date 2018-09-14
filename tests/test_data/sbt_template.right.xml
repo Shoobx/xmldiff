@@ -15,17 +15,17 @@
                hidden="advisor.payment_type == 'none'"  allowCustom="False">
      <tal:if condition="python: advisor.payment_type == 'stock_award'">
       <para>
-	A <i>whole</i> load of formatted text and <br/> other stuff.
+        A <i>whole</i> load of formatted text and <br/> other stuff.
       </para>
     </tal:if>
     <tal:if condition="python: advisor.payment_type == 'cash'">
       <para>
-	More text for diffing purposes
+        More text for diffing purposes
       </para>
     </tal:if>
     <tal:if condition="python: advisor.payment_type == 'stock_award_and_cash'">
       <para>
-	Lorem hipster ipso facto
+        Lorem hipster ipso facto
       </para>
     </tal:if>
   </app:section>
