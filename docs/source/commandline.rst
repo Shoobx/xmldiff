@@ -28,10 +28,14 @@ Formatters
 You can select different output formats with ``xmldiff``,
 but beware that some formatters may assume certain things about the type of XML.
 
-The two formatters named ``diff`` and ``xml`` are generic and will work for any type of XML,
+The included formatters are generic and will work for any type of XML,
 but may not give you a useful output.
 If you are using ``xmldiff`` as a library,
 you can create your own formatters that is suited for your particular usage of XML.
+
+The ``diff`` formatter is default and will output a list of edit actions.
+The  ``xml`` formatter will output XML with differences marked up by tags using the ``diff`` namespace.
+The ``old`` formatter is a formatter that gives a list of edit actions in a format similar to ``xmldiff`` 0.6 or 1.0.
 
 Whitespace Handling
 -------------------
@@ -62,20 +66,8 @@ since the whitespace there occurs inside a tag:
 
   <data count="1">    </data><data count="2"></data>
 
-In some XML formats, whitespace inside some tags is also not significant.
-The ``html`` formatter is an example of this.
-It is aware of that ``<p>`` tags contain text where whitespace isn't significant,
-and will by default normalize whitespace inside these tags before comparing it,
-effectively replacing any whitespace inside those tags to a single space.
-This is so that when diffing two versions of HTML files you will not see changes that would not be visible in the final document.
-
-Both of these types of whitespace can be preserved with the ``--keep-whitespace`` argument.
-The third case of whitespace,
-whitespace that occurs inside tags that are *not* known to be formatted text tags,
-will always be preserved.
-Both the ``diff`` and ``xml`` formatters don't know of any text formatting,
-and will therefore always preserve all whitespace inside tags.
-
+By default the ``xml`` formatter will normalize this whitespace.
+You can turn that off with the ``--keep-whitespace`` argument.
 
 Pretty Printing
 ---------------
@@ -84,7 +76,7 @@ The term "pretty printing" refers to making an output a bit more human readable 
 In the case of XML this means inserting ignorable whitespace into the XML,
 yes, the same in-between whitespace that is ignored by ``xmldiff`` when detecting changes between two files.
 
-``xmldiff``'s ``xml`` and ``html`` formatters understand the ``--pretty-print`` argument and will insert whitespace to make the output more readable.
+``xmldiff``'s ``xml`` formatter understands the ``--pretty-print`` argument and will insert whitespace to make the output more readable.
 
 For example, an XML output that would normally look like this:
 

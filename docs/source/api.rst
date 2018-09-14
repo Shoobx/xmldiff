@@ -61,7 +61,7 @@ If no formatter is specified the diff functions will return a list of actions.
 Such a list is called an edit script and contains all changes needed to transform the "left" XML into the "right" XML.
 
 If a formatter is specified that formatter determines the result.
-The included formatters, ``diff``, ``xml``, and ``html`` all return a Unicode string.
+The included formatters, ``diff``, ``xml``, and ``old`` all return a Unicode string.
 
 
 Unique Attributes
@@ -87,7 +87,7 @@ Using Formatters
 By default the diff functions will return an edit script,
 but if you pass in a formatter the result will be whatever that formatter returns.
 
-The three included formatters, ``diff``, ``xml`` and ``html``,
+The three included formatters, ``diff``, ``xml`` and ``old``,
 all return Unicode strings.
 The ``diff`` formatter will return a string with the edit script printed out,
 one action per line.
