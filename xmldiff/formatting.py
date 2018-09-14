@@ -14,6 +14,9 @@ DIFF_NS = 'http://namespaces.shoobx.com/diff'
 DIFF_PREFIX = 'diff'
 XSLT_FILE = os.path.join(os.path.split(__file__)[0], 'htmlformatter.xslt')
 
+INSERT_NAME = '{%s}insert' % DIFF_NS
+DELETE_NAME = '{%s}delete' % DIFF_NS
+
 # Flags for whitespace handling in the text aware formatters:
 WS_BOTH = 3  # Normalize ignorable whitespace and text whitespace
 WS_TEXT = 2  # Normalize whitespace only inside text tags
@@ -88,13 +91,13 @@ class PlaceholderMaker(object):
         #  block (13,000 characters) in the unicode space.
         self.placeholder = 0xf0000
 
-        insert_elem = etree.Element('{%s}insert' % DIFF_NS)
+        insert_elem = etree.Element(INSERT_NAME)
         insert_close = self.get_placeholder(
             insert_elem, T_CLOSE, None)
         insert_open = self.get_placeholder(
             insert_elem, T_OPEN, insert_close)
 
-        delete_elem = etree.Element('{%s}delete' % DIFF_NS)
+        delete_elem = etree.Element(DELETE_NAME)
         delete_close = self.get_placeholder(
             delete_elem, T_CLOSE, None)
         delete_open = self.get_placeholder(
@@ -386,12 +389,10 @@ class XMLFormatter(BaseFormatter):
         if root:
             path = '/' + path
 
-        delete_attrib = '{%s}%s' % (DIFF_NS, 'delete')
-
         matches = []
         for match in node.xpath(path, namespaces=node.nsmap):
             # Skip nodes that have been deleted
-            if delete_attrib not in match.attrib:
+            if DELETE_NAME not in match.attrib:
                 matches.append(match)
 
         if index >= len(matches):
@@ -421,7 +422,12 @@ class XMLFormatter(BaseFormatter):
         self._delete_attrib(node, action.name)
 
     def _delete_node(self, node):
-        node.attrib['{%s}delete' % DIFF_NS] = ''
+        insert_attr = INSERT_NAME
+        if insert_attr in node.attrib:
+            # This happens is a node is first moved
+            # then renamed. Perhaps those should be the same?
+            del node.attrib[insert_attr]
+        node.attrib[DELETE_NAME] = ''
 
     def _handle_DeleteNode(self, action, tree):
         node = self._xpath(tree, action.node)
@@ -436,7 +442,7 @@ class XMLFormatter(BaseFormatter):
         self._insert_attrib(node, action.name, action.value)
 
     def _insert_node(self, target, node, position):
-        node.attrib['{%s}insert' % DIFF_NS] = ''
+        node.attrib[INSERT_NAME] = ''
         target.insert(position, node)
 
     def _get_real_insert_position(self, target, position):
@@ -444,7 +450,7 @@ class XMLFormatter(BaseFormatter):
         pos = 0
         offset = 0
         for child in target.getchildren():
-            if '{%s}delete' % DIFF_NS in child.attrib:
+            if DELETE_NAME in child.attrib:
                 offset += 1
             else:
                 pos += 1

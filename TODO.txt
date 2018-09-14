@@ -33,7 +33,20 @@ Future releases:
 
 * Support for the xmldiff diff format.
 
+UpdateTextIn: [update, xpath/text()[1], text]
+UpdateTextAfter: [update, xpath/text()[2], text]
+DeleteNode:
+InsertNode: Either [insert-first, parentxpath, '<tag/>'] or
+            [insert-after, xpath to previous sibling, '<tag/>']
+RenameNode: [rename, xpath, newtag]
+MoveNode: [move, xpath, targetxpath, position]
+UpdateAttrib: [update, xpath/@aattrib, newvalue]
+DeleteAttrib: [remove, xpath/@attrib]
+InsertAttrib: [append, nodepath, <@newtribute>\nvalue\n</@newtribute>]
+RenameAttrib: Apped + remove
+
+
 * Maybe a diff format that looks like a text diff, but understands XML
   structure and ignores ignorable whitespace? But that is also doable by
   just reformatting the XML and pretty printing it and then using a text
-  diff, so maybe that's pointless. - Done
+  diff, so maybe that's pointless.
