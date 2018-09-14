@@ -1,7 +1,7 @@
 Changes
 =======
 
-2.0b7 (unreleased)
+2.0b7 (2018-09-14)
 ------------------
 
 - Renamed and then moved tags will no longer get both insert and delete tags.

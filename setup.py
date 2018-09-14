@@ -1,7 +1,7 @@
 from io import open
 from setuptools import setup, find_packages
 
-version = '2.0b7.dev0'
+version = '2.0b7'
 
 with open('README.rst', 'rt', encoding='utf8') as readme:
     description = readme.read()
