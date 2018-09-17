@@ -14,6 +14,7 @@ A traditional diff on such a format would tell you line by line the differences,
 but this would not be be readable by a human.
 This library provides tools to make human readable diffs in those situations.
 
+Full documentation is on `xmldiff.readthedocs.io <https://xmldiff.readthedocs.io>`_
 
 Quick usage
 -----------
