@@ -2,8 +2,10 @@ xmldiff
 ========
 
 .. image:: https://travis-ci.org/Shoobx/xmldiff.svg?branch=master
+  :target: https://travis-ci.org/Shoobx/xmldiff
 
 .. image:: https://coveralls.io/repos/github/Shoobx/xmldiff/badge.svg
+  :target: https://coveralls.io/github/Shoobx/xmldiff
 
 ``xmldiff`` is a library and a command-line utility for making diffs out of XML.
 This may seem like something that doesn't need a dedicated utility,
