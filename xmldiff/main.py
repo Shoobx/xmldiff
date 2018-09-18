@@ -27,24 +27,26 @@ def diff_trees(left, right, F=None, uniqueattrs=None, formatter=None):
     return formatter.format(diffs, left)
 
 
-def diff_texts(left, right, F=None, uniqueattrs=None, formatter=None):
-    """Takes two Unicode strings containing XML"""
+def _parse_and_diff(tree_maker, left, right, F=None, uniqueattrs=None,
+                    formatter=None):
     normalize = bool(getattr(formatter, 'normalize', 1) & formatting.WS_TAGS)
     parser = etree.XMLParser(remove_blank_text=normalize)
-    left_tree = etree.fromstring(left, parser)
-    right_tree = etree.fromstring(right, parser)
+    left_tree = tree_maker(left, parser)
+    right_tree = tree_maker(right, parser)
     return diff_trees(left_tree, right_tree, F=F, uniqueattrs=uniqueattrs,
                       formatter=formatter)
+
+
+def diff_texts(left, right, F=None, uniqueattrs=None, formatter=None):
+    """Takes two Unicode strings containing XML"""
+    return _parse_and_diff(etree.fromstring, left, right, F,
+                           uniqueattrs, formatter)
 
 
 def diff_files(left, right, F=None, uniqueattrs=None, formatter=None):
     """Takes two filenames or streams, and diffs the XML in those files"""
-    normalize = bool(getattr(formatter, 'normalize', 1) & formatting.WS_TAGS)
-    parser = etree.XMLParser(remove_blank_text=normalize)
-    left_tree = etree.parse(left, parser)
-    right_tree = etree.parse(right, parser)
-    return diff_trees(left_tree, right_tree, F=F, uniqueattrs=uniqueattrs,
-                      formatter=formatter)
+    return _parse_and_diff(etree.parse, left, right, F,
+                           uniqueattrs, formatter)
 
 
 def make_parser():

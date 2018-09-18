@@ -298,13 +298,15 @@ class Differ(object):
                 break
         return i
 
+    def _get_matched_children(self, this, other, mapping):
+        return [child for child in this.getchildren()
+                if id(child) in mapping and
+                mapping[id(child)].getparent() is other]
+
     def align_children(self, left, right):
-        lchildren = [c for c in left.getchildren()
-                     if (id(c) in self._l2rmap and
-                         self._l2rmap[id(c)].getparent() is right)]
-        rchildren = [c for c in right.getchildren()
-                     if (id(c) in self._r2lmap and
-                         self._r2lmap[id(c)].getparent() is left)]
+        lchildren = self._get_matched_children(left, right, self._l2rmap)
+        rchildren = self._get_matched_children(right, left, self._r2lmap)
+
         if not lchildren or not rchildren:
             # Nothing to align
             return

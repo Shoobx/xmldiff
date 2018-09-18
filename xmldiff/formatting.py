@@ -360,41 +360,51 @@ class XMLFormatter(BaseFormatter):
         # one and exactly one element is found. This is to protect against
         # formatting a diff on the wrong tree, or against using ambigous
         # edit script xpaths.
+
+        # Check if this path is absolute (start with root)
         if xpath[0] == '/':
             root = True
             xpath = xpath[1:]
         else:
             root = False
 
+        # Find the first item in the path
         if '/' in xpath:
             path, rest = xpath.split('/', 1)
         else:
             path = xpath
             rest = ''
 
+        # Get the items index
         if '[' in path:
             path, index = path[:-1].split('[')
             index = int(index) - 1
             multiple = False
         else:
+            # If the path doesn't have an index, then [1] is implied
             index = 0
             multiple = True
 
         if root:
+            # Now add back the starting /, if there was one
             path = '/' + path
 
+        # Find the nodes that match
         matches = []
         for match in node.xpath(path, namespaces=node.nsmap):
             # Skip nodes that have been deleted
             if DELETE_NAME not in match.attrib:
                 matches.append(match)
 
+        # Get the node specified from the matches
         if index >= len(matches):
             raise ValueError('xpath %s[%s] not found at %s.' % (
                 path, index + 1, utils.getpath(node)))
         if len(matches) > 1 and multiple:
             raise ValueError('Multiple nodes found for xpath %s at %s.' % (
                 path, utils.getpath(node)))
+
+        # Found it!
         match = matches[index]
         if rest:
             return self._xpath(match, rest)
