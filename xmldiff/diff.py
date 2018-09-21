@@ -269,15 +269,15 @@ class Differ(object):
             yield UpdateTextAfter(left_xpath, right.tail)
             left.tail = right.tail
 
-    def find_pos(self, child):
-        parent = child.getparent()
+    def find_pos(self, node):
+        parent = node.getparent()
         # The paper here first checks in the child is the first child in
         # order, but I am entirely unable to actually make that happen, and
         # if it does, the "else:" will catch that case anyway, and it also
         # deals with the case of no child being in order.
 
         # Find the last sibling before the child that is in order
-        i = parent.index(child)
+        i = parent.index(node)
         while i >= 1:
             i -= 1
             sibling = parent[i]
@@ -290,11 +290,18 @@ class Differ(object):
 
         # Now find the partner of this in the left tree
         sibling_match = self._r2lmap[id(sibling)]
+        node_match = self._r2lmap.get(id(node))
+
         i = 0
         for child in sibling_match.getparent().getchildren():
-            if child in self._inorder:
+            if child is node_match:
+                # Don't count the node we're looking for.
+                continue
+            if child in self._inorder or child not in self._l2rmap:
+                # Count nodes that are in order, or will be deleted:
                 i += 1
             if child is sibling_match:
+                # We found the position!
                 break
         return i
 

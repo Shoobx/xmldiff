@@ -190,6 +190,14 @@ The ``position`` argument specifies which position it should have,
 Note that this is different from XPATH, where the first node is ``1``.
 This is for ease of use, since Python is zero-indexed.
 
+If the move is within the same parent, the position can be ambiguous.
+If you have a child that is in position 1,
+but should be moved to position 3,
+that position does not include the node being moved,
+but signifies the position the node should end up at after the move.
+When implementing a ``MoveNode()`` it is therefore easiest to remove the node from the parent first,
+and then insert it at the given position.
+
 Example:
 
 .. doctest::
