@@ -79,3 +79,8 @@ def run(args=None):
                                            pretty_print=args.pretty_print)
     result = diff_files(args.file1, args.file2, formatter=formatter)
     print(result)
+
+
+# Being able to run this file directly is useful to run cProfiler:
+if __name__ == '__main__':
+    run()
