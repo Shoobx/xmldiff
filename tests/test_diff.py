@@ -975,7 +975,7 @@ class DiffTests(unittest.TestCase):
                 UpdateTextIn(
                     '/document/story/app:section[1]/para[2]/'
                     'app:placeholder[1]',
-                    'Second Name'),
+                    'consectetur'),
                 InsertNode(
                  '/document/story/app:section[4]/para[1]',
                  '{http://namespaces.shoobx.com/application}ref',
@@ -990,11 +990,11 @@ class DiffTests(unittest.TestCase):
                 UpdateTextIn(
                     '/document/story/app:section[4]/para/app:ref[1]', '3'),
                 UpdateTextAfter(
-                    '/document/story/app:section[4]/para/app:ref[1]', '. '),
+                    '/document/story/app:section[4]/para/app:ref[1]', 'eu'),
                 InsertNode('/document/story/app:section[4]/para[1]', 'u', 1),
                 UpdateTextAfter(
                     '/document/story/app:section[4]/para/u[1]',
-                    '.\n              You will also be paid a '),
+                    'ntum augue.\n\nAliquam nec tortor diam. Ph'),
                 InsertNode(
                  '/document/story/app:section[4]/para[1]',
                  '{http://namespaces.shoobx.com/application}placeholder',
@@ -1009,9 +1009,7 @@ class DiffTests(unittest.TestCase):
                  'Signing Bonus Amount'),
                 UpdateTextAfter(
                     '/document/story/app:section[4]/para/app:placeholder[1]',
-                    ' signing\n              bonus, which will be paid on the '
-                    'next regularly scheduled pay date\n              after '
-                    'you start employment with the Company.\n\n            '
+                    'asellus congue accumsan tempor. Donec vel risus se'
                 ),
                 UpdateTextIn(
                  '/document/story/app:section[5]/para/app:ref[1]',
@@ -1040,7 +1038,7 @@ class DiffTests(unittest.TestCase):
                 InsertNode('/document/story/app:section[4]/para/u[1]', 'b', 0),
                 UpdateTextIn(
                     '/document/story/app:section[4]/para/u/b[1]',
-                    'Signing Bonus'),
+                    'ger nec ferme'),
             ]
         )
 

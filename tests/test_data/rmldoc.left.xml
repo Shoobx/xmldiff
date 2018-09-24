@@ -41,7 +41,7 @@
 
     <paraStyle name="BlankMessage" parent="Normal" fontName="Garamond-Italic" alignment="center"/>
 
-    <!-- Used by Signature -->
+    <!--Lorem ipsum dolor s-->
     <paraStyle name="code" fontName="Courier" fontSize="10pt"/>
     <paraStyle name="signature-byword"/>
     <paraStyle name="code uuid" fontName="Courier" fontSize="10pt"/>
@@ -219,82 +219,40 @@
 
         </app:term>
         <para>
-          <app:placeholder field="ol.effective_date">July 25, 2018</app:placeholder>
+          <app:placeholder field="ol.effective_date">sollicitudin.</app:placeholder>
           <br/>
 
         </para>
-        <para>
-          Dear <app:placeholder field="ol.employee_fullname">First Name</app:placeholder>:
-        </para>
-        <!--I have checked wage and hours laws only for NH, MA, NY, IL, TX,
-            CA, DE and WA, but will need to look at other states when there
-            are employees in other states.-->
+        <para>it amet, consect<app:placeholder field="ol.employee_fullname">vestibulum</app:placeholder>adipiscing</para>
+        <!--etur adipiscing elit. Nam sed libero est. Donec id-->
 
 
 
-        <para>
-          On behalf of <app:placeholder field="entity_corporate.legal_name">Acme, Inc.</app:placeholder> (the "<b>Company</b>"),
-          I am pleased to offer you employment with the Company. In addition
-          to confirming our offer, this letter will detail certain terms and
-          conditions of your employment. Please confirm your acceptance of
-          this offer by signing and returning it to me on or before
-          <app:placeholder field="ol.expiration_date" missing="Offer Expiration Date"/>.
-        </para>
+        <para>magnis dis parturient mo<app:placeholder field="entity_corporate.legal_name">ultricies.</app:placeholder>Quisque<b>euismod</b> placerat massa. Orci varius natoque penatibus et <app:placeholder field="ol.expiration_date" missing="Offer Expiration Date"/>venenatis,</para>
 
 
       </app:section>
 
       <app:section ref="1" single-ref="1" name="title" title="Title" count="true" allowCustom="False" hidden="false" removed="false">
-        <app:section-help>
-          This section welcomes the new employee and informs them of their
-          start date, position, and manager (if provided).
-        </app:section-help>
+        <app:section-help>ntes, nascetur ridiculus mus. Suspendisse sollicit</app:section-help>
         <app:term name="start_date" set="ol" type="Date"/>
         <app:term name="end_date" set="ol" type="Date"/>
         <app:term name="new_title" set="ol" type="Text Line"/>
         <app:term name="employee_type" set="ol" type="Optional Choice"/>
 
         <para>
-          <app:ref name="title" preview:body="&lt;Ref&gt;">1</app:ref>. <u><b>Title</b></u>.
-          You will be employed, effective <app:placeholder field="ol.start_date" missing="Start Date"/>,
-            in the
-          <app:placeholder field="ol.employee_type">US Full-time Exempt</app:placeholder> position of <app:placeholder field="ol.new_title" missing="New Employee Title"/>.
-          You agree to devote your best efforts, skill, knowledge, attention
-          and energies to the advancement of the Company's business and
-          interests and to the performance of your duties and responsibilities
-          as an employee of the Company.
-        </para>
+          <app:ref name="title" preview:body="&lt;Ref&gt;">1</app:ref>eu<u><b>Nulla</b></u>udin urna eu finibus varius. Curabitur portt<app:placeholder field="ol.start_date" missing="Start Date"/>itor finibus malesuada. Etiam i<app:placeholder field="ol.employee_type">aculis vulputate or</app:placeholder>ci, nec tempu<app:placeholder field="ol.new_title" missing="New Employee Title"/>s ante tempor at. Etiam congue lectus in quam iacu</para>
 
       </app:section>
 
       <app:section ref="2" single-ref="2" name="base_comp" title="Base Compensation" allowCustom="False" hidden="false" removed="false">
         <app:term name="employee_type" set="ol" type="Optional Choice"/>
-        <app:section-help>
-          Under Federal and state labor laws, there are certain jobs that are
-          subject to overtime pay requirements and these are generally
-          referred to as “non-exempt” positions. Employees in “exempt”
-          positions are not covered by these requirements and therefore are
-          not entitled to overtime under labor laws. Whether an employee is
-          exempt or non-exempt generally depends on (a) how much they are
-          paid, (b) how they are paid, and (c) what kind of work they do.
-        </app:section-help>
+        <app:section-help>lis, eu tincidunt nisi aliquam. Curabitur efficitu</app:section-help>
 
         <para>
-          <app:ref name="base_comp" preview:body="&lt;Ref&gt;">2</app:ref>. <u><b>Base Compensation</b></u>.
-          Your base rate of compensation will be
+          <app:ref name="base_comp" preview:body="&lt;Ref&gt;">2</app:ref>eu<u><b>r diam at lorem c</b></u>ursus, a pulvinar arcu euismod. Donec luctus enim <app:placeholder field="ol.employee_type_exempt_FT_monthly_salary" missing="Monthly Salary"/>nec ante accums<app:placeholder field="ol.employee_type_exempt_FT_salary" missing="Annual Salary"/>an varius.
 
-            <app:placeholder field="ol.employee_type_exempt_FT_monthly_salary" missing="Monthly Salary"/> per month (or <app:placeholder field="ol.employee_type_exempt_FT_salary" missing="Annual Salary"/>
-              on an annualized basis),
-
-
-
-
-
-
-          which will be paid in accordance with the Company's standard payroll
-          practices as established or modified from time to time.
-
-        </para>
+Suspendisse in augue turpis. Donec sod</para>
       </app:section>
 
 
@@ -305,154 +263,59 @@
 
 
 
-      <!--added new field/choice/metadata for PTO with 3 options, accrued,
-          open-ended or custom-->
+      <!--ales pharetra maximus. Sed ac vehicula arcu. Etiam-->
 
-      <!--NOTE the open-ended option should only be available for exempt
-          employees. Can we build this check in?  I attempted to do so below.-->
+      <!-- commodo ac turpis a pulvinar. Sed euismod nibh se-->
 
 
 
       <app:section ref="3" single-ref="3" name="withholding_taxes" title="Withholding Taxes" hidden="false" removed="false">
         <para>
-          <app:ref name="withholding_taxes" preview:body="&lt;Ref&gt;">3</app:ref>. <u><b>Withholding Taxes</b></u>.
-          All forms of compensation referred to in this letter are subject to
-          all of the required and elected taxes and withholdings.
-        </para>
+          <app:ref name="withholding_taxes" preview:body="&lt;Ref&gt;">3</app:ref>eu<u><b>d nisi placerat s</b></u>odales. Cras justo sem, efficitur eget ligula vel,</para>
       </app:section>
 
       <app:section ref="4" single-ref="4" name="at_will" title="At Will Employment" hidden="false" removed="false">
         <para>
-          <app:ref name="at_will" preview:body="&lt;Ref&gt;">4</app:ref>. <u><b>At Will Employment</b></u>.
-          Your employment with the Company is “at-will” and either you or the
-          Company may terminate your employment at any time, with or without
-          cause or advance notice. As a result, nothing in this letter is a
-          promise or guarantee of employment for any specific period of time
-          or continued employment. The Company also retains the right to make
-          decisions concerning your employment (e.g., changes to your
-          position, title, level, responsibilities, compensation, job duties,
-          reporting structure, work location, work schedule, goals or any
-          other managerial decisions) at any time, with or without cause or
-          advance notice, as it deems appropriate in its sole discretion.
-          Although your job duties, title, compensation and benefits, as well
-          as the Company’s personnel policies and procedures, may change from
-          time to time, the “at will” nature of your employment may only be
-          changed by a written agreement signed by you and a duly authorized
-          officer of the Company, which expressly states the intention to
-          modify the at-will nature of your employment.
-        </para>
+          <app:ref name="at_will" preview:body="&lt;Ref&gt;">4</app:ref>eu<u><b>facilisis euismod </b></u>mauris. Etiam pulvinar vitae ante vitae accumsan. </para>
       </app:section>
 
       <app:section ref="5" single-ref="5" name="confidentiality_agreement" title="Confidentiality and Assignment Agreement" hidden="false" removed="false">
         <para>
-          <app:ref name="confidentiality_agreement" preview:body="&lt;Ref&gt;">5</app:ref>.
-          <u><b>Confidentiality and Assignment Agreement</b></u>.
-          The Company views the protection of its trade secrets and other
-          confidential and proprietary information, such as customer or
-          product information, as a matter of great importance and intends to
-          train you and expose you to such information. Therefore, as a
-          condition of this offer, your employment with the Company, the
-          training the Company will provide you, the receipt of the
-          compensation and benefits contained herein and the receipt of the
-          Company's confidential and proprietary information during your
-          employment, you are required to review and sign the Company's
-          Confidentiality and Assignment Agreement. We urge you to review the
-          Company's Confidentiality and Assignment Agreement closely because
-          it contains obligations you will have as an employee relating to the
-          Company's confidential and proprietary information
-          and
-
-
-
-            <app:placeholder field="eca_terms.non_solicit">a restriction limiting your ability to solicit or disrupt certain of the Company's existing relationships</app:placeholder>,
-          during your employment and for a period of time after your
-          employment with the Company ends. We understand that you may have
-          obligations to your present and/or prior employers to safeguard the
-          confidential and proprietary information of those organizations, and
-          we expect and require that you will honor them. To that end, we
-          expect that you will not take any documents or other confidential
-          and/or proprietary information from your current employer when you
-          depart. We also expect that you will not use any proprietary
-          information, materials or documents of a former employer while
-          performing your responsibilities for the Company.
-        </para>
+          <app:ref name="confidentiality_agreement" preview:body="&lt;Ref&gt;">5</app:ref>sollicitudin<u><b>ulla quis sollicitudin libero, ut dignis</b></u>sim est. In id magna faucibus, dictum odio non, ve<app:placeholder field="eca_terms.non_solicit">stibulum sapien. Nam eu consequat ex. Lorem ipsum </app:placeholder>dolor sit amet, consectetur adipiscing elit. Aliqu</para>
       </app:section>
 
       <app:section ref="6" single-ref="6" name="work_authorization" title="Work Authorization" allowCustom="False" hidden="false" removed="false">
         <para>
-          <app:ref name="work_authorization" preview:body="&lt;Ref&gt;">6</app:ref>.
-          <u><b>Work Authorization</b></u>.
-          Under federal immigration laws, the Company is required to verify
-          each new employee's identity and legal authority to work in the
-          United States. Accordingly, please be prepared to furnish
-          appropriate documents on your first day of employment satisfying
-          those requirements (e.g., a valid U.S. passport). This offer of
-          employment is conditional on submission of satisfactory
-          documentation regarding your identity and authorization to work in
-          the United States.
-        </para>
+          <app:ref name="work_authorization" preview:body="&lt;Ref&gt;">6</app:ref>sollicitudin<u><b>m eleifend auctor </b></u>nunc vel aliquam.
+
+Phasellus maximus feugiat ex no</para>
       </app:section>
 
 
 
 
-      <!--there is a note for CA based employees and i included a note in help
-          text.-->
+      <!--n iaculis. Sed at massa tincidunt, tempus nulla ve-->
       <app:section ref="7" single-ref="7" name="company_policies" title="Company Policies and Procedures" hidden="false" removed="false">
         <para>
-          <app:ref name="company_policies" preview:body="&lt;Ref&gt;">7</app:ref>.
-          <u><b>Company Policies and Procedures</b></u>.
-          As an employee of the Company, you will be required to comply with
-          (a) all Company policies and procedures and (b) all laws and
-          regulations applicable to the Company’s business and performance of
-          your duties for the Company. Violations of the Company's policies or
-          applicable law may lead to immediate termination of your employment.
-        </para>
+          <app:ref name="company_policies" preview:body="&lt;Ref&gt;">7</app:ref>sollicitudin<u><b>, commodo nisl. Morbi eleifend </b></u>sollicitudin sapien, vel commodo orci porttitor no</para>
       </app:section>
 
     <app:section ref="8" single-ref="8" name="reference_check" title="Background/Reference Checks" hidden="false" removed="false">
       <app:term name="background" set="ol"/>
 
           <para>
-            <app:ref name="reference_check" preview:body="&lt;Ref&gt;">8</app:ref>.
-            <u><b>Background/Reference Checks</b></u>.
-
-              You may need to complete an employment application or allow the
-              Company to complete a background and/or reference check to its
-              satisfaction as a condition of your employment. You agree to
-              execute the forms necessary for the processing of any such
-              background and/or reference checks.
-
-
-          </para>
+            <app:ref name="reference_check" preview:body="&lt;Ref&gt;">8</app:ref>. Curabitur in<u><b> ultricies nunc. Curabitur </b></u>nec sagittis justo. Maecenas ultrices purus est. V</para>
 
       </app:section>
 
       <app:section ref="9" single-ref="9" name="electronic_delivery" title="Electronic Delivery" hidden="false" removed="false">
         <para>
-          <app:ref name="electronic_delivery" preview:body="&lt;Ref&gt;">9</app:ref>.
-          <u><b>Electronic Delivery</b></u>.
-          The Company may, in its sole discretion, decide to deliver to you by
-          email or any other electronic means any documents or notices related
-          to this letter, your employment with the Company, securities of the
-          Company or any of its affiliates or any other matter, including
-          documents and/or notices required to be delivered to you by
-          applicable laws. You consent to receive such documents or notices by
-          electronic means and also agree to participate through any on-line
-          or electronic system that may be established and maintained by the
-          Company or a third party designated by the Company.
-        </para>
+          <app:ref name="electronic_delivery" preview:body="&lt;Ref&gt;">9</app:ref>sollicitudin<u><b>vamus vel lacus lac</b></u>inia, lacinia justo sit amet, sodales lorem. Sed n</para>
       </app:section>
 
       <app:section ref="10" single-ref="10" name="integration" title="Integration" hidden="false" removed="false">
         <para>
-          <app:ref name="integration" preview:body="&lt;Ref&gt;">10</app:ref>. <u><b>Integration</b></u>.
-          This offer letter and the agreements, policies, rules and procedures
-          referenced herein are our complete understanding regarding your
-          employment with the Company. Accordingly, it supersedes and
-          completely replaces any prior oral or written communications on the
-          subject.
-        </para>
+          <app:ref name="integration" preview:body="&lt;Ref&gt;">10</app:ref>eu<u><b>ullamcorper</b></u>on sapien malesuada, pulvinar nunc aliquam, lobort</para>
       </app:section>
       <app:section name="custom-content" count="false" allowCustom="False" hidden="false" removed="false">
         <app:term set="ol" name="custom_content" type="Optional Choice">
@@ -465,39 +328,23 @@
       </app:section>
       <app:section ref="11" single-ref="11" name="signature" title="Signature Blocks" allowCustom="False" hidden="false" removed="false">
           <app:term name="offer_expiration" set="ol"/>
-      <para>
-		We are very excited about you joining our team and know that you will
-		make outstanding contributions to <app:placeholder field="entity_corporate.legal_name">Acme, Inc.</app:placeholder>!
-		Kindly indicate your acceptance of our offer by signing this letter
-		together with the Employee Confidentiality and Assignment Agreement and
-		returning both of these signed documents to me. Feel free to give
-		 me a
-		call to discuss any particular details or questions you might
-		have.
-      </para>
-      <para>
-        Very truly yours,
-      </para>
+      <para> vulputate.
+
+Donec at viverra nunc. Donec ornare r<app:placeholder field="entity_corporate.legal_name">ultricies.</app:placeholder>is urna. Praesent ultrices dolor sed mauris semper</para>
+      <para>isus et purus imperdiet malesuada</para>
       <blockTable style="SignaturesTable">
         <tr>
-          <td><app:placeholder field="ol.representative_signature">By: _________________________</app:placeholder></td>
+          <td><app:placeholder field="ol.representative_signature">. Praesent consequat tristiqu</app:placeholder></td>
           <td/>
         </tr>
       </blockTable>
       <setNextTemplate name="Signatures"/>
       <nextPage/>
-      <para>
-        This offer will expire on <app:placeholder field="ol.expiration_date" missing="Offer Expiration Date"/>, unless extended by
-        mutual agreement.
-      </para>
-      <para>
-        I hereby accept the offer of employment with
-        <app:placeholder field="entity_corporate.legal_name">Acme, Inc.</app:placeholder> on the terms and conditions set forth
-        above.
-      </para>
+      <para> sed tortor at bibendum. In interdu<app:placeholder field="ol.expiration_date" missing="Offer Expiration Date"/>e leo, id bibendum ex sagittis a. Maecenas feugiat</para>
+      <para>atis, faucibus ligula eu, sollicitudin velit. Inte<app:placeholder field="entity_corporate.legal_name">ultricies.</app:placeholder>m justo at euismod vestibulum. Cras sed eros venen</para>
       <blockTable style="SignaturesTable">
         <tr>
-          <td><app:placeholder field="ol.employee_signature">By: _________________________</app:placeholder></td>
+          <td><app:placeholder field="ol.employee_signature">. Praesent consequat tristiqu</app:placeholder></td>
           <td/>
         </tr>
       </blockTable>
