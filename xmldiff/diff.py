@@ -131,9 +131,8 @@ class Differ(object):
 
                 # Try to shortcut for nodes that are not only equal but also
                 # in the same place in the tree
-                if (match == 1.0 and
-                   utils.getpath(lnode, lroot) == utils.getpath(rnode, rroot)):
-                    # This is a complete match, break here
+                if match == 1.0:
+                    # This is a total match, break here
                     break
 
             if max_match >= self.F:
