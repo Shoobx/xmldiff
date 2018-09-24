@@ -1,8 +1,8 @@
 Changes
 =======
 
-2.0b8 (unreleased)
-------------------
+2.0rc1 (2018-09-24)
+-------------------
 
 - Performance improvements.
 
