@@ -95,10 +95,7 @@ class Differ(object):
 
         # Let's just do the naive slow matchings, we can implement
         # FastMatch later
-        lroot = self.left.getroottree()
         lnodes = utils.post_order_traverse(self.left)
-
-        rroot = self.right.getroottree()
         rnodes = list(utils.post_order_traverse(self.right))
 
         # TODO: If the roots do not match, we should create new roots, and

@@ -4,7 +4,7 @@ Changes
 2.0b8 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Performance improvements.
 
 
 2.0b7 (2018-09-14)
