@@ -61,11 +61,9 @@ Changes from ``xmldiff`` 0.6/1.x
     mainly one where differences are marked up in the XML,
     useful for making human readable diffs.
 
-  * These formats can show text differences in a semantically meaningful way.
+    These formats can show text differences in a semantically meaningful way.
 
-  * The default output format of the command line tool now does not require
-    you to parse the output to apply it. An output format compatible with
-    0.6 / 1.x is also available.
+  * An output format compatible with 0.6/1.x is also available.
 
   * 2.0 is urrently significantly slower than ``xmldiff`` 0.6/1.x,
     but this will change in the future.
