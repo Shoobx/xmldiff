@@ -14,9 +14,13 @@ XML type formats are also not only used for computer readable data,
 it is also often used as a format for hierarchical data that can be rendered into human readable formats.
 A traditional diff on such a format would tell you line by line the differences,
 but this would not be be readable by a human.
-This library provides tools to make human readable diffs in those situations.
+``xmldiff`` provides tools to make human readable diffs in those situations.
 
 Full documentation is on `xmldiff.readthedocs.io <https://xmldiff.readthedocs.io>`_
+
+``xmldiff`` is still under rapid development,
+and no guarantees are done that the output of one version will be the same as the output of any previous version.
+
 
 Quick usage
 -----------

@@ -58,10 +58,19 @@ Result
 ......
 
 If no formatter is specified the diff functions will return a list of actions.
-Such a list is called an edit script and contains all changes needed to transform the "left" XML into the "right" XML.
+Such a list is called an Edit Script and contains all changes needed to transform the "left" XML into the "right" XML.
 
 If a formatter is specified that formatter determines the result.
 The included formatters, ``diff``, ``xml``, and ``old`` all return a Unicode string.
+
+``xmldiff`` is still under rapid development,
+and no guarantees are done that the output of one version will be the same as the output of any previous version.
+The actions of the edit script can be in a different order or replaced by equivalent actions dependingon the version of ``xmldiff``,
+but if the Edit Script does not correctly transform one XML tree into another,
+thas is regarded as a bug.
+This means that the output of the ``xml`` format also may change from version to version.
+There is no "correct" solution to how that output should look,
+as the same change can be represented in several different ways.
 
 
 Unique Attributes
