@@ -462,7 +462,7 @@ class XmlDiffFormatTests(unittest.TestCase):
             u'[update, /document/node[1]/text()[2], "\\n    '
             u'New tail content\\n  "]\n'
             u'[rename, /document/node[2], nod]\n'
-            u'[insert-after, /document/node[2], \n'
+            u'[insert-after, /document/tag[1], \n'
             u'<new/>]\n'
             u'[remove, /document/tail[1]]'
         )
