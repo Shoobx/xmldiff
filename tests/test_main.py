@@ -128,3 +128,21 @@ class MainCLITests(unittest.TestCase):
         output, errors = self.call_run([file1, file2, '--pretty-print',
                                         '--formatter', 'xml'])
         self.assertEqual(len(output.splitlines()), 6)
+
+        # The default output gives three lines for three actions
+        output, errors = self.call_run([file1, file2, '--ratio-mode', 'fast'])
+        self.assertEqual(len(output.splitlines()), 3)
+
+        # 'fast' is default, so it's the same output
+        output2, errors = self.call_run([file1, file2, '--ratio-mode', 'fast'])
+        self.assertEqual(output, output2)
+
+        # Accurate is the same in this case, although sometimes it isn't
+        output2, errors = self.call_run([file1, file2, '--ratio-mode',
+                                         'accurate'])
+        self.assertEqual(output, output2)
+
+        # But "faster" gives six actions instead of three
+        output, errors = self.call_run([file1, file2, '--ratio-mode',
+                                        'faster'])
+        self.assertEqual(len(output.splitlines()), 6)

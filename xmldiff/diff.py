@@ -24,7 +24,7 @@ RenameAttrib = namedtuple('RenameAttrib', 'node oldname newname')
 
 class Differ(object):
 
-    def __init__(self, F=None, uniqueattrs=None):
+    def __init__(self, F=None, uniqueattrs=None, ratio_mode='fast'):
         # The minimum similarity between two nodes to consider them equal
         if F is None:
             F = 0.5
@@ -37,6 +37,15 @@ class Differ(object):
         self.clear()
         # Avoid recreating this for every node
         self._sequencematcher = SequenceMatcher()
+
+        if ratio_mode == 'fast':
+            self._sequence_ratio = self._sequencematcher.quick_ratio
+        elif ratio_mode == 'accurate':
+            self._sequence_ratio = self._sequencematcher.ratio
+        elif ratio_mode == 'faster':
+            self._sequence_ratio = self._sequencematcher.real_quick_ratio
+        else:
+            raise ValueError("Unknown ratio_mode '%s'" % ratio_mode)
 
     def clear(self):
         # Use None for all values, as markings that they aren't done yet.
@@ -144,7 +153,6 @@ class Differ(object):
     def node_text(self, node):
         # Get the texts and the tag as a start
         texts = node.xpath('text()')
-        texts.append(node.tag)
 
         # Then add attributes and values
         for tag, value in sorted(node.attrib.items()):
@@ -164,7 +172,7 @@ class Differ(object):
                isinstance(right, etree._Comment)):
                 # comments
                 self._sequencematcher.set_seqs(left.text, right.text)
-                return self._sequencematcher.ratio()
+                return self._sequence_ratio()
             # One is a comment the other is not:
             return 0
 
@@ -179,7 +187,7 @@ class Differ(object):
         ltext = self.node_text(left)
         rtext = self.node_text(right)
         self._sequencematcher.set_seqs(ltext, rtext)
-        return self._sequencematcher.ratio()
+        return self._sequence_ratio()
 
     def child_ratio(self, left, right):
         # How similar the children of two nodes are

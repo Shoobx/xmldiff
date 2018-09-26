@@ -138,7 +138,7 @@ class NodeRatioTests(unittest.TestCase):
         right = u"""<document>
     <story firstPageTemplate="FirstPage">
         <section ref="3" single-ref="3">
-            <para>It's completely different</para>
+            <para>Completely different from before</para>
         </section>
         <section xml:id="oldfirst" ref="4" single-ref="4">
             <para>Another paragraph</para>
@@ -166,13 +166,13 @@ class NodeRatioTests(unittest.TestCase):
         right = righttree.xpath('/document/story/section[2]/para')[0]
 
         self.assertAlmostEqual(differ.leaf_ratio(left, right),
-                               0.7619047619047619)
+                               0.75)
 
         # These nodes should not be very similar
         left = lefttree.xpath('/document/story/section[1]/para')[0]
         right = righttree.xpath('/document/story/section[1]/para')[0]
         self.assertAlmostEqual(differ.leaf_ratio(left, right),
-                               0.366666666666)
+                               0.45614035087719)
 
     def test_compare_different_nodes(self):
         left = u"""<document>
@@ -321,7 +321,7 @@ class NodeRatioTests(unittest.TestCase):
 
         # These have different tags, but should still match
         self.assertEqual(differ.leaf_ratio(left, right),
-                         0.7441860465116279)
+                         1.0)
 
         # These have different tags, and different attribute value,
         # but still similar enough
@@ -329,8 +329,8 @@ class NodeRatioTests(unittest.TestCase):
         right = differ.right.xpath('/document/section[2]')[0]
 
         # These have different tags, but should still match
-        self.assertEqual(differ.leaf_ratio(left, right),
-                         0.6578947368421053)
+        self.assertAlmostEqual(differ.leaf_ratio(left, right),
+                               0.76190476190476)
 
         # These have different tags, and different attribute value,
         # but still similar enough
@@ -338,8 +338,8 @@ class NodeRatioTests(unittest.TestCase):
         right = differ.right.xpath('/document/section[3]')[0]
 
         # These are too different
-        self.assertEqual(differ.leaf_ratio(left, right),
-                         0.32)
+        self.assertAlmostEqual(differ.leaf_ratio(left, right),
+                               0.45161290322580)
 
     def test_compare_namespaces(self):
         left = u"""<document>
@@ -364,7 +364,35 @@ class NodeRatioTests(unittest.TestCase):
 
         # These have different namespaces, but should still match
         self.assertEqual(differ.leaf_ratio(left, right),
-                         0.9152542372881356)
+                         1.0)
+
+    def test_different_ratio_modes(self):
+        node1 = etree.Element('para')
+        node1.text = "This doesn't match at all"
+        node2 = etree.Element('para')
+        node2.text = "It's completely different"
+        node3 = etree.Element('para')
+        node3.text = "Completely different from before"
+
+        # These texts are very different
+        differ = Differ(ratio_mode='accurate')
+        self.assertAlmostEqual(differ.leaf_ratio(node1, node2), 0.24)
+        # However, the quick_ratio doesn't catch that, and think they match
+        differ = Differ(ratio_mode='fast')
+        self.assertAlmostEqual(differ.leaf_ratio(node1, node2), 0.64)
+        # It still realizes these sentences are different, though.
+        differ = Differ(ratio_mode='fast')
+        self.assertAlmostEqual(differ.leaf_ratio(node1, node3), 0.4561403508)
+        # Faster thinks the first two are the same!
+        differ = Differ(ratio_mode='faster')
+        self.assertAlmostEqual(differ.leaf_ratio(node1, node2), 1.0)
+        # And that the third is almost the same
+        differ = Differ(ratio_mode='faster')
+        self.assertAlmostEqual(differ.leaf_ratio(node1, node3), 0.8771929824)
+
+        # Invalid modes raise error:
+        with self.assertRaises(ValueError):
+            differ = Differ(ratio_mode='allezlebleus')
 
 
 class MatchTests(unittest.TestCase):

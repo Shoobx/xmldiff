@@ -12,7 +12,8 @@ you just import and call one of the three main API methods.
 
   >>> from xmldiff import main
   >>> main.diff_files("../tests/test_data/insert-node.left.html",
-  ...                 "../tests/test_data/insert-node.right.html")
+  ...                 "../tests/test_data/insert-node.right.html",
+  ...                 diff_options={'F': 0.5, 'ratio_mode': 'fast'})
   [UpdateTextIn(node='/body/div[1]', text=None),
    InsertNode(target='/body/div[1]', tag='p', position=0),
    UpdateTextIn(node='/body/div/p[1]', text='Simple text')]
@@ -40,13 +41,32 @@ Parameters
 ``right``:
   The "right", "new" or "target" XML.
 
-``F``:
-  A value between 0 and 1 that determines how similar two XML nodes must be to match as the same in both trees. Defaults to 0.5.
+``diff_options``:
+  A dictionary containing options that will be passed into the ``Differ()``:
+    ``F``:
+    A value between 0 and 1 that determines how similar two XML nodes must be to match as the same in both trees.
+    Defaults to ``0.5``.
 
-``uniqueattrs``:
-  A list of XML node attributes that will uniquely identify a node.
-  Defaults to ``['{http://www.w3.org/XML/1998/namespace}id']``.
-  See `Unique Attributes`_
+    A higher value requires a smaller difference between two nodes for them to match.
+    Set the value high, and you will see more nodes inserted and deleted instead of being updated.
+    Set the value low, and you will get more updates insted of inserts and deletes.
+
+    ``uniqueattrs``:
+    A list of XML node attributes that will uniquely identify a node.
+    See `Unique Attributes`_ for more info.
+
+    Defaults to ``['{http://www.w3.org/XML/1998/namespace}id']``.
+
+    ``ratio_mode``:
+
+    The ``ratio_mode`` determines how accurately the similarity between two nodes is calculated.
+    The choices are ``'accurate'``, ``'fast'`` and ``'faster'``.
+    Defaults to ``'fast'``.
+
+    Using ``'faster'`` often results in less optimal edits scripts,
+    in other words, you will have more actions to achieve the same result.
+    Using ``'accurate'`` will be significantly slower,
+    especially if your nodes have long texts or many attributes.
 
 ``formatter``:
   The formatter to use, see `Using Formatters`_.

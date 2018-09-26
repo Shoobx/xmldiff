@@ -39,8 +39,6 @@ As a library::
   diff = main.diff_files('file1.xml', 'file2.xml',
                          formatter=formatting.XMLFormatter())
 
-  print(diff)
-
 There is also a method ``diff_trees()`` that take two lxml trees,
 and a method ``diff_texts()`` that will take strings containing XML.
 

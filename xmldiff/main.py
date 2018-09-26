@@ -14,11 +14,13 @@ FORMATTERS = {
 }
 
 
-def diff_trees(left, right, F=None, uniqueattrs=None, formatter=None):
+def diff_trees(left, right, diff_options=None, formatter=None):
     """Takes two lxml root elements or element trees"""
     if formatter is not None:
         formatter.prepare(left, right)
-    differ = diff.Differ(F=F, uniqueattrs=uniqueattrs)
+    if diff_options is None:
+        diff_options = {}
+    differ = diff.Differ(**diff_options)
     diffs = differ.diff(left, right)
 
     if formatter is None:
@@ -27,24 +29,25 @@ def diff_trees(left, right, F=None, uniqueattrs=None, formatter=None):
     return formatter.format(diffs, left)
 
 
-def diff_texts(left, right, F=None, uniqueattrs=None, formatter=None):
+def _diff(parse_method, left, right, diff_options=None, formatter=None):
+    normalize = bool(getattr(formatter, 'normalize', 1) & formatting.WS_TAGS)
+    parser = etree.XMLParser(remove_blank_text=normalize)
+    left_tree = parse_method(left, parser)
+    right_tree = parse_method(right, parser)
+    return diff_trees(left_tree, right_tree, diff_options=diff_options,
+                      formatter=formatter)
+
+
+def diff_texts(left, right, diff_options=None, formatter=None):
     """Takes two Unicode strings containing XML"""
-    normalize = bool(getattr(formatter, 'normalize', 1) & formatting.WS_TAGS)
-    parser = etree.XMLParser(remove_blank_text=normalize)
-    left_tree = etree.fromstring(left, parser)
-    right_tree = etree.fromstring(right, parser)
-    return diff_trees(left_tree, right_tree, F=F, uniqueattrs=uniqueattrs,
-                      formatter=formatter)
+    return _diff(etree.fromstring, left, right,
+                 diff_options=diff_options, formatter=formatter)
 
 
-def diff_files(left, right, F=None, uniqueattrs=None, formatter=None):
+def diff_files(left, right, diff_options=None, formatter=None):
     """Takes two filenames or streams, and diffs the XML in those files"""
-    normalize = bool(getattr(formatter, 'normalize', 1) & formatting.WS_TAGS)
-    parser = etree.XMLParser(remove_blank_text=normalize)
-    left_tree = etree.parse(left, parser)
-    right_tree = etree.parse(right, parser)
-    return diff_trees(left_tree, right_tree, F=F, uniqueattrs=uniqueattrs,
-                      formatter=formatter)
+    return _diff(etree.parse, left, right,
+                 diff_options=diff_options, formatter=formatter)
 
 
 def make_parser():
@@ -53,6 +56,9 @@ def make_parser():
                         help='the first input file')
     parser.add_argument('file2', type=FileType('r'),
                         help='the second input file')
+    parser.add_argument('-v', '--version', action='version',
+                        help='display version and exit.',
+                        version="xmldiff %s" % __version__)
     parser.add_argument('-f', '--formatter', default='diff',
                         choices=list(FORMATTERS.keys()),
                         help='formatter selection')
@@ -60,9 +66,11 @@ def make_parser():
                         help="do not strip ignorable whitespace")
     parser.add_argument('-p', '--pretty-print', action='store_true',
                         help="try to make XML output more readable")
-    parser.add_argument('-v', '--version', action='version',
-                        help='display version and exit.',
-                        version="xmldiff %s" % __version__)
+    parser.add_argument('--ratio-mode', default='fast',
+                        choices={'accurate', 'fast', 'faster'},
+                        help="choose the node comparison optimization")
+    parser.add_argument('-F', type=float,
+                        help="determines how similar nodes must be to match")
     return parser
 
 
@@ -77,5 +85,8 @@ def run(args=None):
 
     formatter = FORMATTERS[args.formatter](normalize=normalize,
                                            pretty_print=args.pretty_print)
-    result = diff_files(args.file1, args.file2, formatter=formatter)
+    diff_options = {'ratio_mode': args.ratio_mode,
+                    'F': args.F}
+    result = diff_files(args.file1, args.file2, diff_options=diff_options,
+                        formatter=formatter)
     print(result)
