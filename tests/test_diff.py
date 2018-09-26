@@ -276,25 +276,29 @@ class NodeRatioTests(unittest.TestCase):
         left = differ.left.xpath('/document/story/section[1]')[0]
         right = differ.right.xpath('/document/story/section[1]')[0]
 
-        # These have different id's
-        self.assertEqual(differ.leaf_ratio(left, right), 0)
+        # These are very similar
+        self.assertEqual(differ.leaf_ratio(left, right), 0.9)
         # And one out of two children in common
         self.assertEqual(differ.child_ratio(left, right), 0.5)
+        # But different id's, hence 0 as match
+        self.assertEqual(differ.node_ratio(left, right), 0)
 
         # Here's the ones with the same id:
         left = differ.left.xpath('/document/story/section[1]')[0]
         right = differ.right.xpath('/document/story/section[2]')[0]
 
-        self.assertEqual(differ.leaf_ratio(left, right), 1.0)
-        # And one out of two children in common
+        # Only one out of two children in common
         self.assertEqual(differ.child_ratio(left, right), 0.5)
+        # But same id's, hence 1 as match
+        self.assertEqual(differ.node_ratio(left, right), 1.0)
 
         # The last ones are completely similar, but only one
         # has an xml:id, so they do not match.
         left = differ.left.xpath('/document/story/section[3]')[0]
         right = differ.right.xpath('/document/story/section[3]')[0]
-        self.assertEqual(differ.leaf_ratio(left, right), 0)
+        self.assertAlmostEqual(differ.leaf_ratio(left, right), 0.81818181818)
         self.assertEqual(differ.child_ratio(left, right), 1.0)
+        self.assertEqual(differ.node_ratio(left, right), 0)
 
     def test_compare_node_rename(self):
         left = u"""<document>

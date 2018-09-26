@@ -127,10 +127,7 @@ class Differ(object):
             match_node = None
 
             for rnode in rnodes:
-                match = self.leaf_ratio(lnode, rnode)
-                child_ratio = self.child_ratio(lnode, rnode)
-                if child_ratio is not None:
-                    match = (match + child_ratio) / 2
+                match = self.node_ratio(lnode, rnode)
                 if match > max_match:
                     match_node = rnode
                     max_match = match
@@ -150,6 +147,30 @@ class Differ(object):
 
         return self._matches
 
+    def node_ratio(self, left, right):
+        if (isinstance(left, etree._Comment) or
+            isinstance(right, etree._Comment)):
+            if (isinstance(left, etree._Comment) and
+                isinstance(right, etree._Comment)):
+                # comments
+                self._sequencematcher.set_seqs(left.text, right.text)
+                return self._sequence_ratio()
+            # One is a comment the other is not:
+            return 0
+
+        for attr in self.uniqueattrs:
+            if attr in left.attrib or attr in right.attrib:
+                # One of the nodes have a unique attribute, we check only that.
+                # If only one node has it, it means they are not the same.
+                return int(left.attrib.get(attr) == right.attrib.get(attr))
+
+        match = self.leaf_ratio(left, right)
+        child_ratio = self.child_ratio(left, right)
+
+        if child_ratio is not None:
+            match = (match + child_ratio) / 2
+        return match
+
     def node_text(self, node):
         # Get the texts and the tag as a start
         texts = node.xpath('text()')
@@ -166,22 +187,6 @@ class Differ(object):
 
     def leaf_ratio(self, left, right):
         # How similar two nodes are, with no consideration of their children
-        if (isinstance(left, etree._Comment) or
-           isinstance(right, etree._Comment)):
-            if (isinstance(left, etree._Comment) and
-               isinstance(right, etree._Comment)):
-                # comments
-                self._sequencematcher.set_seqs(left.text, right.text)
-                return self._sequence_ratio()
-            # One is a comment the other is not:
-            return 0
-
-        for attr in self.uniqueattrs:
-            if attr in left.attrib or attr in right.attrib:
-                # One of the nodes have a unique attribute, we check only that.
-                # If only one node has it, it means they are not the same.
-                return int(left.attrib.get(attr) == right.attrib.get(attr))
-
         # We use a simple ratio here, I tried Levenshtein distances
         # but that took a 100 times longer.
         ltext = self.node_text(left)
