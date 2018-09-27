@@ -7,6 +7,10 @@ Changes
 - Added options for faster node comparisons. The "middle" option is now
   default, it had very few changes in matches, but is much faster.
 
+- Implemented a Fast Match algorithm for even faster diffing.
+
+- Fixed a bug where MoveNode actions sometimes was in the wrong order
+
 
 2.0 (2018-09-25)
 ----------------

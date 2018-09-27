@@ -68,6 +68,18 @@ Parameters
     Using ``'accurate'`` will be significantly slower,
     especially if your nodes have long texts or many attributes.
 
+``fast_match``:
+  By default ``xmldiff`` will compare each node from one tree with all nodes from the other tree.
+  It will then pick the one node that matches best as the match,
+  if that match passes the match treshold ``F`` (see above).
+
+  If fast_match is true ``xmldiff`` will first make a faster run,
+  trying to find chains of matching nodes,
+  during which any match better than ``F`` will count.
+  This significantly cuts down on the time to match nodes,
+  but means that the matches are no longer the best match,
+  only "good enough" matches.
+
 ``formatter``:
   The formatter to use, see `Using Formatters`_.
   If no formatter is specified the function will return a list of edit actions,

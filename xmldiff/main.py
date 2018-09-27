@@ -66,11 +66,13 @@ def make_parser():
                         help="do not strip ignorable whitespace")
     parser.add_argument('-p', '--pretty-print', action='store_true',
                         help="try to make XML output more readable")
+    parser.add_argument('-F', type=float,
+                        help="determines how similar nodes must be to match")
     parser.add_argument('--ratio-mode', default='fast',
                         choices={'accurate', 'fast', 'faster'},
                         help="choose the node comparison optimization")
-    parser.add_argument('-F', type=float,
-                        help="determines how similar nodes must be to match")
+    parser.add_argument('--fast-match', action='store_true',
+                        help="a faster, less optimal match run")
     return parser
 
 
@@ -86,7 +88,8 @@ def run(args=None):
     formatter = FORMATTERS[args.formatter](normalize=normalize,
                                            pretty_print=args.pretty_print)
     diff_options = {'ratio_mode': args.ratio_mode,
-                    'F': args.F}
+                    'F': args.F,
+                    'fast_match': args.fast_match}
     result = diff_files(args.file1, args.file2, diff_options=diff_options,
                         formatter=formatter)
     print(result)

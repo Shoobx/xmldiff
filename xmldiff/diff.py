@@ -24,7 +24,8 @@ RenameAttrib = namedtuple('RenameAttrib', 'node oldname newname')
 
 class Differ(object):
 
-    def __init__(self, F=None, uniqueattrs=None, ratio_mode='fast'):
+    def __init__(self, F=None, uniqueattrs=None, ratio_mode='fast',
+                 fast_match=False):
         # The minimum similarity between two nodes to consider them equal
         if F is None:
             F = 0.5
@@ -34,10 +35,10 @@ class Differ(object):
         if uniqueattrs is None:
             uniqueattrs = ['{http://www.w3.org/XML/1998/namespace}id']
         self.uniqueattrs = uniqueattrs
-        self.clear()
+        self.fast_match = fast_match
+
         # Avoid recreating this for every node
         self._sequencematcher = SequenceMatcher()
-
         if ratio_mode == 'fast':
             self._sequence_ratio = self._sequencematcher.quick_ratio
         elif ratio_mode == 'accurate':
@@ -46,6 +47,8 @@ class Differ(object):
             self._sequence_ratio = self._sequencematcher.real_quick_ratio
         else:
             raise ValueError("Unknown ratio_mode '%s'" % ratio_mode)
+
+        self.clear()
 
     def clear(self):
         # Use None for all values, as markings that they aren't done yet.
@@ -102,9 +105,8 @@ class Differ(object):
         self._r2lmap = {}
         self._inorder = set()
 
-        # Let's just do the naive slow matchings, we can implement
-        # FastMatch later
-        lnodes = utils.post_order_traverse(self.left)
+        # Generate the node lists
+        lnodes = list(utils.post_order_traverse(self.left))
         rnodes = list(utils.post_order_traverse(self.right))
 
         # TODO: If the roots do not match, we should create new roots, and
@@ -112,25 +114,34 @@ class Differ(object):
         # that for now, we don't need it. That's strictly a part of the
         # insert phase, but hey, even the paper defining the phases
         # ignores the phases, so...
-        # For now, just make sure the roots are matched, we do that by removing
-        # self.right from the list of rnodes, so it can't match, and later
-        # we special case for the left root.
+        # For now, just make sure the roots are matched, we do that by
+        # removing them from the lists of nodes, so it can't match, and add
+        # them back last.
+        lnodes.remove(self.left)
         rnodes.remove(self.right)
 
-        for lnode in lnodes:
-            if lnode is self.left:
-                # Special case for the left root, see above.
-                self.append_match(self.left, self.right, 1.0)
-                continue
+        if self.fast_match:
+            # First find matches with longest_common_subsequence:
+            matches = list(utils.longest_common_subsequence(
+                lnodes, rnodes, lambda x, y: self.node_ratio(x, y) >= 0.5))
 
+            # Add the matches (I prefer this from start to finish):
+            for left_match, right_match in matches:
+                self.append_match(lnodes[left_match],
+                                  rnodes[right_match],
+                                  None)
+
+            # Then remove the nodes (needs to be done backwards):
+            for left_match, right_match in reversed(matches):
+                lnode = lnodes.pop(left_match)
+                rnode = rnodes.pop(right_match)
+
+        for lnode in lnodes:
             max_match = 0
             match_node = None
 
             for rnode in rnodes:
-                match = self.leaf_ratio(lnode, rnode)
-                child_ratio = self.child_ratio(lnode, rnode)
-                if child_ratio is not None:
-                    match = (match + child_ratio) / 2
+                match = self.node_ratio(lnode, rnode)
                 if match > max_match:
                     match_node = rnode
                     max_match = match
@@ -148,7 +159,34 @@ class Differ(object):
                 if match_node is not None:
                     rnodes.remove(match_node)
 
+        # Match the roots
+        self.append_match(self.left, self.right, 1.0)
+
         return self._matches
+
+    def node_ratio(self, left, right):
+        if (isinstance(left, etree._Comment) or
+           isinstance(right, etree._Comment)):
+            if (isinstance(left, etree._Comment) and
+               isinstance(right, etree._Comment)):
+                # comments
+                self._sequencematcher.set_seqs(left.text, right.text)
+                return self._sequence_ratio()
+            # One is a comment the other is not:
+            return 0
+
+        for attr in self.uniqueattrs:
+            if attr in left.attrib or attr in right.attrib:
+                # One of the nodes have a unique attribute, we check only that.
+                # If only one node has it, it means they are not the same.
+                return int(left.attrib.get(attr) == right.attrib.get(attr))
+
+        match = self.leaf_ratio(left, right)
+        child_ratio = self.child_ratio(left, right)
+
+        if child_ratio is not None:
+            match = (match + child_ratio) / 2
+        return match
 
     def node_text(self, node):
         # Get the texts and the tag as a start
@@ -166,22 +204,6 @@ class Differ(object):
 
     def leaf_ratio(self, left, right):
         # How similar two nodes are, with no consideration of their children
-        if (isinstance(left, etree._Comment) or
-           isinstance(right, etree._Comment)):
-            if (isinstance(left, etree._Comment) and
-               isinstance(right, etree._Comment)):
-                # comments
-                self._sequencematcher.set_seqs(left.text, right.text)
-                return self._sequence_ratio()
-            # One is a comment the other is not:
-            return 0
-
-        for attr in self.uniqueattrs:
-            if attr in left.attrib or attr in right.attrib:
-                # One of the nodes have a unique attribute, we check only that.
-                # If only one node has it, it means they are not the same.
-                return int(left.attrib.get(attr) == right.attrib.get(attr))
-
         # We use a simple ratio here, I tried Levenshtein distances
         # but that took a 100 times longer.
         ltext = self.node_text(left)
@@ -275,7 +297,7 @@ class Differ(object):
 
     def find_pos(self, node):
         parent = node.getparent()
-        # The paper here first checks in the child is the first child in
+        # The paper here first checks if the child is the first child in
         # order, but I am entirely unable to actually make that happen, and
         # if it does, the "else:" will catch that case anyway, and it also
         # deals with the case of no child being in order.
@@ -330,18 +352,25 @@ class Differ(object):
             self._inorder.add(rchildren[y])
 
         # Go over those children that are not in order:
-        for unaligned_left in set(lchildren) - self._inorder:
-            unaligned_right = self._l2rmap[id(unaligned_left)]
-            right_pos = self.find_pos(unaligned_right)
-            rtarget = unaligned_right.getparent()
+        for lchild in lchildren:
+            if lchild in self._inorder:
+                # Alrady aligned
+                continue
+
+            rchild = self._l2rmap[id(lchild)]
+            right_pos = self.find_pos(rchild)
+            rtarget = rchild.getparent()
             ltarget = self._r2lmap[id(rtarget)]
             yield MoveNode(
-                utils.getpath(unaligned_left),
+                utils.getpath(lchild),
                 utils.getpath(ltarget),
                 right_pos)
             # Do the actual move:
-            left.remove(unaligned_left)
-            ltarget.insert(right_pos, unaligned_left)
+            left.remove(lchild)
+            ltarget.insert(right_pos, lchild)
+            # Mark the nodes as in order
+            self._inorder.add(lchild)
+            self._inorder.add(rchild)
 
     def diff(self, left=None, right=None):
         # Make sure the matching is done first, diff() needs the l2r/r2l maps.

@@ -276,25 +276,29 @@ class NodeRatioTests(unittest.TestCase):
         left = differ.left.xpath('/document/story/section[1]')[0]
         right = differ.right.xpath('/document/story/section[1]')[0]
 
-        # These have different id's
-        self.assertEqual(differ.leaf_ratio(left, right), 0)
+        # These are very similar
+        self.assertEqual(differ.leaf_ratio(left, right), 0.9)
         # And one out of two children in common
         self.assertEqual(differ.child_ratio(left, right), 0.5)
+        # But different id's, hence 0 as match
+        self.assertEqual(differ.node_ratio(left, right), 0)
 
         # Here's the ones with the same id:
         left = differ.left.xpath('/document/story/section[1]')[0]
         right = differ.right.xpath('/document/story/section[2]')[0]
 
-        self.assertEqual(differ.leaf_ratio(left, right), 1.0)
-        # And one out of two children in common
+        # Only one out of two children in common
         self.assertEqual(differ.child_ratio(left, right), 0.5)
+        # But same id's, hence 1 as match
+        self.assertEqual(differ.node_ratio(left, right), 1.0)
 
         # The last ones are completely similar, but only one
         # has an xml:id, so they do not match.
         left = differ.left.xpath('/document/story/section[3]')[0]
         right = differ.right.xpath('/document/story/section[3]')[0]
-        self.assertEqual(differ.leaf_ratio(left, right), 0)
+        self.assertAlmostEqual(differ.leaf_ratio(left, right), 0.81818181818)
         self.assertEqual(differ.child_ratio(left, right), 1.0)
+        self.assertEqual(differ.node_ratio(left, right), 0)
 
     def test_compare_node_rename(self):
         left = u"""<document>
@@ -703,6 +707,104 @@ class MatchTests(unittest.TestCase):
         result = self._match(left, right)
         self.assertEqual(result, [
             ('/document', '/document'),
+        ])
+
+
+class FastMatchTests(unittest.TestCase):
+
+    def _match(self, left, right, fast_match):
+        left_tree = etree.fromstring(left)
+        right_tree = etree.fromstring(right)
+        differ = Differ(fast_match=fast_match)
+        differ.set_trees(left_tree, right_tree)
+        matches = differ.match()
+        lpath = differ.left.getroottree().getpath
+        rpath = differ.right.getroottree().getpath
+        return [(lpath(item[0]), rpath(item[1])) for item in matches]
+
+    def test_move_paragraph(self):
+        left = u"""<document>
+    <story firstPageTemplate="FirstPage">
+        <section ref="3" single-ref="3">
+            <para>First paragraph</para>
+            <para>Second paragraph</para>
+        </section>
+        <section ref="4" single-ref="4">
+            <para>Last paragraph</para>
+        </section>
+    </story>
+</document>
+"""
+
+        right = u"""<document>
+    <story firstPageTemplate="FirstPage">
+        <section ref="3" single-ref="3">
+            <para>First paragraph</para>
+        </section>
+        <section ref="4" single-ref="4">
+            <para>Second paragraph</para>
+            <para>Last paragraph</para>
+        </section>
+    </story>
+</document>
+"""
+        # Same matches as the non-fast match test, but the matches are
+        # a different order.
+        slow_result = sorted(self._match(left, right, False))
+        fast_result = sorted(self._match(left, right, True))
+        self.assertEqual(slow_result, fast_result)
+
+    def test_move_children(self):
+        # Here the paragraphs are all so similar that that each paragraph
+        # will match any other.
+        left = u"""<document>
+    <story firstPageTemplate="FirstPage">
+        <section ref="3" single-ref="3">
+            <para>First paragraph</para>
+            <para>Second paragraph</para>
+            <para>Last paragraph</para>
+        </section>
+    </story>
+</document>
+"""
+
+        right = u"""<document>
+    <story firstPageTemplate="FirstPage">
+        <section ref="3" single-ref="3">
+            <para>Second paragraph</para>
+            <para>Last paragraph</para>
+            <para>First paragraph</para>
+        </section>
+    </story>
+</document>
+"""
+        # The slow match will match the nodes that match *best*, so it will
+        # find that paragraphs have moved around.
+        slow_result = sorted(self._match(left, right, False))
+        self.assertEqual(slow_result, [
+            ('/document', '/document'),
+            ('/document/story', '/document/story'),
+            ('/document/story/section', '/document/story/section'),
+            ('/document/story/section/para[1]',
+             '/document/story/section/para[3]'),
+            ('/document/story/section/para[2]',
+             '/document/story/section/para[1]'),
+            ('/document/story/section/para[3]',
+             '/document/story/section/para[2]')
+        ])
+
+        # But the fast match will just pick any that matches.
+        fast_result = sorted(self._match(left, right, True))
+        self.assertEqual(fast_result, [
+            ('/document', '/document'),
+            ('/document/story', '/document/story'),
+            ('/document/story/section', '/document/story/section'),
+            ('/document/story/section/para[1]',
+             '/document/story/section/para[1]'),
+            ('/document/story/section/para[2]',
+             '/document/story/section/para[2]'),
+            ('/document/story/section/para[3]',
+             '/document/story/section/para[3]')
         ])
 
 

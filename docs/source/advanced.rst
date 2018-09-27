@@ -89,13 +89,20 @@ This requires subclassing the formatter:
   >>> XSLT = u'''<?xml version="1.0"?>
   ... <xsl:stylesheet version="1.0"
   ...    xmlns:diff="http://namespaces.shoobx.com/diff"
-  ...    xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-  ...    xmlns="http://www.w3.org/1999/xhtml">
+  ...    xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
   ...
   ...    <xsl:template match="@diff:insert-formatting">
   ...        <xsl:attribute name="class">
   ...          <xsl:value-of select="'insert-formatting'"/>
   ...        </xsl:attribute>
+  ...    </xsl:template>
+  ...
+  ...    <xsl:template match="diff:delete">
+  ...        <del><xsl:apply-templates /></del>
+  ...    </xsl:template>
+  ...
+  ...    <xsl:template match="diff:insert">
+  ...        <ins><xsl:apply-templates /></ins>
   ...    </xsl:template>
   ...
   ...    <xsl:template match="@* | node()">
@@ -111,8 +118,8 @@ This requires subclassing the formatter:
   ...         result = transform(result)
   ...         return super(HTMLFormatter, self).render(result)
 
-The XSLT template above of course only handles one case,
-inserted formatting.
+The XSLT template above of course only handles a few cases,
+like inserted formatting and insert and delete tags (used below).
 A more complete XSLT file is included `here <file:_static/htmlformatter.xslt>`_.
 
 Now use that formatter in the diffing:
@@ -134,3 +141,95 @@ You can then add into your CSS files classes that make inserted text green,
 deleted text red with an overstrike,
 and formatting changes could for example be blue.
 This makes it easy to see what has been changed in a HTML document.
+
+
+Performance Options
+-------------------
+
+The performance options available will not just change the performance,
+but can also change the result.
+It's not always so that the result is worse,
+it's just less accurate.
+In some cases the less accurate result might actually be preferrable.
+As an example we take the following HTML codes:
+
+
+.. doctest::
+  :options: -ELLIPSIS, +NORMALIZE_WHITESPACE
+
+  >>> left = u"""<html><body>
+  ...   <p>The First paragraph</p>
+  ...   <p>A Second paragraph</p>
+  ...   <p>Last paragraph</p>
+  ... </body></html>"""
+  >>> right = u"""<html><body>
+  ...   <p>Last paragraph</p>
+  ...   <p>A Second paragraph</p>
+  ...   <p>The First paragraph</p>
+  ... </body></html>"""
+  >>> result = main.diff_texts(left, right)
+  >>> result
+  [MoveNode(node='/html/body/p[1]', target='/html/body[1]', position=2),
+   MoveNode(node='/html/body/p[1]', target='/html/body[1]', position=1)]
+
+We here see that the differ finds that two paragraphs needs to be moved.
+Don't be confused that it says ``p[1]`` in both cases.
+That just means to move the first paragraph,
+and in the second case that first paragraph has already been moved and is now last.
+
+If we format that diff to XML with the XMLFormatter,
+we get output that marks these paragraphs as deleted and then inserted later.
+
+.. doctest::
+  :options: -ELLIPSIS, +NORMALIZE_WHITESPACE
+
+  >>> formatter = HTMLFormatter(
+  ...     normalize=formatting.WS_BOTH)
+  >>> result = main.diff_texts(left, right, formatter=formatter)
+  >>> print(result)
+  <html xmlns:diff="http://namespaces.shoobx.com/diff">
+    <body>
+      <p diff:delete="">The First paragraph</p>
+      <p diff:delete="">A Second paragraph</p>
+      <p>Last paragraph</p>
+      <p diff:insert="">A Second paragraph</p>
+      <p diff:insert="">The First paragraph</p>
+    </body>
+  </html>
+
+Let's try diffing the same HTML with the fast match algorithm:
+
+.. doctest::
+  :options: -ELLIPSIS, +NORMALIZE_WHITESPACE
+
+  >>> result = main.diff_texts(left, right,
+  ...     diff_options={'fast_match': True})
+  >>> result
+  [UpdateTextIn(node='/html/body/p[1]', text='Last paragraph'),
+   UpdateTextIn(node='/html/body/p[3]', text='The First paragraph')]
+
+Now we instead got two update actions.
+This means the resulting HTML is quite different:
+
+.. doctest::
+  :options: -ELLIPSIS, +NORMALIZE_WHITESPACE
+
+  >>> result = main.diff_texts(left, right,
+  ...     diff_options={'fast_match': True},
+  ...     formatter=formatter)
+  >>> print(result)
+  <html xmlns:diff="http://namespaces.shoobx.com/diff">
+    <body>
+      <p><del>The Fir</del><ins>La</ins>st paragraph</p>
+      <p>A Second paragraph</p>
+      <p><del>La</del><ins>The Fir</ins>st paragraph</p>
+    </body>
+  </html>
+
+The texts are updated instead of deleting and then reinserting the whole paragraphs.
+This makes the visual output more readable.
+Also note that the XSLT in this case replaced the ``<diff:insert>`` and ``<diff:delete>`` tags with ``<ins>`` and ``<del>`` tags.
+
+This is a contrived example, though.
+If you are using ``xmldiff`` to generate a visual diff,
+you have to experiment with performance flags to find the best combination of speed and output for your case.
