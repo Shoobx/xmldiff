@@ -9,6 +9,8 @@ Changes
 
 - Implemented a Fast Match algorithm for even faster diffing.
 
+- Speed improvements through caching
+
 - Fixed a bug where MoveNode actions sometimes was in the wrong order
 
 

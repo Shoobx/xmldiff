@@ -58,6 +58,9 @@ class Differ(object):
         self._l2rmap = None
         self._r2lmap = None
         self._inorder = None
+        # Well, except the text cache, it's used by the ratio tests,
+        # so we set that to a dict so the tests work.
+        self._text_cache = {}
 
     def set_trees(self, left, right):
         self.clear()
@@ -104,6 +107,7 @@ class Differ(object):
         self._l2rmap = {}
         self._r2lmap = {}
         self._inorder = set()
+        self._text_cache = {}
 
         # Generate the node lists
         lnodes = list(utils.post_order_traverse(self.left))
@@ -189,6 +193,8 @@ class Differ(object):
         return match
 
     def node_text(self, node):
+        if node in self._text_cache:
+            return self._text_cache[node]
         # Get the texts and the tag as a start
         texts = node.xpath('text()')
 
@@ -200,7 +206,9 @@ class Differ(object):
 
         # Finally make one string, useful to see how similar two nodes are
         text = u' '.join(texts).strip()
-        return utils.cleanup_whitespace(text)
+        result = utils.cleanup_whitespace(text)
+        self._text_cache[node] = result
+        return result
 
     def leaf_ratio(self, left, right):
         # How similar two nodes are, with no consideration of their children
@@ -217,6 +225,7 @@ class Differ(object):
         right_children = right.getchildren()
         if not left_children and not right_children:
             return None
+
         count = 0
         child_count = max((len(left_children), len(right_children)))
         for lchild in left_children:
