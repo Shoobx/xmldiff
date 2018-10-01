@@ -16,6 +16,7 @@ XSLT_FILE = os.path.join(os.path.split(__file__)[0], 'htmlformatter.xslt')
 
 INSERT_NAME = '{%s}insert' % DIFF_NS
 DELETE_NAME = '{%s}delete' % DIFF_NS
+RENAME_NAME = '{%s}rename' % DIFF_NS
 
 # Flags for whitespace handling in the text aware formatters:
 WS_BOTH = 3  # Normalize ignorable whitespace and text whitespace
@@ -416,11 +417,6 @@ class XMLFormatter(BaseFormatter):
         self._delete_attrib(node, action.name)
 
     def _delete_node(self, node):
-        insert_attr = INSERT_NAME
-        if insert_attr in node.attrib:
-            # This happens is a node is first moved
-            # then renamed. Perhaps those should be the same?
-            del node.attrib[insert_attr]
         node.attrib[DELETE_NAME] = ''
 
     def _handle_DeleteNode(self, action, tree):
@@ -482,16 +478,8 @@ class XMLFormatter(BaseFormatter):
 
     def _handle_RenameNode(self, action, tree):
         node = self._xpath(tree, action.node)
-        # Make a copy of the node and set it's tag to the new tag
-        new_node = deepcopy(node)
-        new_node.tag = action.tag
-        # The old node that are to be deleted must now have no tail, the new
-        # node keeps the tail.
-        node.tail = None
-        parent = node.getparent()
-        pos = parent.index(node) + 1
-        self._delete_node(node)
-        self._insert_node(parent, new_node, pos)
+        node.attrib[RENAME_NAME] = node.tag
+        node.tag = action.tag
 
     def _update_attrib(self, node, name, value):
         oldval = node.attrib[name]
@@ -633,6 +621,8 @@ class XMLFormatter(BaseFormatter):
 
         return node
 
+    # There is no InsertComment handler, as this formatter removes all comments
+
 
 class DiffFormatter(BaseFormatter):
 
@@ -690,6 +680,10 @@ class DiffFormatter(BaseFormatter):
 
     def _handle_RenameNode(self, action):
         return u"rename", action.node, action.tag
+
+    def _handle_InsertComment(self, action):
+        return (u"insert-comment", action.target, str(action.position),
+                json.dumps(action.text))
 
 
 class XmlDiffFormatter(BaseFormatter):
@@ -775,3 +769,7 @@ class XmlDiffFormatter(BaseFormatter):
 
     def _handle_RenameNode(self, action, orig_tree):
         yield u"rename", action.node, action.tag
+
+    def _handle_InsertComment(self, action, orig_tree):
+        yield (u"insert-comment", action.target, str(action.position),
+               action.text)

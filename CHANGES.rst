@@ -13,6 +13,16 @@ Changes
 
 - Fixed a bug where MoveNode actions sometimes was in the wrong order
 
+- Added an InsertComment action, as comments require different handling,
+  so it's easier to deal with them this way. You can still use DeleteNode and
+  UpdateTextIn for them with no special handling.
+
+- When renaming tags the XMLFormatter will mark them with "diff:rename"
+  instead of making a new tag and deleting the old.
+
+- Tags will now be moved first, and updated and renamed later, as the new
+  tag name or attributes might not be valid in the old location.
+
 
 2.0 (2018-09-25)
 ----------------

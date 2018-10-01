@@ -226,8 +226,8 @@ class XMLFormatTests(unittest.TestCase):
     def test_rename_node(self):
         left = u'<document><node><para>Content</para>Tail</node></document>'
         action = diff.RenameNode('/document/node[1]/para[1]', 'newtag')
-        expected = START + u'><para diff:delete="">Content</para><newtag '\
-            u'diff:insert="">Content</newtag>Tail' + END
+        expected = START + u'><newtag diff:rename="para">Content'\
+            '</newtag>Tail' + END
 
         self._format_test(left, action, expected)
 
@@ -363,6 +363,11 @@ class DiffFormatTests(unittest.TestCase):
             u'"Also a bit of text, rick"]'
         self._format_test(action, expected)
 
+    def test_insert_comment(self):
+        action = diff.InsertComment('/document/node', 2, 'Commentary')
+        expected = '[insert-comment, /document/node, 2, "Commentary"]'
+        self._format_test(action, expected)
+
 
 class XmlDiffFormatTests(unittest.TestCase):
     # RenameAttr and MoveNode requires an orig_tree, so they
@@ -447,6 +452,7 @@ class XmlDiffFormatTests(unittest.TestCase):
         result = main.diff_files(lfile, rfile, formatter=formatter)
         expected = (
             u'[move-after, /document/node[2], /document/tag[1]]\n'
+            u'[insert-comment, /document[1], 0,  Insert a new comment ]\n'
             u'[update, /document/node[1]/@name, "was updated"]\n'
             u'[remove, /document/node[1]/@attribute]\n'
             u'[insert, /document/node[1], \n'
@@ -462,7 +468,7 @@ class XmlDiffFormatTests(unittest.TestCase):
             u'[update, /document/node[1]/text()[2], "\\n    '
             u'New tail content\\n  "]\n'
             u'[rename, /document/node[2], nod]\n'
-            u'[insert-after, /document/tag[1], \n'
+            u'[insert-after, /document/tail[1], \n'
             u'<new/>]\n'
             u'[remove, /document/tail[1]]'
         )

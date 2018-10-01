@@ -6,7 +6,8 @@ from lxml import etree
 from xmldiff import utils
 from xmldiff.diff import (Differ, UpdateTextIn, InsertNode, MoveNode,
                           DeleteNode, UpdateAttrib, InsertAttrib, RenameAttrib,
-                          DeleteAttrib, UpdateTextAfter, RenameNode)
+                          DeleteAttrib, UpdateTextAfter, RenameNode,
+                          InsertComment)
 
 from .testing import compare_elements
 
@@ -1368,4 +1369,14 @@ class DiffTests(unittest.TestCase):
              DeleteNode('/document/story/ul/li[1]'),
              DeleteNode('/document/story/ul[1]'),
              ]
+        )
+
+    def test_insert_comment(self):
+        left = u"<doc><body>Something</body></doc>"
+        right = u"<doc><!-- New comment! --><body>Something</body></doc>"
+
+        result = self._diff(left, right)
+        self.assertEqual(
+            result,
+            [InsertComment('/doc[1]', 0, ' New comment! ')]
         )

@@ -353,3 +353,26 @@ Example:
   >>> right = '<document><node>Content</node>Trailing text</document>'
   >>> main.diff_texts(left, right)
   [UpdateTextAfter(node='/document/node[1]', text='Trailing text')]
+
+
+``InsertComment(target, position, text)``
+.........................................
+
+Since comments doesn't have a tag,
+the normal ``InsertNode()`` action doesn't work nicely with a comment.
+Therefore comments get their own insert action.
+Just like ``InsertNode()`` it takes a target node and a position.
+It naturally has no tag but instead has a text argument,
+as all comments have text and nothing else.
+
+``UpdateTextIn()`` and ``DeleteNode()`` works as normal for comments.
+
+Example:
+
+.. doctest::
+  :options: -ELLIPSIS, +NORMALIZE_WHITESPACE
+
+  >>> left = '<document><node>Content</node></document>'
+  >>> right = '<document><!-- A comment --><node>Content</node></document>'
+  >>> main.diff_texts(left, right)
+  [InsertComment(target='/document[1]', position=0, text=' A comment ')]

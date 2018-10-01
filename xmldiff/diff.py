@@ -21,6 +21,8 @@ DeleteAttrib = namedtuple('DeleteAttrib', 'node name')
 InsertAttrib = namedtuple('InsertAttrib', 'node name value')
 RenameAttrib = namedtuple('RenameAttrib', 'node oldname newname')
 
+InsertComment = namedtuple('InsertComment', 'target position text')
+
 
 class Differ(object):
 
@@ -169,10 +171,8 @@ class Differ(object):
         return self._matches
 
     def node_ratio(self, left, right):
-        if (isinstance(left, etree._Comment) or
-           isinstance(right, etree._Comment)):
-            if (isinstance(left, etree._Comment) and
-               isinstance(right, etree._Comment)):
+        if left.tag is etree.Comment or right.tag is etree.Comment:
+            if left.tag is etree.Comment and right.tag is etree.Comment:
                 # comments
                 self._sequencematcher.set_seqs(left.text, right.text)
                 return self._sequence_ratio()
@@ -401,9 +401,16 @@ class Differ(object):
                 # (i)
                 pos = self.find_pos(rnode)
                 # (ii)
-                yield InsertNode(utils.getpath(ltarget, ltree), rnode.tag, pos)
-                # (iii)
-                lnode = ltarget.makeelement(rnode.tag)
+                if rnode.tag is etree.Comment:
+                    yield InsertComment(utils.getpath(ltarget, ltree), pos,
+                                        rnode.text)
+                    lnode = etree.Comment(rnode.text)
+                else:
+                    yield InsertNode(utils.getpath(ltarget, ltree),
+                                     rnode.tag, pos)
+                    lnode = ltarget.makeelement(rnode.tag)
+
+                    # (iii)
                 self.append_match(lnode, rnode, 1.0)
                 ltarget.insert(pos, lnode)
                 self._inorder.add(lnode)
@@ -423,14 +430,6 @@ class Differ(object):
                 # (i)
                 lnode = self._r2lmap[id(rnode)]
 
-                # (ii) Update
-                # XXX If they are exactly equal, we can skip this,
-                # maybe store match results in a cache?
-                for action in self.update_node_tag(lnode, rnode):
-                    yield action
-                for action in self.update_node_attr(lnode, rnode):
-                    yield action
-
                 # (iii) Move
                 lparent = lnode.getparent()
                 if ltarget is not lparent:
@@ -444,6 +443,16 @@ class Differ(object):
                     ltarget.insert(pos, lnode)
                     self._inorder.add(lnode)
                     self._inorder.add(rnode)
+
+                # Rename
+                for action in self.update_node_tag(lnode, rnode):
+                    yield action
+
+                # (ii) Update
+                # XXX If they are exactly equal, we can skip this,
+                # maybe store match results in a cache?
+                for action in self.update_node_attr(lnode, rnode):
+                    yield action
 
             # (d) Align
             for action in self.align_children(lnode, rnode):

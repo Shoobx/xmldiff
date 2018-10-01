@@ -5,9 +5,7 @@
   <tag>
     And something else
   </tag>
-  <node diff:delete="">
-    Here we have some text.
-  </node><nod diff:insert="">
+  <nod diff:insert="" diff:rename="node">
     Here we have some text.
   </nod>
   <new diff:insert=""/><tail diff:delete="">

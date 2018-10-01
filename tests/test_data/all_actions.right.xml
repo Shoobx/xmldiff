@@ -1,4 +1,5 @@
 <document>
+  <!-- Insert a new comment -->
   <node newtribute="renamed" name="was updated" this="is new">
     Modified
   </node>
