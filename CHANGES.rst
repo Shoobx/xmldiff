@@ -1,8 +1,8 @@
 Changes
 =======
 
-2.1 (unreleased)
-----------------
+2.1b1 (2018-10-01)
+------------------
 
 - Added options for faster node comparisons. The "middle" option is now
   default, it had very few changes in matches, but is much faster.
