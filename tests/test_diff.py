@@ -1380,3 +1380,12 @@ class DiffTests(unittest.TestCase):
             result,
             [InsertComment('/doc[1]', 0, ' New comment! ')]
         )
+
+    def test_issue_21_default_namespaces(self):
+        # When you have a default namespace you get "*" instead of the
+        # expected "tag" in the XPath. This is how libxml does it,
+        # and they say it has to be like that, so we document it.
+        left = '<tag xmlns="ns">old</tag>'
+        right = '<tag xmlns="ns">new</tag>'
+        result = self._diff(left, right)
+        self.assertEqual(result[0].node, '/*[1]')

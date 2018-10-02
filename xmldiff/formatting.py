@@ -29,6 +29,14 @@ T_OPEN = 0
 T_CLOSE = 1
 T_SINGLE = 2
 
+# This is the start of the BMP(0) private use area.
+# If you end up having more than 6400 different tags inside text tags
+# this will bleed over to non private use area, but that's highly
+# unlikely. However, once we have dropped support for Python versions
+# that have narrow builds, we can change this to 0xf00000, which is
+# the start of two 64,000 private use blocks.
+PLACEHOLDER_START = 0xe000
+
 
 # These Bases can be abstract baseclasses, but it's a pain to support
 # Python 2.7 in that case, because there is no abc.ABC. Right now this
@@ -88,9 +96,7 @@ class PlaceholderMaker(object):
         self.formatting_tags = formatting_tags
         self.placeholder2tag = {}
         self.tag2placeholder = {}
-        # This number represents the beginning of the largest private-use
-        #  block (13,000 characters) in the unicode space.
-        self.placeholder = 0xf0000
+        self.placeholder = PLACEHOLDER_START
 
         insert_elem = etree.Element(INSERT_NAME)
         insert_close = self.get_placeholder(

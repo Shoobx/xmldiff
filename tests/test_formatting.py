@@ -18,15 +18,15 @@ class PlaceholderMakerTests(unittest.TestCase):
         # Get a placeholder:
         ph = replacer.get_placeholder(
             etree.Element('tag'), formatting.T_OPEN, None)
-        self.assertEqual(ph, u'\U000f0005')
+        self.assertEqual(ph, u'\ue005')
         # Do it again:
         ph = replacer.get_placeholder(
             etree.Element('tag'), formatting.T_OPEN, None)
-        self.assertEqual(ph, u'\U000f0005')
+        self.assertEqual(ph, u'\ue005')
         # Get another one
         ph = replacer.get_placeholder(
             etree.Element('tag'), formatting.T_CLOSE, ph)
-        self.assertEqual(ph, u'\U000f0006')
+        self.assertEqual(ph, u'\ue006')
 
     def test_do_element(self):
         replacer = formatting.PlaceholderMaker(['p'], ['b'])
@@ -38,7 +38,7 @@ class PlaceholderMakerTests(unittest.TestCase):
 
         self.assertEqual(
             etree.tounicode(element),
-            u'<p>This is a tag with \U000f0006formatted\U000f0005 text.</p>')
+            u'<p>This is a tag with \ue006formatted\ue005 text.</p>')
 
         replacer.undo_element(element)
         self.assertEqual(etree.tounicode(element), text)
@@ -50,7 +50,7 @@ class PlaceholderMakerTests(unittest.TestCase):
         result = etree.tounicode(element)
         self.assertEqual(
             result,
-            u'<p>This is a tag with \U000f0007 text.</p>')
+            u'<p>This is a tag with \ue007 text.</p>')
 
         # Single formatting tags still get two placeholders.
         text = u'<p>This is a <b/> with <foo/> text.</p>'
@@ -59,7 +59,7 @@ class PlaceholderMakerTests(unittest.TestCase):
         result = etree.tounicode(element)
         self.assertEqual(
             result,
-            u'<p>This is a \U000f0009\U000f0008 with \U000f000a text.</p>')
+            u'<p>This is a \ue009\ue008 with \ue00a text.</p>')
 
     def test_do_undo_element(self):
         replacer = formatting.PlaceholderMaker(['p'], ['b'])
@@ -71,8 +71,8 @@ class PlaceholderMakerTests(unittest.TestCase):
 
         self.assertEqual(
             element.text,
-            u'This \U000f0005 a \U000f0006 with \U000f0008formatted'
-            u'\U000f0007 text.')
+            u'This \ue005 a \ue006 with \ue008formatted'
+            u'\ue007 text.')
 
         replacer.undo_element(element)
         result = etree.tounicode(element)
@@ -88,8 +88,8 @@ class PlaceholderMakerTests(unittest.TestCase):
 
         self.assertEqual(
             element.text,
-            u'This is \U000f0006doubly \U000f0008formatted\U000f0007'
-            u'\U000f0005 text.')
+            u'This is \ue006doubly \ue008formatted\ue007'
+            u'\ue005 text.')
 
         replacer.undo_element(element)
         result = etree.tounicode(element)
@@ -113,8 +113,8 @@ class PlaceholderMakerTests(unittest.TestCase):
         after_diff = u"""<document xmlns:diff="http://namespaces.shoobx.com/diff">
   <section>
     <para>
-      <insert>\U000f0005</insert>.
-      \U000f0007\U000f0009At Will Employment\U000f0008\U000f0006
+      <insert>\ue005</insert>.
+      \ue007\ue009At Will Employment\ue008\ue006
       .\u201c<insert>New </insert>Text\u201d
     </para>
   </section>
@@ -122,9 +122,9 @@ class PlaceholderMakerTests(unittest.TestCase):
 
         # The diff formatting will find some text to insert.
         delete_attrib = u'{%s}delete-format' % formatting.DIFF_NS
-        replacer.placeholder2tag[u'\U000f0006'
+        replacer.placeholder2tag[u'\ue006'
                                  ].element.attrib[delete_attrib] = ''
-        replacer.placeholder2tag[u'\U000f0007'
+        replacer.placeholder2tag[u'\ue007'
                                  ].element.attrib[delete_attrib] = ''
         tree = etree.fromstring(after_diff)
         replacer.undo_tree(tree)
