@@ -1,5 +1,6 @@
 # -*- coding: UTF-8 -*-
 import os
+import sys
 import unittest
 
 from lxml import etree
@@ -139,6 +140,55 @@ class PlaceholderMakerTests(unittest.TestCase):
   </section>
 </document>"""
         self.assertEqual(result, expected)
+
+    def test_placeholder_overflow(self):
+        # PY3: This whole test is Python 2 support.
+        # Test what happens when we have more than 6400 placeholders,
+        # by patching the placeholder:
+        try:
+            orig_start = formatting.PLACEHOLDER_START
+            # This is the last character of the Private use area
+            formatting.PLACEHOLDER_START = 0xF8FF
+
+            replacer = formatting.PlaceholderMaker(['p'], ['b'])
+
+            # Formatting tags get replaced, and the content remains
+            text = u'<p>This <is/> a <f>tag</f> with <b>some</b> text.</p>'
+            element = etree.fromstring(text)
+            replacer.do_element(element)
+
+            #
+            self.assertEqual(
+                element.text,
+                u'This \uf904 a \uf905 with \uf907some'
+                u'\uf906 text.')
+
+            try:
+                # If this is a wide build, also test what happens if we
+                # get over 8192 substitutions, and overflow the 2-byte code.
+                # (On narrow builds this will give an error)
+                formatting.PLACEHOLDER_START = 0xFFFF
+
+                replacer = formatting.PlaceholderMaker(['p'], ['b'])
+
+                # Formatting tags get replaced, and the content remains
+                text = u'<p>This <is/> a <f>tag</f> with <b>some</b> text.</p>'
+                element = etree.fromstring(text)
+                replacer.do_element(element)
+
+                # This should raise an error on a narrow build
+                self.assertEqual(
+                    element.text,
+                    u'This \U00010004 a \U00010005 with \U00010007some'
+                    u'\U00010006 text.')
+            except ValueError:
+                if sys.maxunicode > 0x10000:
+                    # This is a wide build, we should NOT get an error
+                    raise
+
+        finally:
+            # Set it back
+            formatting.PLACEHOLDER_START = orig_start
 
 
 class XMLFormatTests(unittest.TestCase):

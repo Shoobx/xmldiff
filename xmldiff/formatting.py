@@ -35,6 +35,7 @@ T_SINGLE = 2
 # unlikely. However, once we have dropped support for Python versions
 # that have narrow builds, we can change this to 0xf00000, which is
 # the start of two 64,000 private use blocks.
+# PY3: Once Python 2.7 support is dropped we should change this to 0xf00000
 PLACEHOLDER_START = 0xe000
 
 
