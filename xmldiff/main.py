@@ -51,33 +51,36 @@ def diff_files(left, right, diff_options=None, formatter=None):
 
 
 def make_parser():
-    parser = ArgumentParser(description='Create a diff for two XML files.')
+    parser = ArgumentParser(description='Create a diff for two XML files.',
+                            add_help=False)
     parser.add_argument('file1', type=FileType('r'),
-                        help='the first input file')
+                        help='The first input file.')
     parser.add_argument('file2', type=FileType('r'),
-                        help='the second input file')
+                        help='The second input file.')
+    parser.add_argument('-h', '--help', action='help',
+                        help='Show this help message and exit.')
     parser.add_argument('-v', '--version', action='version',
-                        help='display version and exit.',
+                        help='Display version and exit.',
                         version='xmldiff %s' % __version__)
     parser.add_argument('-f', '--formatter', default='diff',
                         choices=list(FORMATTERS.keys()),
-                        help='formatter selection')
+                        help='Formatter selection.')
     parser.add_argument('-w', '--keep-whitespace', action='store_true',
-                        help='do not strip ignorable whitespace')
+                        help='Do not strip ignorable whitespace.')
     parser.add_argument('-p', '--pretty-print', action='store_true',
-                        help='try to make XML output more readable')
+                        help='Try to make XML output more readable.')
     parser.add_argument('-F', type=float,
-                        help='a value betwen 0 and 1 that determines how '
-                        'similar nodes must be to match')
+                        help='A value betwen 0 and 1 that determines how '
+                        'similar nodes must be to match.')
     parser.add_argument('--unique-attributes', type=str, nargs='?',
                         default='{http://www.w3.org/XML/1998/namespace}id',
-                        help='a comma separated list of attributes '
-                             'that uniquely identify a node, can be empty')
+                        help='A comma separated list of attributes '
+                             'that uniquely identify a node. Can be empty.')
     parser.add_argument('--ratio-mode', default='fast',
                         choices={'accurate', 'fast', 'faster'},
-                        help='choose the node comparison optimization')
+                        help='Choose the node comparison optimization.')
     parser.add_argument('--fast-match', action='store_true',
-                        help='a faster, less optimal match run')
+                        help='A faster, less optimal match run.')
     return parser
 
 
