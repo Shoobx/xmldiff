@@ -1,8 +1,8 @@
 Changes
 =======
 
-2.1b2 (unreleased)
-------------------
+2.1 (2018-10-03)
+----------------
 
 - Changed the substitution unicode character area to use the Private Use Area
   in BMP(0), to support narrow Python builds
