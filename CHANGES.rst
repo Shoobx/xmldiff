@@ -7,6 +7,8 @@ Changes
 - Changed the substitution unicode character area to use the Private Use Area
   in BMP(0), to support narrow Python builds
 
+- Added --unique-attributes argument.
+
 
 2.1b1 (2018-10-01)
 ------------------

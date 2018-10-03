@@ -146,3 +146,12 @@ class MainCLITests(unittest.TestCase):
         output, errors = self.call_run([file1, file2, '--ratio-mode',
                                         'faster'])
         self.assertEqual(len(output.splitlines()), 6)
+
+        # You can specify unique attributes:
+        output, errors = self.call_run([file1, file2, '--unique-attributes',
+                                        'id,foo,frotz'])
+        self.assertEqual(len(output.splitlines()), 3)
+
+        # Or none
+        output, errors = self.call_run([file1, file2, '--unique-attributes'])
+        self.assertEqual(len(output.splitlines()), 3)

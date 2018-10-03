@@ -58,21 +58,26 @@ def make_parser():
                         help='the second input file')
     parser.add_argument('-v', '--version', action='version',
                         help='display version and exit.',
-                        version="xmldiff %s" % __version__)
+                        version='xmldiff %s' % __version__)
     parser.add_argument('-f', '--formatter', default='diff',
                         choices=list(FORMATTERS.keys()),
                         help='formatter selection')
     parser.add_argument('-w', '--keep-whitespace', action='store_true',
-                        help="do not strip ignorable whitespace")
+                        help='do not strip ignorable whitespace')
     parser.add_argument('-p', '--pretty-print', action='store_true',
-                        help="try to make XML output more readable")
+                        help='try to make XML output more readable')
     parser.add_argument('-F', type=float,
-                        help="determines how similar nodes must be to match")
+                        help='a value betwen 0 and 1 that determines how '
+                        'similar nodes must be to match')
+    parser.add_argument('--unique-attributes', type=str, nargs='?',
+                        default='{http://www.w3.org/XML/1998/namespace}id',
+                        help='a comma separated list of attributes '
+                             'that uniquely identify a node, can be empty')
     parser.add_argument('--ratio-mode', default='fast',
                         choices={'accurate', 'fast', 'faster'},
-                        help="choose the node comparison optimization")
+                        help='choose the node comparison optimization')
     parser.add_argument('--fast-match', action='store_true',
-                        help="a faster, less optimal match run")
+                        help='a faster, less optimal match run')
     return parser
 
 
@@ -87,9 +92,17 @@ def run(args=None):
 
     formatter = FORMATTERS[args.formatter](normalize=normalize,
                                            pretty_print=args.pretty_print)
+
+    if args.unique_attributes is None:
+        uniqueattrs = []
+    else:
+        uniqueattrs = args.unique_attributes.split(',')
+
     diff_options = {'ratio_mode': args.ratio_mode,
                     'F': args.F,
-                    'fast_match': args.fast_match}
+                    'fast_match': args.fast_match,
+                    'uniqueattrs': uniqueattrs,
+                    }
     result = diff_files(args.file1, args.file2, diff_options=diff_options,
                         formatter=formatter)
     print(result)
