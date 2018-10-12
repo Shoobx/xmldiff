@@ -361,7 +361,12 @@ class XMLFormatter(BaseFormatter):
         comments = tree.xpath('//comment()')
 
         for element in comments:
-            element.getparent().remove(element)
+            parent = element.getparent()
+            if parent is None:
+                # We can't remove top level comments, but they won't
+                # be iterated over anyway, so we just skip them.
+                continue
+            parent.remove(element)
 
     def _xpath(self, node, xpath):
         # This method finds an element with xpath and makes sure that

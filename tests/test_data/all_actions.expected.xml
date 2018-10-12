@@ -11,4 +11,4 @@
   <new diff:insert=""/><tail diff:delete="">
     My last tag
   </tail>
-</document>
+</document><!-- You can't delete top level comments with lxml -->

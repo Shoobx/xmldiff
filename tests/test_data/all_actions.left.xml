@@ -13,3 +13,4 @@
     My last tag
   </tail>
 </document>
+<!-- You can't delete top level comments with lxml -->
