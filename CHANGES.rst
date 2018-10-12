@@ -1,10 +1,10 @@
 Changes
 =======
 
-2.2 (unreleased)
+2.2 (2018-10-12)
 ----------------
 
-- Nothing changed yet.
+- A workaround for dealing with top level comments and the xml formatter
 
 
 2.1 (2018-10-03)
