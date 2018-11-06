@@ -286,8 +286,8 @@ Example:
   [DeleteAttrib(node='/document[1]', name='newattr')]
 
 
-``RenameAttrib(node, name)``
-............................
+``RenameAttrib(node, oldname, newname)``
+........................................
 
 The ``RenameAttrib`` action means that an attribute of the node specified in ``node`` should be renamed.
 The ``oldname`` and ``newname`` arguments specify which attribute and it's new name.
