@@ -12,7 +12,6 @@ from xmldiff import utils
 
 DIFF_NS = 'http://namespaces.shoobx.com/diff'
 DIFF_PREFIX = 'diff'
-XSLT_FILE = os.path.join(os.path.split(__file__)[0], 'htmlformatter.xslt')
 
 INSERT_NAME = '{%s}insert' % DIFF_NS
 DELETE_NAME = '{%s}delete' % DIFF_NS
