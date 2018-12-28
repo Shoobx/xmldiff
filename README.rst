@@ -10,7 +10,7 @@ xmldiff
 ``xmldiff`` is a library and a command-line utility for making diffs out of XML.
 This may seem like something that doesn't need a dedicated utility,
 but change detection in hierarchical data is very different from change detection in flat data.
-XML type formats are also not only used for computer readable data,
+XML type formats are also not only used for computer readable0 data,
 it is also often used as a format for hierarchical data that can be rendered into human readable formats.
 A traditional diff on such a format would tell you line by line the differences,
 but this would not be be readable by a human.
@@ -35,7 +35,6 @@ As a library::
   from lxml import etree
   from xmldiff import main, formatting
 
-  differ = diff.Differ()
   diff = main.diff_files('file1.xml', 'file2.xml',
                          formatter=formatting.XMLFormatter())
 
