@@ -128,9 +128,34 @@ Using Formatters
 By default the diff functions will return an edit script,
 but if you pass in a formatter the result will be whatever that formatter returns.
 
-The three included formatters, ``diff``, ``xml`` and ``old``,
-all return Unicode strings.
-The ``diff`` formatter will return a string with the edit script printed out,
+The three included formatters all return Unicode strings.
+
+All formatters take two arguments:
+
+:``normalize``: This argument determines whitespace normalizing.
+                It can be one of the following values,
+                all defined in ``xmldiff.formatting``:
+
+                :``WS_NONE``: No normalizing
+
+                :``WS_TAGS``: Normalize whitespace between tags
+
+                :``WS_TEXT``: Normalize whitespace in text tags (only used by the ``XMLFormatter``).
+
+                :``WS_BOTH``: Both ``WS_TAGS`` and ``WS_TEXT``.
+
+:``pretty_print``: This argument determines if the output should be compact (``False``) or readable (``True``). Only the ``XMLFormatter`` currently uses this parameter,
+                   but it's useful enough that it was included in the ``BaseFormatter`` class,
+                   so that all subsequent formatters may use it.
+
+
+DiffFormatter
+.............
+
+.. py:class:: xmldiff.formatting.DiffFormatter(normalize=WS_TAGS, pretty_print=False)
+
+This formatter is the one used when you specify ``-f diff`` on the command line.
+It will return a string with the edit script printed out,
 one action per line.
 Each line is enclosed in brackets and consists of a string describing the action,
 and the actions arguments.
@@ -151,8 +176,42 @@ so the output is not compatible.
   [update-text, /body/div/p[1], "Simple text"]
 
 
-The other two differs return XML with tags describing the changes.
-These formats are designed so they easily can be changed into something that will render nicely,
+XmlDiffFormatter
+................
+
+.. py:class:: xmldiff.formatting.XmlDiffFormatter(normalize=WS_TAGS, pretty_print=False)
+
+This formatter works like the DiffFormatter,
+but the output format is different and more similar to the ``xmldiff`` output in versions 0.x and 1.x.
+
+.. doctest::
+  :options: -ELLIPSIS, +NORMALIZE_WHITESPACE
+
+  >>> from xmldiff import formatting
+  >>> formatter = formatting.XmlDiffFormatter(normalize=formatting.WS_NONE)
+  >>> print(main.diff_files("../tests/test_data/insert-node.left.html",
+  ...                       "../tests/test_data/insert-node.right.html",
+  ...                       formatter=formatter))
+  [update, /body/div[1]/text()[1], "\n    "]
+  [insert-first, /body/div[1],
+  <p/>]
+  [update, /body/div/p[1]/text()[1], "Simple text"]
+  [update, /body/div/p[1]/text()[2], "\n  "]
+
+
+XMLFormatter
+............
+
+.. py:class:: xmldiff.formatting.XMLFormatter(normalize=WS_NONE, pretty_print=True, text_tags=(), formatting_tags=())¶
+
+  :param text_tags: A list of XML tags that contain human readable text,
+                    ex ``('para', 'li')``
+
+  :param formatting_tags: A list of XML tags that are tags that change text formatting,
+                          ex ``('strong', 'i', 'u' )``
+
+This formatter return XML with tags describing the changes.
+These tags are designed so they easily can be changed into something that will render nicely,
 for example with XSLT replacing the tags with the format you need.
 
 .. doctest::
