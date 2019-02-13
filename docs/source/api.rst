@@ -49,7 +49,7 @@ Parameters
 
     A higher value requires a smaller difference between two nodes for them to match.
     Set the value high, and you will see more nodes inserted and deleted instead of being updated.
-    Set the value low, and you will get more updates insted of inserts and deletes.
+    Set the value low, and you will get more updates instead of inserts and deletes.
 
     ``uniqueattrs``:
     A list of XML node attributes that will uniquely identify a node.
