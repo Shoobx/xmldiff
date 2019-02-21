@@ -4,7 +4,7 @@ import sys
 import unittest
 
 from lxml import etree
-from xmldiff import diff, formatting, main, actions
+from xmldiff import formatting, main, actions
 
 from .testing import generate_filebased_cases
 
@@ -298,7 +298,7 @@ class XMLFormatTests(unittest.TestCase):
 
         left = u'<document><node>This is a bit of text, right' + END
         action = actions.UpdateTextIn('/document/node',
-                                   'Also a bit of text, rick')
+                                      'Also a bit of text, rick')
         expected = START + u'><diff:delete>This is</diff:delete><diff:insert>'\
             u'Also</diff:insert> a bit of text, ri<diff:delete>ght'\
             u'</diff:delete><diff:insert>ck</diff:insert>' + END
@@ -316,7 +316,7 @@ class XMLFormatTests(unittest.TestCase):
     def test_update_text_after_2(self):
         left = u'<document><node/>This is a bit of text, right</document>'
         action = actions.UpdateTextAfter('/document/node',
-                                      'Also a bit of text, rick')
+                                         'Also a bit of text, rick')
         expected = START + u'/><diff:delete>This is</diff:delete>'\
             u'<diff:insert>Also</diff:insert> a bit of text, ri<diff:delete>'\
             u'ght</diff:delete><diff:insert>ck</diff:insert></document>'
@@ -396,7 +396,7 @@ class DiffFormatTests(unittest.TestCase):
         self._format_test(action, expected)
 
         action = actions.UpdateTextIn('/document/node',
-                                   'Also a bit of text, "rick"')
+                                      'Also a bit of text, "rick"')
         expected = '[update-text, /document/node, '\
             u'"Also a bit of text, \\"rick\\""]'
         self._format_test(action, expected)
@@ -408,7 +408,7 @@ class DiffFormatTests(unittest.TestCase):
 
     def test_update_text_after_2(self):
         action = actions.UpdateTextAfter('/document/node',
-                                      'Also a bit of text, rick')
+                                         'Also a bit of text, rick')
         expected = '[update-text-after, /document/node, '\
             u'"Also a bit of text, rick"]'
         self._format_test(action, expected)
@@ -476,7 +476,7 @@ class XmlDiffFormatTests(unittest.TestCase):
         self._format_test(action, expected)
 
         action = actions.UpdateTextIn('/document/node',
-                                   'Also a bit of text, "rick"')
+                                      'Also a bit of text, "rick"')
         expected = '[update, /document/node/text()[1], '\
             u'"Also a bit of text, \\"rick\\""]'
         self._format_test(action, expected)
@@ -488,7 +488,7 @@ class XmlDiffFormatTests(unittest.TestCase):
 
     def test_update_text_after_2(self):
         action = actions.UpdateTextAfter('/document/node',
-                                      'Also a bit of text, rick')
+                                         'Also a bit of text, rick')
         expected = '[update, /document/node/text()[2], '\
             u'"Also a bit of text, rick"]'
         self._format_test(action, expected)

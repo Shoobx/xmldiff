@@ -384,8 +384,8 @@ class Differ(object):
                 pos = self.find_pos(rnode)
                 # (ii)
                 if rnode.tag is etree.Comment:
-                    yield actions.InsertComment(utils.getpath(ltarget, ltree), pos,
-                                        rnode.text)
+                    yield actions.InsertComment(
+                        utils.getpath(ltarget, ltree), pos, rnode.text)
                     lnode = etree.Comment(rnode.text)
                 else:
                     yield actions.InsertNode(utils.getpath(ltarget, ltree),
