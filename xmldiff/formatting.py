@@ -673,7 +673,8 @@ class DiffFormatter(BaseFormatter):
         return u"insert", action.target, action.tag, str(action.position)
 
     def _handle_RenameAttrib(self, action):
-        return (u"move-attribute", action.node, action.oldname, action.newname)
+        return (u"rename-attribute", action.node, action.oldname,
+                action.newname)
 
     def _handle_MoveNode(self, action):
         return u"move", action.node, action.target, str(action.position)

@@ -4,7 +4,7 @@ Changes
 2.3 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- Added a simple ``xmlpatch`` command and API.
 
 
 2.2 (2018-10-12)

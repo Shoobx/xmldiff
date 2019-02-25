@@ -358,7 +358,7 @@ class DiffFormatTests(unittest.TestCase):
 
     def test_rename_attr(self):
         action = actions.RenameAttrib('/document/node', 'attr', 'bottr')
-        expected = '[move-attribute, /document/node, attr, bottr]'
+        expected = '[rename-attribute, /document/node, attr, bottr]'
         self._format_test(action, expected)
 
     def test_move_node(self):

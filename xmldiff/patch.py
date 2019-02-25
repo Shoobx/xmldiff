@@ -1,5 +1,8 @@
 from copy import deepcopy
+from csv import reader
+from json import loads
 from lxml import etree
+from xmldiff import actions
 
 
 class Patcher(object):
@@ -67,3 +70,73 @@ class Patcher(object):
     def _handle_InsertComment(self, action, tree):
         target = tree.xpath(action.target)[0]
         target.insert(action.position, etree.Comment(action.text))
+
+
+class DiffParser(object):
+    """Makes a text diff into a list of actions"""
+
+    def parse(self, diff):
+        incomplete = ''
+
+        for line in diff.splitlines():
+            line = incomplete + line
+
+            if line[0] != '[':
+                # All actions should start with "["
+                raise ValueError("Unknown diff format")
+            if line[-1] != ']':
+                # This line has been broken into several lines
+                incomplete = line
+                continue
+
+            # OK, we found an action
+            incomplete = ''
+            yield self.make_action(line)
+
+        if incomplete:
+            raise ValueError("Diff ended unexpectedly")
+
+    def make_action(self, line):
+        # Remove brackets
+        line = line[1:-1]
+        # Split the line on commas (ignoring commas in quoted strings) and
+        # strip extraneous spaces. The first is the action, the rest params.
+        parts = [x.strip() for x in next(reader([line]))]
+        action = parts[0]
+        params = parts[1:]
+        # Get the method, and return the result of calling it
+        method = getattr(self, '_handle_' + action.replace('-', '_'))
+        return method(*params)
+
+    def _handle_delete(self, node):
+        return actions.DeleteNode(node)
+
+    def _handle_insert(self, target, tag, position):
+        return actions.InsertNode(target, tag, int(position))
+
+    def _handle_rename(self, node, tag):
+        return actions.RenameNode(node, tag)
+
+    def _handle_move(self, node, target, position):
+        return actions.MoveNode(node, target, int(position))
+
+    def _handle_update_text(self, node, text):
+        return actions.UpdateTextIn(node, loads(text))
+
+    def _handle_update_text_after(self, node, text):
+        return actions.UpdateTextAfter(node, loads(text))
+
+    def _handle_update_attribute(self, node, name, value):
+        return actions.UpdateAttrib(node, name, loads(value))
+
+    def _handle_delete_attribute(self, node, name):
+        return actions.DeleteAttrib(node, name)
+
+    def _handle_insert_attribute(self, node, name, value):
+        return actions.InsertAttrib(node, name, loads(value))
+
+    def _handle_rename_attribute(self, node, oldname, newname):
+        return actions.RenameAttrib(node, oldname, newname)
+
+    def _handle_insert_comment(self, target, position, text):
+        return actions.InsertComment(target, int(position), loads(text))

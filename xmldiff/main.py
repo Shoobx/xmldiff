@@ -1,9 +1,10 @@
 """All major API points and command-line tools"""
 import pkg_resources
+import six
 
 from argparse import ArgumentParser, FileType
 from lxml import etree
-from xmldiff import diff, formatting
+from xmldiff import diff, formatting, patch
 
 __version__ = pkg_resources.require("xmldiff")[0].version
 
@@ -50,7 +51,7 @@ def diff_files(left, right, diff_options=None, formatter=None):
                  diff_options=diff_options, formatter=formatter)
 
 
-def make_parser():
+def make_diff_parser():
     parser = ArgumentParser(description='Create a diff for two XML files.',
                             add_help=False)
     parser.add_argument('file1', type=FileType('r'),
@@ -84,8 +85,8 @@ def make_parser():
     return parser
 
 
-def run(args=None):
-    parser = make_parser()
+def diff_command(args=None):
+    parser = make_diff_parser()
     args = parser.parse_args(args=args)
 
     if args.keep_whitespace:
@@ -108,4 +109,58 @@ def run(args=None):
                     }
     result = diff_files(args.file1, args.file2, diff_options=diff_options,
                         formatter=formatter)
+    print(result)
+
+
+def patch_tree(actions, tree):
+    """Takes an lxml root element or element tree, and a list of actions"""
+    patcher = patch.Patcher()
+    return patcher.patch(actions, tree)
+
+
+def patch_text(actions, tree):
+    """Takes a string with XML and a string with actions"""
+    tree = etree.fromstring(tree)
+    actions = patch.DiffParser().parse(actions)
+    tree = patch_tree(actions, tree)
+    return etree.tounicode(tree)
+
+
+def patch_file(actions, tree):
+    """Takes two filenames or streams, one with XML the other a diff"""
+    tree = etree.parse(tree)
+
+    if isinstance(actions, six.string_types):
+        # It's a string, so it's a filename
+        with open(actions) as f:
+            actions = f.read()
+    else:
+        # We assume it's a stream
+        actions = actions.read()
+
+    actions = patch.DiffParser().parse(actions)
+    tree = patch_tree(actions, tree)
+    return etree.tounicode(tree)
+
+
+def make_patch_parser():
+    parser = ArgumentParser(description='Patch an XML file with an xmldiff',
+                            add_help=False)
+    parser.add_argument('patchfile', type=FileType('r'),
+                        help='An xmldiff diff file.')
+    parser.add_argument('xmlfile', type=FileType('r'),
+                        help='An unpatched XML file.')
+    parser.add_argument('-h', '--help', action='help',
+                        help='Show this help message and exit.')
+    parser.add_argument('-v', '--version', action='version',
+                        help='Display version and exit.',
+                        version='xmldiff %s' % __version__)
+    return parser
+
+
+def patch_command(args=None):
+    parser = make_patch_parser()
+    args = parser.parse_args(args=args)
+
+    result = patch_file(args.patchfile, args.xmlfile)
     print(result)

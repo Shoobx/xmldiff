@@ -1,0 +1,4 @@
+[update-text, /body/div[1], "\n    "]
+[insert, /body/div[1], p, 0]
+[update-text, /body/div/p[1], "Simple text"]
+[update-text-after, /body/div/p[1], "\n  "]

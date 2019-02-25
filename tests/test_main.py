@@ -73,7 +73,7 @@ class MainAPITests(unittest.TestCase):
 
 class MainCLITests(unittest.TestCase):
 
-    def call_run(self, args):
+    def call_run(self, args, command=main.diff_command):
         output = six.StringIO()
         errors = six.StringIO()
 
@@ -84,18 +84,18 @@ class MainCLITests(unittest.TestCase):
             sys.stdout = output
             sys.stderr = errors
 
-            main.run(args)
+            command(args)
         finally:
             sys.stdout = stdout
             sys.stderr = stderr
 
         return output.getvalue(), errors.getvalue()
 
-    def test_cli_no_args(self):
+    def test_diff_cli_no_args(self):
         with self.assertRaises(SystemExit):
             stdout, stderr = self.call_run([])
 
-    def test_cli_simple(self):
+    def test_diff_cli_simple(self):
         curdir = os.path.dirname(__file__)
         filepath = os.path.join(curdir, 'test_data')
         file1 = os.path.join(filepath, 'insert-node.left.html')
@@ -106,7 +106,7 @@ class MainCLITests(unittest.TestCase):
         # This should default to the diff formatter:
         self.assertEqual(output[0], '[')
 
-    def test_cli_args(self):
+    def test_diff_cli_args(self):
         curdir = os.path.dirname(__file__)
         filepath = os.path.join(curdir, 'test_data')
         file1 = os.path.join(filepath, 'insert-node.left.html')
@@ -155,3 +155,17 @@ class MainCLITests(unittest.TestCase):
         # Or none
         output, errors = self.call_run([file1, file2, '--unique-attributes'])
         self.assertEqual(len(output.splitlines()), 3)
+
+    def test_patch_cli_simple(self):
+        curdir = os.path.dirname(__file__)
+        filepath = os.path.join(curdir, 'test_data')
+        patchfile = os.path.join(filepath, 'insert-node.diff')
+        xmlfile = os.path.join(filepath, 'insert-node.left.html')
+
+        output, errors = self.call_run([patchfile, xmlfile],
+                                       command=main.patch_command)
+
+        expectedfile = os.path.join(filepath, 'insert-node.right.html')
+        with open(expectedfile, 'rt') as f:
+            expected = f.read()
+        self.assertEqual(output, expected)
