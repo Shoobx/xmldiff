@@ -30,7 +30,11 @@ To use it from the command-line, just run ``xmldiff`` with two input files::
 
   $ xmldiff file1.xml file2.xml
 
-As a library::
+There is also a command to patch a file with the output from the ``xmldiff`` command::
+
+  $ xmldiff file.diff file1.xml
+
+There is a simple API for using ``xmldiff`` as a library::
 
   from lxml import etree
   from xmldiff import main, formatting
@@ -40,6 +44,9 @@ As a library::
 
 There is also a method ``diff_trees()`` that take two lxml trees,
 and a method ``diff_texts()`` that will take strings containing XML.
+Similarily, there is ``patch_file()`` ``patch_text()`` and ``patch_tree()``::
+
+  result = main.diff_file('file.diff', 'file1.xml')
 
 
 Changes from ``xmldiff`` 0.6/1.x
