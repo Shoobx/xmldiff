@@ -1,8 +1,8 @@
 Python API
 ==========
 
-Main API
---------
+Main diffing API
+----------------
 
 Using ``xmldiff`` from Python is very easy,
 you just import and call one of the three main API methods.
@@ -84,7 +84,6 @@ Parameters
   The formatter to use, see `Using Formatters`_.
   If no formatter is specified the function will return a list of edit actions,
   see `The Edit Script`_.
-
 
 Result
 ......
@@ -435,3 +434,36 @@ Example:
   >>> right = '<document><!-- A comment --><node>Content</node></document>'
   >>> main.diff_texts(left, right)
   [InsertComment(target='/document[1]', position=0, text=' A comment ')]
+
+
+The patching API
+----------------
+
+There is also an API to patch files using the diff output:
+
+.. doctest::
+  :options: -ELLIPSIS, +NORMALIZE_WHITESPACE
+
+  >>> from xmldiff import main
+  >>> print(main.patch_file("../tests/test_data/insert-node.diff",
+  ...                       "../tests/test_data/insert-node.left.html"))
+  <body>
+    <div id="id">
+      <p>Simple text</p>
+    </div>
+  </body>
+
+On the same line as for the patch API there are three methods:
+
+* ``xmldiff.main.patch_file()`` takes as input paths to files, or file streams,
+  and returns a string with the resulting XML.
+
+* ``xmldiff.main.patch_text()`` takes as input Unicode strings,
+  and returns a string with the resulting XML.
+
+* ``xmldiff.main.patch_tree()`` takes as input one edit script,
+  (ie a list of actions, see above) and one ``lxml`` tree,
+  and returnes a patched ``lxml`` tree.
+
+They all return a string with the patched XML tree.
+There are currently no configuration parameters for these commands.

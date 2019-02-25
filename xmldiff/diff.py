@@ -1,27 +1,9 @@
 from __future__ import division
 
-from collections import namedtuple
 from copy import deepcopy
 from difflib import SequenceMatcher
 from lxml import etree
-from xmldiff import utils
-
-
-# Update, Move, Delete and Insert are the edit script actions:
-DeleteNode = namedtuple('DeleteNode', 'node')
-InsertNode = namedtuple('InsertNode', 'target tag position')
-RenameNode = namedtuple('RenameNode', 'node tag')
-MoveNode = namedtuple('MoveNode', 'node target position')
-
-UpdateTextIn = namedtuple('UpdateTextIn', 'node text')
-UpdateTextAfter = namedtuple('UpdateTextAfter', 'node text')
-
-UpdateAttrib = namedtuple('UpdateAttrib', 'node name value')
-DeleteAttrib = namedtuple('DeleteAttrib', 'node name')
-InsertAttrib = namedtuple('InsertAttrib', 'node name value')
-RenameAttrib = namedtuple('RenameAttrib', 'node oldname newname')
-
-InsertComment = namedtuple('InsertComment', 'target position text')
+from xmldiff import utils, actions
 
 
 class Differ(object):
@@ -240,7 +222,7 @@ class Differ(object):
     def update_node_tag(self, left, right):
         if left.tag != right.tag:
             left_xpath = utils.getpath(left)
-            yield RenameNode(left_xpath, right.tag)
+            yield actions.RenameNode(left_xpath, right.tag)
             left.tag = right.tag
 
     def update_node_attr(self, left, right):
@@ -258,7 +240,7 @@ class Differ(object):
         # That's only so we can do testing in a reasonable way...
         for key in sorted(common_keys):
             if left.attrib[key] != right.attrib[key]:
-                yield UpdateAttrib(left_xpath, key, right.attrib[key])
+                yield actions.UpdateAttrib(left_xpath, key, right.attrib[key])
                 left.attrib[key] = right.attrib[key]
 
         # Align: Not needed here, we don't care about the order of
@@ -273,7 +255,7 @@ class Differ(object):
             value = left.attrib[lk]
             if value in newattrmap:
                 rk = newattrmap[value]
-                yield RenameAttrib(left_xpath, lk, rk)
+                yield actions.RenameAttrib(left_xpath, lk, rk)
                 # Remove from list of new attributes
                 new_keys.remove(rk)
                 # Update left node
@@ -282,7 +264,7 @@ class Differ(object):
 
         # Insert: Find new attributes
         for key in sorted(new_keys):
-            yield InsertAttrib(left_xpath, key, right.attrib[key])
+            yield actions.InsertAttrib(left_xpath, key, right.attrib[key])
             left.attrib[key] = right.attrib[key]
 
         # Delete: remove removed attributes
@@ -290,18 +272,18 @@ class Differ(object):
             if key not in left.attrib:
                 # This was already moved
                 continue
-            yield DeleteAttrib(left_xpath, key)
+            yield actions.DeleteAttrib(left_xpath, key)
             del left.attrib[key]
 
     def update_node_text(self, left, right):
         left_xpath = utils.getpath(left)
 
         if left.text != right.text:
-            yield UpdateTextIn(left_xpath, right.text)
+            yield actions.UpdateTextIn(left_xpath, right.text)
             left.text = right.text
 
         if left.tail != right.tail:
-            yield UpdateTextAfter(left_xpath, right.tail)
+            yield actions.UpdateTextAfter(left_xpath, right.tail)
             left.tail = right.tail
 
     def find_pos(self, node):
@@ -370,7 +352,7 @@ class Differ(object):
             right_pos = self.find_pos(rchild)
             rtarget = rchild.getparent()
             ltarget = self._r2lmap[id(rtarget)]
-            yield MoveNode(
+            yield actions.MoveNode(
                 utils.getpath(lchild),
                 utils.getpath(ltarget),
                 right_pos)
@@ -402,12 +384,12 @@ class Differ(object):
                 pos = self.find_pos(rnode)
                 # (ii)
                 if rnode.tag is etree.Comment:
-                    yield InsertComment(utils.getpath(ltarget, ltree), pos,
-                                        rnode.text)
+                    yield actions.InsertComment(
+                        utils.getpath(ltarget, ltree), pos, rnode.text)
                     lnode = etree.Comment(rnode.text)
                 else:
-                    yield InsertNode(utils.getpath(ltarget, ltree),
-                                     rnode.tag, pos)
+                    yield actions.InsertNode(utils.getpath(ltarget, ltree),
+                                             rnode.tag, pos)
                     lnode = ltarget.makeelement(rnode.tag)
 
                     # (iii)
@@ -434,7 +416,7 @@ class Differ(object):
                 lparent = lnode.getparent()
                 if ltarget is not lparent:
                     pos = self.find_pos(rnode)
-                    yield MoveNode(
+                    yield actions.MoveNode(
                         utils.getpath(lnode, ltree),
                         utils.getpath(ltarget, ltree),
                         pos)
@@ -469,5 +451,5 @@ class Differ(object):
         for lnode in utils.reverse_post_order_traverse(self.left):
             if id(lnode) not in self._l2rmap:
                 # No match
-                yield DeleteNode(utils.getpath(lnode, ltree))
+                yield actions.DeleteNode(utils.getpath(lnode, ltree))
                 lnode.getparent().remove(lnode)

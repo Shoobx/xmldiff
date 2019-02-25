@@ -4,10 +4,11 @@ import unittest
 from io import open
 from lxml import etree
 from xmldiff import utils
-from xmldiff.diff import (Differ, UpdateTextIn, InsertNode, MoveNode,
-                          DeleteNode, UpdateAttrib, InsertAttrib, RenameAttrib,
-                          DeleteAttrib, UpdateTextAfter, RenameNode,
-                          InsertComment)
+from xmldiff.diff import Differ
+from xmldiff.actions import (UpdateTextIn, InsertNode, MoveNode,
+                             DeleteNode, UpdateAttrib, InsertAttrib,
+                             RenameAttrib, DeleteAttrib, UpdateTextAfter,
+                             RenameNode, InsertComment)
 
 from .testing import compare_elements
 

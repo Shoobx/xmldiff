@@ -42,7 +42,8 @@ setup(name='xmldiff',
       test_suite='tests',
       entry_points={
                'console_scripts': [
-                   'xmldiff = xmldiff.main:run',
+                   'xmldiff = xmldiff.main:diff_command',
+                   'xmlpatch = xmldiff.main:patch_command',
                ],
       },
 )
