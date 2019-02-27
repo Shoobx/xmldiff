@@ -1,10 +1,12 @@
 Changes
 =======
 
-2.3 (unreleased)
+2.3 (2019-02-27)
 ----------------
 
 - Added a simple ``xmlpatch`` command and API.
+
+- Multiple updates to documentation and code style
 
 
 2.2 (2018-10-12)

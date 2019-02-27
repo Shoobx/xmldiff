@@ -7,6 +7,7 @@ include docs/requirements.txt
 recursive-include tests *.py
 recursive-include tests *.xml
 recursive-include tests *.html
+recursive-include tests *.diff
 recursive-include docs *.bat
 recursive-include docs *.py
 recursive-include docs *.rst
