@@ -78,7 +78,7 @@ Changes from ``xmldiff`` 0.6/1.x
 Contributors
 ------------
 
- * Lennart Regebro, lregebro@shoobx.com (main author)
+ * Lennart Regebro, regebro@gmail.com (main author)
 
  * Stephan Richter, srichter@shoobx.com
 
