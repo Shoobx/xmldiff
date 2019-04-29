@@ -44,7 +44,7 @@ There is a simple API for using ``xmldiff`` as a library::
 
 There is also a method ``diff_trees()`` that take two lxml trees,
 and a method ``diff_texts()`` that will take strings containing XML.
-Similarily, there is ``patch_file()`` ``patch_text()`` and ``patch_tree()``::
+Similarly, there is ``patch_file()`` ``patch_text()`` and ``patch_tree()``::
 
   result = main.diff_file('file.diff', 'file1.xml')
 
