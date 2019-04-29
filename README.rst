@@ -69,7 +69,7 @@ Changes from ``xmldiff`` 0.6/1.x
 
   * An output format compatible with 0.6/1.x is also available.
 
-  * 2.0 is urrently significantly slower than ``xmldiff`` 0.6/1.x,
+  * 2.0 is currently significantly slower than ``xmldiff`` 0.6/1.x,
     but this will change in the future.
     Currently we make no effort to make ``xmldiff`` 2.0 fast,
     we concentrate on making it correct and usable.
