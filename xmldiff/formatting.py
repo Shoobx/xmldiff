@@ -369,7 +369,7 @@ class XMLFormatter(BaseFormatter):
     def _xpath(self, node, xpath):
         # This method finds an element with xpath and makes sure that
         # one and exactly one element is found. This is to protect against
-        # formatting a diff on the wrong tree, or against using ambigous
+        # formatting a diff on the wrong tree, or against using ambiguous
         # edit script xpaths.
         if xpath[0] == '/':
             root = True

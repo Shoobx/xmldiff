@@ -44,7 +44,7 @@ There is a simple API for using ``xmldiff`` as a library::
 
 There is also a method ``diff_trees()`` that take two lxml trees,
 and a method ``diff_texts()`` that will take strings containing XML.
-Similarily, there is ``patch_file()`` ``patch_text()`` and ``patch_tree()``::
+Similarly, there is ``patch_file()`` ``patch_text()`` and ``patch_tree()``::
 
   result = main.diff_file('file.diff', 'file1.xml')
 
@@ -69,7 +69,7 @@ Changes from ``xmldiff`` 0.6/1.x
 
   * An output format compatible with 0.6/1.x is also available.
 
-  * 2.0 is urrently significantly slower than ``xmldiff`` 0.6/1.x,
+  * 2.0 is currently significantly slower than ``xmldiff`` 0.6/1.x,
     but this will change in the future.
     Currently we make no effort to make ``xmldiff`` 2.0 fast,
     we concentrate on making it correct and usable.

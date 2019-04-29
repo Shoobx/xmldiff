@@ -58,7 +58,7 @@ def longest_common_subsequence(left_sequence, right_sequence, eqfn=eq):
 
     lmax = len(left)
     rmax = len(right)
-    furtherst = {1: (0, [])}
+    furthest = {1: (0, [])}
 
     if not lmax + rmax:
         # The sequences are equal
@@ -68,13 +68,13 @@ def longest_common_subsequence(left_sequence, right_sequence, eqfn=eq):
     for d in range(0, lmax + rmax + 1):
         for k in range(-d, d + 1, 2):
             if (k == -d or
-               (k != d and furtherst[k - 1][0] < furtherst[k + 1][0])):
+               (k != d and furthest[k - 1][0] < furthest[k + 1][0])):
                 # Go down
-                old_x, history = furtherst[k + 1]
+                old_x, history = furthest[k + 1]
                 x = old_x
             else:
                 # Go left
-                old_x, history = furtherst[k - 1]
+                old_x, history = furthest[k - 1]
                 x = old_x + 1
 
             # Copy the history
@@ -92,7 +92,7 @@ def longest_common_subsequence(left_sequence, right_sequence, eqfn=eq):
                 return [(e, e) for e in range(start)] + history + \
                     list(zip(range(lend, lslen), range(rend, rslen)))
             else:
-                furtherst[k] = (x, history)
+                furthest[k] = (x, history)
 
 
 WHITESPACE = re.compile(u'\\s+', flags=re.MULTILINE)

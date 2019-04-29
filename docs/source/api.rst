@@ -71,7 +71,7 @@ Parameters
 ``fast_match``:
   By default ``xmldiff`` will compare each node from one tree with all nodes from the other tree.
   It will then pick the one node that matches best as the match,
-  if that match passes the match treshold ``F`` (see above).
+  if that match passes the match threshold ``F`` (see above).
 
   If fast_match is true ``xmldiff`` will first make a faster run,
   trying to find chains of matching nodes,
@@ -463,7 +463,7 @@ On the same line as for the patch API there are three methods:
 
 * ``xmldiff.main.patch_tree()`` takes as input one edit script,
   (ie a list of actions, see above) and one ``lxml`` tree,
-  and returnes a patched ``lxml`` tree.
+  and returns a patched ``lxml`` tree.
 
 They all return a string with the patched XML tree.
 There are currently no configuration parameters for these commands.
