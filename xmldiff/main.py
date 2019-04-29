@@ -71,7 +71,7 @@ def make_diff_parser():
     parser.add_argument('-p', '--pretty-print', action='store_true',
                         help='Try to make XML output more readable.')
     parser.add_argument('-F', type=float,
-                        help='A value betwen 0 and 1 that determines how '
+                        help='A value between 0 and 1 that determines how '
                         'similar nodes must be to match.')
     parser.add_argument('--unique-attributes', type=str, nargs='?',
                         default='{http://www.w3.org/XML/1998/namespace}id',
