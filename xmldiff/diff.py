@@ -345,7 +345,7 @@ class Differ(object):
         # Go over those children that are not in order:
         for lchild in lchildren:
             if lchild in self._inorder:
-                # Alrady aligned
+                # Already aligned
                 continue
 
             rchild = self._l2rmap[id(lchild)]
