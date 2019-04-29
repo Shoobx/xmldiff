@@ -959,7 +959,7 @@ class diff_match_patch:
                 pointer += 1
               text_insert = text_insert[commonlength:]
               text_delete = text_delete[commonlength:]
-            # Factor out any common suffixies.
+            # Factor out any common suffixes.
             commonlength = self.diff_commonSuffix(text_insert, text_delete)
             if commonlength != 0:
               diffs[pointer] = (diffs[pointer][0], text_insert[-commonlength:] +
