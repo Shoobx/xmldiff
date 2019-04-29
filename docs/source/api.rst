@@ -71,7 +71,7 @@ Parameters
 ``fast_match``:
   By default ``xmldiff`` will compare each node from one tree with all nodes from the other tree.
   It will then pick the one node that matches best as the match,
-  if that match passes the match treshold ``F`` (see above).
+  if that match passes the match threshold ``F`` (see above).
 
   If fast_match is true ``xmldiff`` will first make a faster run,
   trying to find chains of matching nodes,
