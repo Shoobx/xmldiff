@@ -463,7 +463,7 @@ On the same line as for the patch API there are three methods:
 
 * ``xmldiff.main.patch_tree()`` takes as input one edit script,
   (ie a list of actions, see above) and one ``lxml`` tree,
-  and returnes a patched ``lxml`` tree.
+  and returns a patched ``lxml`` tree.
 
 They all return a string with the patched XML tree.
 There are currently no configuration parameters for these commands.
