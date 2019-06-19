@@ -14,7 +14,7 @@ class Differ(object):
         if F is None:
             F = 0.5
         self.F = F
-        # uniqueattrs is a list of attributes that uniquely identifies a node
+        # uniquattrs is a list of attributes that uniquely identifies a node
         # inside a document. Defaults to 'xml:id'.
         if uniqueattrs is None:
             uniqueattrs = ['{http://www.w3.org/XML/1998/namespace}id']
@@ -222,11 +222,12 @@ class Differ(object):
     def update_node_tag(self, left, right):
         if left.tag != right.tag:
             left_xpath = utils.getpath(left)
-            yield actions.RenameNode(left_xpath, right.tag)
+            yield actions.RenameNode(left_xpath, right.tag, utils.getpath(right), left.tag)
             left.tag = right.tag
 
     def update_node_attr(self, left, right):
         left_xpath = utils.getpath(left)
+        right_xpath = utils.getpath(right)
 
         # Update: Look for differences in attributes
 
@@ -240,7 +241,7 @@ class Differ(object):
         # That's only so we can do testing in a reasonable way...
         for key in sorted(common_keys):
             if left.attrib[key] != right.attrib[key]:
-                yield actions.UpdateAttrib(left_xpath, key, right.attrib[key])
+                yield actions.UpdateAttrib(left_xpath, key, right.attrib[key], right_xpath, left.attrib[key])
                 left.attrib[key] = right.attrib[key]
 
         # Align: Not needed here, we don't care about the order of
@@ -255,7 +256,7 @@ class Differ(object):
             value = left.attrib[lk]
             if value in newattrmap:
                 rk = newattrmap[value]
-                yield actions.RenameAttrib(left_xpath, lk, rk)
+                yield actions.RenameAttrib(left_xpath, lk, rk, right_xpath)
                 # Remove from list of new attributes
                 new_keys.remove(rk)
                 # Update left node
@@ -272,18 +273,18 @@ class Differ(object):
             if key not in left.attrib:
                 # This was already moved
                 continue
-            yield actions.DeleteAttrib(left_xpath, key)
+            yield actions.DeleteAttrib(left_xpath, key, left.attrib[key])
             del left.attrib[key]
 
     def update_node_text(self, left, right):
         left_xpath = utils.getpath(left)
 
         if left.text != right.text:
-            yield actions.UpdateTextIn(left_xpath, right.text)
+            yield actions.UpdateTextIn(left_xpath, right.text, utils.getpath(right), left.text)
             left.text = right.text
 
         if left.tail != right.tail:
-            yield actions.UpdateTextAfter(left_xpath, right.tail)
+            yield actions.UpdateTextAfter(left_xpath, right.tail, utils.getpath(right), left.text)
             left.tail = right.tail
 
     def find_pos(self, node):
@@ -345,7 +346,7 @@ class Differ(object):
         # Go over those children that are not in order:
         for lchild in lchildren:
             if lchild in self._inorder:
-                # Already aligned
+                # Alrady aligned
                 continue
 
             rchild = self._l2rmap[id(lchild)]
@@ -451,5 +452,5 @@ class Differ(object):
         for lnode in utils.reverse_post_order_traverse(self.left):
             if id(lnode) not in self._l2rmap:
                 # No match
-                yield actions.DeleteNode(utils.getpath(lnode, ltree))
+                yield actions.DeleteNode(utils.getpath(lnode, ltree), lnode.tag)
                 lnode.getparent().remove(lnode)
