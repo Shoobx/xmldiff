@@ -14,7 +14,7 @@ class Differ(object):
         if F is None:
             F = 0.5
         self.F = F
-        # uniquattrs is a list of attributes that uniquely identifies a node
+        # uniqueattrs is a list of attributes that uniquely identifies a node
         # inside a document. Defaults to 'xml:id'.
         if uniqueattrs is None:
             uniqueattrs = ['{http://www.w3.org/XML/1998/namespace}id']
@@ -346,7 +346,7 @@ class Differ(object):
         # Go over those children that are not in order:
         for lchild in lchildren:
             if lchild in self._inorder:
-                # Alrady aligned
+                # Already aligned
                 continue
 
             rchild = self._l2rmap[id(lchild)]
