@@ -32,7 +32,7 @@ To use it from the command-line, just run ``xmldiff`` with two input files::
 
 There is also a command to patch a file with the output from the ``xmldiff`` command::
 
-  $ xmldiff file.diff file1.xml
+  $ xmlpatch file.diff file1.xml
 
 There is a simple API for using ``xmldiff`` as a library::
 
