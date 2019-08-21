@@ -258,6 +258,8 @@ class Differ(object):
                 yield actions.RenameAttrib(left_xpath, lk, rk)
                 # Remove from list of new attributes
                 new_keys.remove(rk)
+                # Delete used attribute from map of attributes
+                del newattrmap[value]
                 # Update left node
                 left.attrib[rk] = value
                 del left.attrib[lk]
