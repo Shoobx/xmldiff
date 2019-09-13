@@ -46,7 +46,7 @@ There is also a method ``diff_trees()`` that take two lxml trees,
 and a method ``diff_texts()`` that will take strings containing XML.
 Similarly, there is ``patch_file()`` ``patch_text()`` and ``patch_tree()``::
 
-  result = main.diff_file('file.diff', 'file1.xml')
+  result = main.patch_file('file.diff', 'file1.xml')
 
 
 Changes from ``xmldiff`` 0.6/1.x
