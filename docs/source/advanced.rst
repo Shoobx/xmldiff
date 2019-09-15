@@ -120,7 +120,7 @@ This requires subclassing the formatter:
 
 The XSLT template above of course only handles a few cases,
 like inserted formatting and insert and delete tags (used below).
-A more complete XSLT file is included `here <file:_static/htmlformatter.xslt>`_.
+A more complete XSLT file is included `here <https://github.com/Shoobx/xmldiff/blob/master/docs/source/static/htmlformatter.xslt>`_.
 
 Now use that formatter in the diffing:
 
