@@ -4,8 +4,9 @@ Changes
 2.4 (unreleased)
 ----------------
 
-- Nothing changed yet.
-
+- Added an option to pass pairs of (element, attr) as unique
+  attributes for tree matching.  Exposed this option on the command
+  line, too.
 
 2.3 (2019-02-27)
 ----------------

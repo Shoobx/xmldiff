@@ -14,8 +14,9 @@ class Differ(object):
         if F is None:
             F = 0.5
         self.F = F
-        # uniqueattrs is a list of attributes that uniquely identifies a node
-        # inside a document. Defaults to 'xml:id'.
+        # uniqueattrs is a list of attributes or (tag, attribute) pairs
+        # that uniquely identifies a node inside a document. Defaults
+        # to 'xml:id'.
         if uniqueattrs is None:
             uniqueattrs = ['{http://www.w3.org/XML/1998/namespace}id']
         self.uniqueattrs = uniqueattrs
@@ -162,6 +163,12 @@ class Differ(object):
             return 0
 
         for attr in self.uniqueattrs:
+            if not isinstance(attr, str):
+                # If it's actually a sequence of (tag, attr), the tags must
+                # match first.
+                tag, attr = attr
+                if tag != left.tag or tag != right.tag:
+                    continue
             if attr in left.attrib or attr in right.attrib:
                 # One of the nodes have a unique attribute, we check only that.
                 # If only one node has it, it means they are not the same.

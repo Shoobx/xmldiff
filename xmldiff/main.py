@@ -76,7 +76,9 @@ def make_diff_parser():
     parser.add_argument('--unique-attributes', type=str, nargs='?',
                         default='{http://www.w3.org/XML/1998/namespace}id',
                         help='A comma separated list of attributes '
-                             'that uniquely identify a node. Can be empty.')
+                             'that uniquely identify a node. Can be empty. '
+                             'Unique attributes for certain elements can '
+                             'be specified in the format {NS}element@attr.')
     parser.add_argument('--ratio-mode', default='fast',
                         choices={'accurate', 'fast', 'faster'},
                         help='Choose the node comparison optimization.')
@@ -100,7 +102,10 @@ def diff_command(args=None):
     if args.unique_attributes is None:
         uniqueattrs = []
     else:
-        uniqueattrs = args.unique_attributes.split(',')
+        uniqueattrs = [
+            attr if '@' not in attr else attr.split('@', 1)
+            for attr in args.unique_attributes.split(',')
+        ]
 
     diff_options = {'ratio_mode': args.ratio_mode,
                     'F': args.F,

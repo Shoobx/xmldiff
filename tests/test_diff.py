@@ -13,6 +13,20 @@ from xmldiff.actions import (UpdateTextIn, InsertNode, MoveNode,
 from .testing import compare_elements
 
 
+def dedent(string):
+    """Remove the maximum common indent of the lines making up the string."""
+    lines = string.splitlines()
+    indent = min(
+        len(line) - len(line.lstrip())
+        for line in lines
+        if line
+    )
+    return "\n".join(
+        line[indent:] if line else line
+        for line in lines
+    )
+
+
 class APITests(unittest.TestCase):
     left = u"<document><p>Text</p><p>More</p></document>"
     right = u"<document><p>Tokst</p><p>More</p></document>"
@@ -301,6 +315,91 @@ class NodeRatioTests(unittest.TestCase):
         self.assertAlmostEqual(differ.leaf_ratio(left, right), 0.81818181818)
         self.assertEqual(differ.child_ratio(left, right), 1.0)
         self.assertEqual(differ.node_ratio(left, right), 0)
+
+    def test_compare_with_uniqueattrs(self):
+        # `uniqueattrs` can be pairs of (tag, attribute) as well as just string
+        # attributes.
+        left = dedent(u"""\
+        <document>
+            <story firstPageTemplate="FirstPage">
+                <section name="oldfirst" ref="1" single-ref="1">
+                    <para>First paragraph</para>
+                    <para>This is the second paragraph</para>
+                </section>
+                <section ref="3" single-ref="3" name="tobedeleted">
+                    <para>Det tredje stycket</para>
+                </section>
+                <section name="last" ref="4" single-ref="4">
+                    <para>Last paragraph</para>
+                </section>
+            </story>
+        </document>
+        """)
+
+        right = dedent(u"""\
+        <document>
+            <story firstPageTemplate="FirstPage">
+                <section name="newfirst" ref="1" single-ref="1">
+                    <para>First paragraph</para>
+                </section>
+                <section name="oldfirst" single-ref="2" ref="2">
+                    <para>This is the second</para>
+                    <para>Det tredje stycket</para>
+                </section>
+                <section single-ref="4" ref="4">
+                    <para>Last paragraph</para>
+                </section>
+                <subsection name="oldfirst" ref="1" single-ref="1">
+                    <para>First paragraph</para>
+                    <para>This is the second paragraph</para>
+                </subsection>
+            </story>
+        </document>
+        """)
+
+        differ = Differ(uniqueattrs=[
+            ('section', 'name'),
+            '{http://www.w3.org/XML/1998/namespace}id'
+        ])
+        differ.set_trees(etree.fromstring(left), etree.fromstring(right))
+        differ.match()
+
+        # Make some choice comparisons here.
+
+        left = differ.left.xpath('/document/story/section[1]')[0]
+        right = differ.right.xpath('/document/story/section[1]')[0]
+
+        # These are very similar
+        self.assertEqual(differ.leaf_ratio(left, right), 0.90625)
+        # And one out of two children in common
+        self.assertEqual(differ.child_ratio(left, right), 0.5)
+        # But different names, hence 0 as match
+        self.assertEqual(differ.node_ratio(left, right), 0)
+
+        # Here's the ones with the same tag and name attribute:
+        left = differ.left.xpath('/document/story/section[1]')[0]
+        right = differ.right.xpath('/document/story/section[2]')[0]
+
+        # Only one out of two children in common
+        self.assertEqual(differ.child_ratio(left, right), 0)
+        # But same id's, hence 1 as match
+        self.assertEqual(differ.node_ratio(left, right), 1.0)
+
+        # The last ones are completely similar, but only one
+        # has an name, so they do not match.
+        left = differ.left.xpath('/document/story/section[3]')[0]
+        right = differ.right.xpath('/document/story/section[3]')[0]
+        self.assertAlmostEqual(differ.leaf_ratio(left, right), 0.78260869565)
+        self.assertEqual(differ.child_ratio(left, right), 1.0)
+        self.assertEqual(differ.node_ratio(left, right), 0)
+
+        # Now these are structurally similar, have the same name, but
+        # one of them is not a section, so the uniqueattr does not match
+        left = differ.left.xpath('/document/story/section[1]')[0]
+        right = differ.right.xpath('/document/story/subsection[1]')[0]
+        self.assertAlmostEqual(differ.leaf_ratio(left, right), 1.0)
+        self.assertEqual(differ.child_ratio(left, right), 0.5)
+        self.assertAlmostEqual(differ.node_ratio(left, right), 0.75)
 
     def test_compare_node_rename(self):
         left = u"""<document>
