@@ -87,6 +87,15 @@ def make_diff_parser():
     return parser
 
 
+def _parse_uniqueattrs(uniqueattrs):
+    if uniqueattrs is None:
+        return []
+    return [
+        attr if '@' not in attr else attr.split('@', 1)
+        for attr in uniqueattrs.split(',')
+    ]
+
+
 def diff_command(args=None):
     parser = make_diff_parser()
     args = parser.parse_args(args=args)
@@ -99,18 +108,10 @@ def diff_command(args=None):
     formatter = FORMATTERS[args.formatter](normalize=normalize,
                                            pretty_print=args.pretty_print)
 
-    if args.unique_attributes is None:
-        uniqueattrs = []
-    else:
-        uniqueattrs = [
-            attr if '@' not in attr else attr.split('@', 1)
-            for attr in args.unique_attributes.split(',')
-        ]
-
     diff_options = {'ratio_mode': args.ratio_mode,
                     'F': args.F,
                     'fast_match': args.fast_match,
-                    'uniqueattrs': uniqueattrs,
+                    'uniqueattrs': _parse_uniqueattrs(args.unique_attributes),
                     }
     result = diff_files(args.file1, args.file2, diff_options=diff_options,
                         formatter=formatter)
