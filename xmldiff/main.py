@@ -76,13 +76,24 @@ def make_diff_parser():
     parser.add_argument('--unique-attributes', type=str, nargs='?',
                         default='{http://www.w3.org/XML/1998/namespace}id',
                         help='A comma separated list of attributes '
-                             'that uniquely identify a node. Can be empty.')
+                             'that uniquely identify a node. Can be empty. '
+                             'Unique attributes for certain elements can '
+                             'be specified in the format {NS}element@attr.')
     parser.add_argument('--ratio-mode', default='fast',
                         choices={'accurate', 'fast', 'faster'},
                         help='Choose the node comparison optimization.')
     parser.add_argument('--fast-match', action='store_true',
                         help='A faster, less optimal match run.')
     return parser
+
+
+def _parse_uniqueattrs(uniqueattrs):
+    if uniqueattrs is None:
+        return []
+    return [
+        attr if '@' not in attr else attr.split('@', 1)
+        for attr in uniqueattrs.split(',')
+    ]
 
 
 def diff_command(args=None):
@@ -97,15 +108,10 @@ def diff_command(args=None):
     formatter = FORMATTERS[args.formatter](normalize=normalize,
                                            pretty_print=args.pretty_print)
 
-    if args.unique_attributes is None:
-        uniqueattrs = []
-    else:
-        uniqueattrs = args.unique_attributes.split(',')
-
     diff_options = {'ratio_mode': args.ratio_mode,
                     'F': args.F,
                     'fast_match': args.fast_match,
-                    'uniqueattrs': uniqueattrs,
+                    'uniqueattrs': _parse_uniqueattrs(args.unique_attributes),
                     }
     result = diff_files(args.file1, args.file2, diff_options=diff_options,
                         formatter=formatter)

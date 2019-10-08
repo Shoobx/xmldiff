@@ -98,7 +98,7 @@ The included formatters, ``diff``, ``xml``, and ``old`` all return a Unicode str
 and no guarantees are done that the output of one version will be the same as the output of any previous version.
 The actions of the edit script can be in a different order or replaced by equivalent actions dependingon the version of ``xmldiff``,
 but if the Edit Script does not correctly transform one XML tree into another,
-thas is regarded as a bug.
+that is regarded as a bug.
 This means that the output of the ``xml`` format also may change from version to version.
 There is no "correct" solution to how that output should look,
 as the same change can be represented in several different ways.
@@ -107,11 +107,17 @@ as the same change can be represented in several different ways.
 Unique Attributes
 -----------------
 
-The ``uniqueattrs`` argument is a list of strings specifying attributes that uniquely identify a node in the document.
+The ``uniqueattrs`` argument is a list of strings or ``(tag, attribute)`` tuples
+specifying attributes that uniquely identify a node in the document.
 This is used by the differ when trying to match nodes.
 If one node in the left tree has a this attribute,
 the node in the right three with the same value for that attribute will match,
 regardless of other attributes, child nodes or text content.
+Respectively, if the values of the attribute on the nodes in question are different,
+or if only one of the nodes has this attribute,
+the nodes will not match regardless of their structural similarity.
+In case the attribute is a tuple, the attribute match applies only if both nodes
+have the given tag.
 
 The default is ``['{http://www.w3.org/XML/1998/namespace}id']``,
 which is the ``xml:id`` attribute.

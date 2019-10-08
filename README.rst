@@ -82,5 +82,7 @@ Contributors
 
  * Stephan Richter, srichter@shoobx.com
 
+ * Albertas Agejevas, alga@shoobx.com
+
 The diff algorithm is based on "`Change Detection in Hierarchically Structured Information <http://ilpubs.stanford.edu/115/1/1995-46.pdf>`_",
 and the text diff is using Google's ``diff_match_patch`` algorithm.
