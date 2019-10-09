@@ -1,7 +1,7 @@
 Changes
 =======
 
-2.4 (unreleased)
+2.4 (2019-10-09)
 ----------------
 
 - Added an option to pass pairs of (element, attr) as unique
