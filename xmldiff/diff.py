@@ -162,23 +162,31 @@ class Differ(object):
             # One is a comment the other is not:
             return 0
 
+        match = None
         for attr in self.uniqueattrs:
-            if not isinstance(attr, str):
-                # If it's actually a sequence of (tag, attr), the tags must
-                # match first.
-                tag, attr = attr
-                if tag != left.tag or tag != right.tag:
-                    continue
-            if attr in left.attrib or attr in right.attrib:
-                # One of the nodes have a unique attribute, we check only that.
+            if isinstance(attr, dict):
+                for tag, attr_list in attr.items():
+                    if tag != left.tag or tag != right.tag:
+                        continue
+                    matches = 0
+                    attr_list_consolidated = \
+                        [attr for attr in attr_list
+                         if attr in left.attrib or attr in right.attrib]
+                    for inner_attr in attr_list_consolidated:
+                        matches += int(left.attrib.get(inner_attr)
+                                       == right.attrib.get(inner_attr))
+                    match = int(matches/len(attr_list) == 1)
+            elif attr in left.attrib or attr in right.attrib:
+                # One of the nodes have a unique attribute,
+                # we check only that.
                 # If only one node has it, it means they are not the same.
-                return int(left.attrib.get(attr) == right.attrib.get(attr))
+                match = int(left.attrib.get(attr) == right.attrib.get(attr))
+        if match is None:
+            match = self.leaf_ratio(left, right)
+            child_ratio = self.child_ratio(left, right)
 
-        match = self.leaf_ratio(left, right)
-        child_ratio = self.child_ratio(left, right)
-
-        if child_ratio is not None:
-            match = (match + child_ratio) / 2
+            if child_ratio is not None:
+                match = (match + child_ratio) / 2
         return match
 
     def node_text(self, node):
