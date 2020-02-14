@@ -162,18 +162,22 @@ class Differ(object):
             # One is a comment the other is not:
             return 0
 
-        for attr in self.uniqueattrs:
-            if not isinstance(attr, str):
-                # If it's actually a sequence of (tag, attr), the tags must
-                # match first.
-                tag, attr = attr
-                if tag != left.tag or tag != right.tag:
+        if isinstance(self.uniqueattrs, dict):
+            for tag, attr_list in self.uniqueattrs.items():
+                if tag!= left.tag or tag != right.tag:
                     continue
-            if attr in left.attrib or attr in right.attrib:
-                # One of the nodes have a unique attribute, we check only that.
-                # If only one node has it, it means they are not the same.
-                return int(left.attrib.get(attr) == right.attrib.get(attr))
-
+                ratio = 0
+                for attr in attr_list:
+                    if attr in left.attrib or attr in right.attrib:
+                        ratio += int(left.attrib.get(attr) == right.attrib.get(attr))
+                return ratio/len(attr_list)
+        else:     
+            for attr in self.uniqueattrs:
+                if attr in left.attrib or attr in right.attrib:
+                    # One of the nodes have a unique attribute, we check only that.
+                    # If only one node has it, it means they are not the same.
+                    return int(left.attrib.get(attr) == right.attrib.get(attr))
+            
         match = self.leaf_ratio(left, right)
         child_ratio = self.child_ratio(left, right)
 

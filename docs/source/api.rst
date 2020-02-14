@@ -52,7 +52,7 @@ Parameters
     Set the value low, and you will get more updates instead of inserts and deletes.
 
     ``uniqueattrs``:
-    A list of XML node attributes that will uniquely identify a node.
+    A list of XML node attributes that will uniquely identify a node. Alternatively, a dictionary containing unique keys for different tags.
     See `Unique Attributes`_ for more info.
 
     Defaults to ``['{http://www.w3.org/XML/1998/namespace}id']``.
@@ -107,8 +107,8 @@ as the same change can be represented in several different ways.
 Unique Attributes
 -----------------
 
-The ``uniqueattrs`` argument is a list of strings or ``(tag, attribute)`` tuples
-specifying attributes that uniquely identify a node in the document.
+The ``uniqueattrs`` argument is a list of strings or alternatively a dictionary where keys denote tags and values list of attributes which collectively 
+uniquely identify a node in the document.
 This is used by the differ when trying to match nodes.
 If one node in the left tree has a this attribute,
 the node in the right three with the same value for that attribute will match,
