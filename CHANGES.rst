@@ -1,10 +1,10 @@
 Changes
 =======
 
-2.5 (unreleased)
+2.5 (2020-02-17)
 ----------------
 
-- Nothing changed yet.
+- Added an option to pass {element: [attr1...attrN]} dictionary as unique attribute for tree matching.
 
 
 2.4 (2019-10-09)

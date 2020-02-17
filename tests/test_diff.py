@@ -353,12 +353,16 @@ class NodeRatioTests(unittest.TestCase):
                     <para>First paragraph</para>
                     <para>This is the second paragraph</para>
                 </subsection>
+                <section name="oldfirst" single-ref="2" ref="1">
+                    <para>This is the second</para>
+                    <para>Det tredje stycket</para>
+                </section>
             </story>
         </document>
         """)
 
         differ = Differ(uniqueattrs=[
-            ('section', 'name'),
+            {'section': ['name', 'ref']},
             '{http://www.w3.org/XML/1998/namespace}id'
         ])
         differ.set_trees(etree.fromstring(left), etree.fromstring(right))
@@ -382,8 +386,8 @@ class NodeRatioTests(unittest.TestCase):
 
         # Only one out of two children in common
         self.assertEqual(differ.child_ratio(left, right), 0)
-        # But same id's, hence 1 as match
-        self.assertEqual(differ.node_ratio(left, right), 1.0)
+        # They differ on the ref attribute, hence no match
+        self.assertEqual(differ.node_ratio(left, right), 0)
 
         # The last ones are completely similar, but only one
         # has an name, so they do not match.
@@ -400,6 +404,15 @@ class NodeRatioTests(unittest.TestCase):
         self.assertAlmostEqual(differ.leaf_ratio(left, right), 1.0)
         self.assertEqual(differ.child_ratio(left, right), 0.5)
         self.assertAlmostEqual(differ.node_ratio(left, right), 0.75)
+
+        # Here's the ones with the same tag and name attribute:
+        left = differ.left.xpath('/document/story/section[1]')[0]
+        right = differ.right.xpath('/document/story/section[4]')[0]
+
+        # Only one out of two children in common
+        self.assertEqual(differ.child_ratio(left, right), 0)
+        # They are equal both on the name and the ref attribute, hence a match
+        self.assertEqual(differ.node_ratio(left, right), 1.0)
 
     def test_compare_node_rename(self):
         left = u"""<document>
