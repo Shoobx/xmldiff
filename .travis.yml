@@ -11,7 +11,7 @@ matrix:
   - python: pypy3
 
 install:
-  - pip install . coverage coveralls flake8 sphinx sphinx-argparse
+  - pip install . black coverage coveralls flake8 sphinx sphinx-argparse
 
 script:
   - make flake

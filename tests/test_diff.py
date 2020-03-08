@@ -1274,7 +1274,6 @@ class DiffTests(unittest.TestCase):
 
         result = self._diff(left, right)
 
-        # Most lines get too long and flake8 complains because of this part:
         bm_bm_bm = "/metal:block/metal:block/metal:block"
         self.assertEqual(
             result,
