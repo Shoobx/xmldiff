@@ -1,6 +1,5 @@
 import os
 
-from io import open
 
 
 def make_case_function(left_filename):
@@ -8,15 +7,15 @@ def make_case_function(left_filename):
     expected_filename = left_filename.replace(".left.", ".expected.")
 
     def test(self):
-        with open(expected_filename, "rt", encoding="utf8") as input_file:
+        with open(expected_filename, encoding="utf8") as input_file:
             expected_xml = input_file.read()
 
         try:
             result_xml = self.process(left_filename, right_filename)
         except Exception as err:
-            if u".err" not in left_filename:
+            if ".err" not in left_filename:
                 raise
-            result_xml = u"{}: {}".format(err.__class__.__name__, err)
+            result_xml = "{}: {}".format(err.__class__.__name__, err)
 
         self.assertEqual(expected_xml.strip(), result_xml.strip())
 

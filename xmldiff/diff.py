@@ -1,12 +1,10 @@
-from __future__ import division
-
 from copy import deepcopy
 from difflib import SequenceMatcher
 from lxml import etree
 from xmldiff import utils, actions
 
 
-class Differ(object):
+class Differ:
     def __init__(self, F=None, uniqueattrs=None, ratio_mode="fast", fast_match=False):
         # The minimum similarity between two nodes to consider them equal
         if F is None:
@@ -194,7 +192,7 @@ class Differ(object):
             texts.append("{}:{}".format(tag, value))
 
         # Finally make one string, useful to see how similar two nodes are
-        text = u" ".join(texts).strip()
+        text = " ".join(texts).strip()
         result = utils.cleanup_whitespace(text)
         self._text_cache[node] = result
         return result
@@ -413,8 +411,7 @@ class Differ(object):
                 # And then we update attributes. This is different from the
                 # paper, because the paper assumes nodes only has labels and
                 # values. Nodes also has texts, we do them later.
-                for action in self.update_node_attr(lnode, rnode):
-                    yield action
+                yield from self.update_node_attr(lnode, rnode)
 
             # (c)
             else:
@@ -439,26 +436,22 @@ class Differ(object):
                     self._inorder.add(rnode)
 
                 # Rename
-                for action in self.update_node_tag(lnode, rnode):
-                    yield action
+                yield from self.update_node_tag(lnode, rnode)
 
                 # (ii) Update
                 # XXX If they are exactly equal, we can skip this,
                 # maybe store match results in a cache?
-                for action in self.update_node_attr(lnode, rnode):
-                    yield action
+                yield from self.update_node_attr(lnode, rnode)
 
             # (d) Align
-            for action in self.align_children(lnode, rnode):
-                yield action
+            yield from self.align_children(lnode, rnode)
 
             # And lastly, we update all node texts. We do this after
             # aligning children, because when you generate an XML diff
             # from this, that XML diff update generates more children,
             # confusing later inserts or deletes.
             lnode = self._r2lmap[id(rnode)]
-            for action in self.update_node_text(lnode, rnode):
-                yield action
+            yield from self.update_node_text(lnode, rnode)
 
         for lnode in utils.reverse_post_order_traverse(self.left):
             if id(lnode) not in self._l2rmap:

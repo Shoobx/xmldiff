@@ -169,7 +169,7 @@ def patch_file(actions, tree):
     """Takes two filenames or streams, one with XML the other a diff"""
     tree = etree.parse(tree)
 
-    if isinstance(actions, six.string_types):
+    if isinstance(actions, str):
         # It's a string, so it's a filename
         with open(actions) as f:
             actions = f.read()

@@ -1,7 +1,6 @@
 import os
 import unittest
 
-from io import open
 from lxml import etree
 from xmldiff import utils
 from xmldiff.diff import Differ
@@ -30,8 +29,8 @@ def dedent(string):
 
 
 class APITests(unittest.TestCase):
-    left = u"<document><p>Text</p><p>More</p></document>"
-    right = u"<document><p>Tokst</p><p>More</p></document>"
+    left = "<document><p>Text</p><p>More</p></document>"
+    right = "<document><p>Tokst</p><p>More</p></document>"
     lefttree = etree.fromstring(left)
     righttree = etree.fromstring(right)
     differ = Differ()
@@ -110,7 +109,7 @@ class APITests(unittest.TestCase):
 
 class NodeRatioTests(unittest.TestCase):
     def test_compare_equal(self):
-        xml = u"""<document>
+        xml = """<document>
     <story firstPageTemplate="FirstPage">
         <section xml:id="oldfirst" ref="3" single-ref="3">
             <para>First paragraph</para>
@@ -139,7 +138,7 @@ class NodeRatioTests(unittest.TestCase):
                 self.assertIsNone(differ.child_ratio(left, right))
 
     def test_compare_different_leafs(self):
-        left = u"""<document>
+        left = """<document>
     <story firstPageTemplate="FirstPage">
         <section ref="2" single-ref="2">
             <para>This doesn't match at all</para>
@@ -154,7 +153,7 @@ class NodeRatioTests(unittest.TestCase):
 </document>
 """
 
-        right = u"""<document>
+        right = """<document>
     <story firstPageTemplate="FirstPage">
         <section ref="3" single-ref="3">
             <para>Completely different from before</para>
@@ -192,7 +191,7 @@ class NodeRatioTests(unittest.TestCase):
         self.assertAlmostEqual(differ.leaf_ratio(left, right), 0.45614035087719)
 
     def test_compare_different_nodes(self):
-        left = u"""<document>
+        left = """<document>
     <story firstPageTemplate="FirstPage">
         <section ref="2" single-ref="2">
             <para>First paragraph</para>
@@ -208,7 +207,7 @@ class NodeRatioTests(unittest.TestCase):
 </document>
 """
 
-        right = u"""<document>
+        right = """<document>
     <story firstPageTemplate="FirstPage">
         <section ref="2" single-ref="2">
             <para>First paragraph</para>
@@ -252,7 +251,7 @@ class NodeRatioTests(unittest.TestCase):
         self.assertEqual(differ.child_ratio(left, right), 1.0)
 
     def test_compare_with_xmlid(self):
-        left = u"""<document>
+        left = """<document>
     <story firstPageTemplate="FirstPage">
         <section xml:id="oldfirst" ref="1" single-ref="1">
             <para>First paragraph</para>
@@ -268,7 +267,7 @@ class NodeRatioTests(unittest.TestCase):
 </document>
 """
 
-        right = u"""<document>
+        right = """<document>
     <story firstPageTemplate="FirstPage">
         <section xml:id="newfirst" ref="1" single-ref="1">
             <para>First paragraph</para>
@@ -321,7 +320,7 @@ class NodeRatioTests(unittest.TestCase):
         # `uniqueattrs` can be pairs of (tag, attribute) as well as just string
         # attributes.
         left = dedent(
-            u"""\
+            """\
         <document>
             <story firstPageTemplate="FirstPage">
                 <section name="oldfirst" ref="1" single-ref="1">
@@ -340,7 +339,7 @@ class NodeRatioTests(unittest.TestCase):
         )
 
         right = dedent(
-            u"""\
+            """\
         <document>
             <story firstPageTemplate="FirstPage">
                 <section name="newfirst" ref="1" single-ref="1">
@@ -409,14 +408,14 @@ class NodeRatioTests(unittest.TestCase):
         self.assertAlmostEqual(differ.node_ratio(left, right), 0.75)
 
     def test_compare_node_rename(self):
-        left = u"""<document>
+        left = """<document>
   <para>First paragraph</para>
   <para attr="value">Second paragraph</para>
   <para attr="value">Third paragraph</para>
 </document>
 """
 
-        right = u"""<document>
+        right = """<document>
   <section>First paragraph</section>
   <section attr="something else">Second paragraph</section>
   <section attr="something else">A different text</section>
@@ -451,12 +450,12 @@ class NodeRatioTests(unittest.TestCase):
         self.assertAlmostEqual(differ.leaf_ratio(left, right), 0.45161290322580)
 
     def test_compare_namespaces(self):
-        left = u"""<document>
+        left = """<document>
   <foo:para xmlns:foo="someuri">First paragraph</foo:para>
 </document>
 """
 
-        right = u"""<document>
+        right = """<document>
   <foo:para xmlns:foo="otheruri">First paragraph</foo:para>
 </document>
 """
@@ -517,7 +516,7 @@ class MatchTests(unittest.TestCase):
         return [(lpath(item[0]), rpath(item[1])) for item in matches]
 
     def test_same_tree(self):
-        xml = u"""<document>
+        xml = """<document>
     <story firstPageTemplate="FirstPage">
         <section xml:id="oldfirst" ref="3" single-ref="3">
             <para>First paragraph</para>
@@ -541,7 +540,7 @@ class MatchTests(unittest.TestCase):
         # If the number of similar attributes are few it works fine, the
         # differing content of the ref="3" section means it's detected to
         # be an insert.
-        left = u"""<document>
+        left = """<document>
             <story firstPageTemplate="FirstPage">
             <section ref="3" single-ref="3">
             <para>First paragraph</para>
@@ -555,7 +554,7 @@ class MatchTests(unittest.TestCase):
 
         # We even detect that the first section is an insert without
         # xmlid, but that's less reliable.
-        right = u"""<document>
+        right = """<document>
             <story firstPageTemplate="FirstPage">
             <section ref="3" single-ref="3">
             <para>New paragraph</para>
@@ -588,7 +587,7 @@ class MatchTests(unittest.TestCase):
         # than the content text. That would trick the matcher into matching
         # the oldfirst and the newfirst section to match, except that we
         # this time also have xml:id's, and they trump everything else!
-        left = u"""<document>
+        left = """<document>
     <story firstPageTemplate="FirstPage">
         <section ref="3" single-ref="3" xml:id="oldfirst"
                  description="This is to trick the differ">
@@ -606,7 +605,7 @@ class MatchTests(unittest.TestCase):
 
         # We even detect that the first section is an insert without
         # xmlid, but that's less reliable.
-        right = u"""<document>
+        right = """<document>
     <story firstPageTemplate="FirstPage">
         <section ref="3" single-ref="3" xml:id="newfirst"
                  description="This is to trick the differ">
@@ -642,7 +641,7 @@ class MatchTests(unittest.TestCase):
 
     def test_change_attribs(self):
 
-        left = u"""<document>
+        left = """<document>
     <story firstPageTemplate="FirstPage">
         <section xml:id="oldfirst" ref="3" single-ref="3">
             <para>First</para>
@@ -654,7 +653,7 @@ class MatchTests(unittest.TestCase):
 </document>
 """
 
-        right = u"""<document>
+        right = """<document>
     <story firstPageTemplate="FirstPage">
         <section xml:id="oldfirst" ref="4" single-ref="4">
             <para>First</para>
@@ -681,7 +680,7 @@ class MatchTests(unittest.TestCase):
         )
 
     def test_move_paragraph(self):
-        left = u"""<document>
+        left = """<document>
     <story firstPageTemplate="FirstPage">
         <section ref="3" single-ref="3">
             <para>First paragraph</para>
@@ -694,7 +693,7 @@ class MatchTests(unittest.TestCase):
 </document>
 """
 
-        right = u"""<document>
+        right = """<document>
     <story firstPageTemplate="FirstPage">
         <section ref="3" single-ref="3">
             <para>First paragraph</para>
@@ -781,13 +780,13 @@ class MatchTests(unittest.TestCase):
         )
 
     def test_match_insert_node(self):
-        left = u"""<document title="insert-node">
+        left = """<document title="insert-node">
   <story id="id">
 
   </story>
 </document>
 """
-        right = u"""<document title="insert-node">
+        right = """<document title="insert-node">
   <story id="id">
 
     <h1>Inserted <i>Node</i></h1>
@@ -801,13 +800,13 @@ class MatchTests(unittest.TestCase):
         )
 
     def test_entirely_different(self):
-        left = u"""<document title="insert-node">
+        left = """<document title="insert-node">
   <story id="id">
 
   </story>
 </document>
 """
-        right = u"""<document title="something else">
+        right = """<document title="something else">
     <h1>Inserted <i>Node</i></h1>
 </document>"""
         result = self._match(left, right)
@@ -826,7 +825,7 @@ class FastMatchTests(unittest.TestCase):
         return [(lpath(item[0]), rpath(item[1])) for item in matches]
 
     def test_move_paragraph(self):
-        left = u"""<document>
+        left = """<document>
     <story firstPageTemplate="FirstPage">
         <section ref="3" single-ref="3">
             <para>First paragraph</para>
@@ -839,7 +838,7 @@ class FastMatchTests(unittest.TestCase):
 </document>
 """
 
-        right = u"""<document>
+        right = """<document>
     <story firstPageTemplate="FirstPage">
         <section ref="3" single-ref="3">
             <para>First paragraph</para>
@@ -860,7 +859,7 @@ class FastMatchTests(unittest.TestCase):
     def test_move_children(self):
         # Here the paragraphs are all so similar that that each paragraph
         # will match any other.
-        left = u"""<document>
+        left = """<document>
     <story firstPageTemplate="FirstPage">
         <section ref="3" single-ref="3">
             <para>First paragraph</para>
@@ -871,7 +870,7 @@ class FastMatchTests(unittest.TestCase):
 </document>
 """
 
-        right = u"""<document>
+        right = """<document>
     <story firstPageTemplate="FirstPage">
         <section ref="3" single-ref="3">
             <para>Second paragraph</para>
@@ -928,7 +927,7 @@ class UpdateNodeTests(unittest.TestCase):
         return steps
 
     def test_same_tree(self):
-        xml = u"""<document>
+        xml = """<document>
     <story firstPageTemplate="FirstPage">
         <section xml:id="oldfirst" ref="3" single-ref="3">
             <para>First paragraph</para>
@@ -945,13 +944,13 @@ class UpdateNodeTests(unittest.TestCase):
 
     def test_attribute_changes(self):
         left = (
-            u"""<root><node attr1="ohyeah" attr2="ohno" attr3="maybe" """
-            u"""attr0="del">The contained text</node>And a tail!</root>"""
+            """<root><node attr1="ohyeah" attr2="ohno" attr3="maybe" """
+            """attr0="del">The contained text</node>And a tail!</root>"""
         )
 
         right = (
-            u"""<root><node attr4="ohyeah" attr2="uhhuh" attr3="maybe" """
-            u"""attr5="new">The new text</node>Also a tail!</root>"""
+            """<root><node attr4="ohyeah" attr2="uhhuh" attr3="maybe" """
+            """attr5="new">The new text</node>Also a tail!</root>"""
         )
 
         result = self._match(left, right)
@@ -984,7 +983,7 @@ class AlignChildrenTests(unittest.TestCase):
         return steps
 
     def test_same_tree(self):
-        xml = u"""<document>
+        xml = """<document>
     <story firstPageTemplate="FirstPage">
         <section xml:id="oldfirst" ref="3" single-ref="3">
             <para>First paragraph</para>
@@ -1000,7 +999,7 @@ class AlignChildrenTests(unittest.TestCase):
         self.assertEqual(result, [])
 
     def test_move_paragraph(self):
-        left = u"""<document>
+        left = """<document>
     <story firstPageTemplate="FirstPage">
         <section ref="3" single-ref="3">
             <para>First paragraph</para>
@@ -1013,7 +1012,7 @@ class AlignChildrenTests(unittest.TestCase):
 </document>
 """
 
-        right = u"""<document>
+        right = """<document>
     <story firstPageTemplate="FirstPage">
         <section ref="3" single-ref="3">
             <para>First paragraph</para>
@@ -1030,7 +1029,7 @@ class AlignChildrenTests(unittest.TestCase):
         self.assertEqual(result, [])
 
     def test_move_children(self):
-        left = u"""<document>
+        left = """<document>
     <story firstPageTemplate="FirstPage">
         <section ref="3" single-ref="3">
             <para>First paragraph</para>
@@ -1041,7 +1040,7 @@ class AlignChildrenTests(unittest.TestCase):
 </document>
 """
 
-        right = u"""<document>
+        right = """<document>
     <story firstPageTemplate="FirstPage">
         <section ref="3" single-ref="3">
             <para>Second paragraph</para>
@@ -1076,7 +1075,7 @@ class DiffTests(unittest.TestCase):
         return editscript
 
     def test_process(self):
-        left = u"""<document>
+        left = """<document>
     <story firstPageTemplate="FirstPage">
         <section ref="3" single-ref="3">
             <para>First paragraph</para>
@@ -1090,7 +1089,7 @@ class DiffTests(unittest.TestCase):
 </document>
 """
 
-        right = u"""<document>
+        right = """<document>
     <story firstPageTemplate="FirstPage">
         <section ref="3" single-ref="3">
             <para>First paragraph</para>
@@ -1156,9 +1155,9 @@ class DiffTests(unittest.TestCase):
         here = os.path.split(__file__)[0]
         lfile = os.path.join(here, "test_data", "rmldoc.left.xml")
         rfile = os.path.join(here, "test_data", "rmldoc.right.xml")
-        with open(lfile, "rt", encoding="utf8") as infile:
+        with open(lfile, encoding="utf8") as infile:
             left = infile.read()
-        with open(rfile, "rt", encoding="utf8") as infile:
+        with open(rfile, encoding="utf8") as infile:
             right = infile.read()
 
         result = self._diff(left, right)
@@ -1268,9 +1267,9 @@ class DiffTests(unittest.TestCase):
         here = os.path.split(__file__)[0]
         lfile = os.path.join(here, "test_data", "sbt_template.left.xml")
         rfile = os.path.join(here, "test_data", "sbt_template.right.xml")
-        with open(lfile, "rt", encoding="utf8") as infile:
+        with open(lfile, encoding="utf8") as infile:
             left = infile.read()
-        with open(rfile, "rt", encoding="utf8") as infile:
+        with open(rfile, encoding="utf8") as infile:
             right = infile.read()
 
         result = self._diff(left, right)
@@ -1357,7 +1356,7 @@ class DiffTests(unittest.TestCase):
 
     def test_namespace(self):
         # Test changing nodes and attributes with namespaces
-        left = u"""<document xmlns:app="someuri">
+        left = """<document xmlns:app="someuri">
     <story app:foo="FirstPage">
         <app:section>
             <foo:para xmlns:foo="otheruri">Lorem ipsum dolor sit amet,
@@ -1380,7 +1379,7 @@ class DiffTests(unittest.TestCase):
 </document>
 """
 
-        right = u"""<document xmlns:app="someuri">
+        right = """<document xmlns:app="someuri">
     <story app:foo="FirstPage">
         <app:section>
             <app:para>Lorem ipsum dolor sit amet,
@@ -1416,7 +1415,7 @@ class DiffTests(unittest.TestCase):
         )
 
     def test_multiple_tag_deletes(self):
-        left = u"""<document title="delte-node-ul">
+        left = """<document title="delte-node-ul">
     <story id="id">
 
         <ul>
@@ -1428,7 +1427,7 @@ class DiffTests(unittest.TestCase):
     </story>
 </document>"""
 
-        right = u"""<document title="delte-node-ul">
+        right = """<document title="delte-node-ul">
     <story id="id">
     </story>
 </document>"""
@@ -1446,8 +1445,8 @@ class DiffTests(unittest.TestCase):
         )
 
     def test_insert_comment(self):
-        left = u"<doc><body>Something</body></doc>"
-        right = u"<doc><!-- New comment! --><body>Something</body></doc>"
+        left = "<doc><body>Something</body></doc>"
+        right = "<doc><!-- New comment! --><body>Something</body></doc>"
 
         result = self._diff(left, right)
         self.assertEqual(result, [InsertComment("/doc[1]", 0, " New comment! ")])

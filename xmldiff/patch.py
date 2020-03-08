@@ -5,7 +5,7 @@ from lxml import etree
 from xmldiff import actions
 
 
-class Patcher(object):
+class Patcher:
     def patch(self, actions, tree):
         # Copy the tree so we don't modify the original
         result = deepcopy(tree)
@@ -71,7 +71,7 @@ class Patcher(object):
         target.insert(action.position, etree.Comment(action.text))
 
 
-class DiffParser(object):
+class DiffParser:
     """Makes a text diff into a list of actions"""
 
     def parse(self, diff):

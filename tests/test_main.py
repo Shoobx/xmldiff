@@ -163,6 +163,6 @@ class MainCLITests(unittest.TestCase):
         output, errors = self.call_run([patchfile, xmlfile], command=main.patch_command)
 
         expectedfile = os.path.join(filepath, "insert-node.right.html")
-        with open(expectedfile, "rt") as f:
+        with open(expectedfile) as f:
             expected = f.read()
         self.assertEqual(output, expected)

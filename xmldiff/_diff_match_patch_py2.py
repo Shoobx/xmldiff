@@ -1,6 +1,5 @@
 #!/usr/bin/python2.4
 
-from __future__ import division
 
 """Diff Match and Patch
 Copyright 2018 The diff-match-patch Authors.

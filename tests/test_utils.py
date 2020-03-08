@@ -6,7 +6,7 @@ from xmldiff import utils
 
 class TraverseTests(unittest.TestCase):
     def test_post_order(self):
-        xml = u"""<document>
+        xml = """<document>
     <story firstPageTemplate='FirstPage'>
         <section xml:id='oldfirst' ref='3' single-ref='3'>
             <para>First paragraph</para>
@@ -33,7 +33,7 @@ class TraverseTests(unittest.TestCase):
         )
 
     def test_reverse_post_order(self):
-        xml = u"""<document>
+        xml = """<document>
     <story firstPageTemplate='FirstPage'>
         <section xml:id='oldfirst' ref='3' single-ref='3'>
             <para>First paragraph</para>
@@ -60,7 +60,7 @@ class TraverseTests(unittest.TestCase):
         )
 
     def test_breadth_first(self):
-        xml = u"""<document>
+        xml = """<document>
     <story>
         <section>
             <para>First <i>paragraph</i></para>
@@ -140,7 +140,7 @@ class LongestCommonSubsequenceTests(unittest.TestCase):
 
 class MakeAsciiTreeTests(unittest.TestCase):
     def test_make_ascii_tree(self):
-        xml = u"""<document xmlns:diff="http://namespaces.shoobx.com/diff">
+        xml = """<document xmlns:diff="http://namespaces.shoobx.com/diff">
     <story firstPageTemplate='FirstPage'>
         <section xml:id='oldfirst' ref='3' single-ref='3'>
             <para diff:delete="">First paragraph</para>

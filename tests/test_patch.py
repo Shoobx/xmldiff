@@ -235,7 +235,7 @@ class ParserTests(unittest.TestCase):
         result = patch_file(patchfile, xmlfile)
 
         expectedfile = os.path.join(here, "insert-node.right.html")
-        with open(expectedfile, "rt") as f:
+        with open(expectedfile) as f:
             expected = f.read()
         # lxml.etree.parse() will strip ending whitespace
         self.assertEqual(result, expected.rstrip())

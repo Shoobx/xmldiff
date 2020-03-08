@@ -1,5 +1,3 @@
-from __future__ import division
-
 import re
 
 from operator import eq
@@ -8,16 +6,14 @@ from operator import eq
 def post_order_traverse(node):
     for child in node.getchildren():
         # PY3: Man, I want yield from!
-        for item in post_order_traverse(child):
-            yield item
+        yield from post_order_traverse(child)
     yield node
 
 
 def reverse_post_order_traverse(node):
     for child in reversed(node.getchildren()):
         # PY3: Man, I want yield from!
-        for item in reverse_post_order_traverse(child):
-            yield item
+        yield from reverse_post_order_traverse(child)
     yield node
 
 
@@ -103,7 +99,7 @@ def longest_common_subsequence(left_sequence, right_sequence, eqfn=eq):
                 furthest[k] = (x, history)
 
 
-WHITESPACE = re.compile(u"\\s+", flags=re.MULTILINE)
+WHITESPACE = re.compile("\\s+", flags=re.MULTILINE)
 
 
 def cleanup_whitespace(text):
