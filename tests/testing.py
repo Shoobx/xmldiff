@@ -1,7 +1,6 @@
 import os
 
 
-
 def make_case_function(left_filename):
     right_filename = left_filename.replace(".left.", ".right.")
     expected_filename = left_filename.replace(".left.", ".expected.")

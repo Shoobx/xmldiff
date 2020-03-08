@@ -222,9 +222,7 @@ class XMLFormatTests(unittest.TestCase):
     def test_insert_attr(self):
         left = "<document><node>We need more text</node></document>"
         action = actions.InsertAttrib("/document/node", "attr", "val")
-        expected = (
-            START + ' attr="val" diff:add-attr="attr">' "We need more text" + END
-        )
+        expected = START + ' attr="val" diff:add-attr="attr">' "We need more text" + END
 
         self._format_test(left, action, expected)
 
@@ -275,9 +273,7 @@ class XMLFormatTests(unittest.TestCase):
     def test_update_attr(self):
         left = '<document><node attr="val"/></document>'
         action = actions.UpdateAttrib("/document/node", "attr", "newval")
-        expected = (
-            START + ' attr="newval" diff:update-attr="attr:val"/>' "</document>"
-        )
+        expected = START + ' attr="newval" diff:update-attr="attr:val"/>' "</document>"
 
         self._format_test(left, action, expected)
 

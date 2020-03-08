@@ -401,11 +401,15 @@ class XMLFormatter(BaseFormatter):
 
         if index >= len(matches):
             raise ValueError(
-                "xpath {}[{}] not found at {}.".format(path, index + 1, utils.getpath(node))
+                "xpath {}[{}] not found at {}.".format(
+                    path, index + 1, utils.getpath(node)
+                )
             )
         if len(matches) > 1 and multiple:
             raise ValueError(
-                "Multiple nodes found for xpath {} at {}.".format(path, utils.getpath(node))
+                "Multiple nodes found for xpath {} at {}.".format(
+                    path, utils.getpath(node)
+                )
             )
         match = matches[index]
         if rest:
