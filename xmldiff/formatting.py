@@ -242,7 +242,7 @@ class PlaceholderMaker(object):
         if self.is_formatting(elem):
             # Formatting element, add a diff attribute
             action += "-formatting"
-        elem.attrib["{%s}%s" % (DIFF_NS, action)] = ""
+        elem.attrib["{{{}}}{}".format(DIFF_NS, action)] = ""
 
         # And make a new placeholder for this new entry:
         return self.get_placeholder(elem, entry.ttype, entry.close_ph)
@@ -401,11 +401,11 @@ class XMLFormatter(BaseFormatter):
 
         if index >= len(matches):
             raise ValueError(
-                "xpath %s[%s] not found at %s." % (path, index + 1, utils.getpath(node))
+                "xpath {}[{}] not found at {}.".format(path, index + 1, utils.getpath(node))
             )
         if len(matches) > 1 and multiple:
             raise ValueError(
-                "Multiple nodes found for xpath %s at %s." % (path, utils.getpath(node))
+                "Multiple nodes found for xpath {} at {}.".format(path, utils.getpath(node))
             )
         match = matches[index]
         if rest:
@@ -413,7 +413,7 @@ class XMLFormatter(BaseFormatter):
         return match
 
     def _extend_diff_attr(self, node, action, value):
-        diffattr = "{%s}%s-attr" % (DIFF_NS, action)
+        diffattr = "{{{}}}{}-attr".format(DIFF_NS, action)
         oldvalue = node.attrib.get(diffattr, "")
         if oldvalue:
             value = oldvalue + ";" + value
@@ -473,7 +473,7 @@ class XMLFormatter(BaseFormatter):
     def _rename_attrib(self, node, oldname, newname):
         node.attrib[newname] = node.attrib[oldname]
         del node.attrib[oldname]
-        self._extend_diff_attr(node, "rename", "%s:%s" % (oldname, newname))
+        self._extend_diff_attr(node, "rename", "{}:{}".format(oldname, newname))
 
     def _handle_RenameAttrib(self, action, tree):
         node = self._xpath(tree, action.node)
@@ -495,7 +495,7 @@ class XMLFormatter(BaseFormatter):
     def _update_attrib(self, node, name, value):
         oldval = node.attrib[name]
         node.attrib[name] = value
-        self._extend_diff_attr(node, "update", "%s:%s" % (name, oldval))
+        self._extend_diff_attr(node, "update", "{}:{}".format(name, oldval))
 
     def _handle_UpdateAttrib(self, action, tree):
         node = self._xpath(tree, action.node)
@@ -732,7 +732,7 @@ class XmlDiffFormatter(BaseFormatter):
             yield item
 
     def _handle_DeleteAttrib(self, action, orig_tree):
-        yield u"remove", "%s/@%s" % (action.node, action.name)
+        yield u"remove", "{}/@{}".format(action.node, action.name)
 
     def _handle_DeleteNode(self, action, orig_tree):
         yield u"remove", action.node
@@ -752,7 +752,7 @@ class XmlDiffFormatter(BaseFormatter):
         node = orig_tree.xpath(action.node)[0]
         value = node.attrib[action.oldname]
         value_text = "\n<@{0}>\n{1}\n</@{0}>".format(action.newname, value)
-        yield u"remove", "%s/@%s" % (action.node, action.oldname)
+        yield u"remove", "{}/@{}".format(action.node, action.oldname)
         yield u"insert", action.node, value_text
 
     def _handle_MoveNode(self, action, orig_tree):
@@ -775,7 +775,7 @@ class XmlDiffFormatter(BaseFormatter):
     def _handle_UpdateAttrib(self, action, orig_tree):
         yield (
             u"update",
-            "%s/@%s" % (action.node, action.name),
+            "{}/@{}".format(action.node, action.name),
             json.dumps(action.value),
         )
 

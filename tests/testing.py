@@ -16,7 +16,7 @@ def make_case_function(left_filename):
         except Exception as err:
             if u".err" not in left_filename:
                 raise
-            result_xml = u"%s: %s" % (err.__class__.__name__, err)
+            result_xml = u"{}: {}".format(err.__class__.__name__, err)
 
         self.assertEqual(expected_xml.strip(), result_xml.strip())
 

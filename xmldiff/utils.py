@@ -128,7 +128,7 @@ def _make_ascii_tree(element, indent=""):
 
     diffns = "{%s}" % DIFF_NS
     if element.prefix:
-        name = "%s:%s" % (element.prefix, element.tag.split("}")[1])
+        name = "{}:{}".format(element.prefix, element.tag.split("}")[1])
     else:
         name = element.tag
     diff_attrs = [attr for attr in element.attrib if attr.startswith(diffns)]
