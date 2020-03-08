@@ -1983,7 +1983,7 @@ class diff_match_patch:
                     pass
                 else:
                     # WTF?
-                    raise ValueError("Invalid patch mode: '{}'\n{}".format(sign, line))
+                    raise ValueError(f"Invalid patch mode: '{sign}'\n{line}")
                 del text[0]
         return patches
 

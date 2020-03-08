@@ -189,7 +189,7 @@ class Differ:
         for tag, value in sorted(node.attrib.items()):
             if tag[0] == "{":
                 tag = tag.split("}",)[-1]
-            texts.append("{}:{}".format(tag, value))
+            texts.append(f"{tag}:{value}")
 
         # Finally make one string, useful to see how similar two nodes are
         text = " ".join(texts).strip()
