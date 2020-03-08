@@ -10,8 +10,12 @@ matrix:
     dist: bionic
   - python: pypy3
 
+before_install:
+  - if [ $TRAVIS_OS_NAME != pypy3 ]; then pip install black; fi
+  - pip install coverage coveralls flake8 sphinx sphinx-argparse
+
 install:
-  - pip install . black coverage coveralls flake8 sphinx sphinx-argparse
+  - pip install .
 
 script:
   - make flake
