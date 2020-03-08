@@ -6,7 +6,6 @@ from xmldiff import actions
 
 
 class Patcher(object):
-
     def patch(self, actions, tree):
         # Copy the tree so we don't modify the original
         result = deepcopy(tree)
@@ -18,7 +17,7 @@ class Patcher(object):
 
     def handle_action(self, action, tree):
         action_type = type(action)
-        method = getattr(self, '_handle_' + action_type.__name__)
+        method = getattr(self, "_handle_" + action_type.__name__)
         method(action, tree)
 
     def _handle_DeleteNode(self, action, tree):
@@ -76,21 +75,21 @@ class DiffParser(object):
     """Makes a text diff into a list of actions"""
 
     def parse(self, diff):
-        incomplete = ''
+        incomplete = ""
 
         for line in diff.splitlines():
             line = incomplete + line
 
-            if line[0] != '[':
+            if line[0] != "[":
                 # All actions should start with "["
                 raise ValueError("Unknown diff format")
-            if line[-1] != ']':
+            if line[-1] != "]":
                 # This line has been broken into several lines
                 incomplete = line
                 continue
 
             # OK, we found an action
-            incomplete = ''
+            incomplete = ""
             yield self.make_action(line)
 
         if incomplete:
@@ -105,7 +104,7 @@ class DiffParser(object):
         action = parts[0]
         params = parts[1:]
         # Get the method, and return the result of calling it
-        method = getattr(self, '_handle_' + action.replace('-', '_'))
+        method = getattr(self, "_handle_" + action.replace("-", "_"))
         return method(*params)
 
     def _handle_delete(self, node):

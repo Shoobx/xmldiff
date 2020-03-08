@@ -43,13 +43,19 @@ def longest_common_subsequence(left_sequence, right_sequence, eqfn=eq):
     rend = rslen = len(right_sequence)
 
     # Trim off the matching items at the beginning
-    while (start < lend and start < rend and
-           eqfn(left_sequence[start], right_sequence[start])):
+    while (
+        start < lend
+        and start < rend
+        and eqfn(left_sequence[start], right_sequence[start])
+    ):
         start += 1
 
     # trim off the matching items at the end
-    while (start < lend and start < rend and
-           eqfn(left_sequence[lend - 1], right_sequence[rend - 1])):
+    while (
+        start < lend
+        and start < rend
+        and eqfn(left_sequence[lend - 1], right_sequence[rend - 1])
+    ):
         lend -= 1
         rend -= 1
 
@@ -67,8 +73,7 @@ def longest_common_subsequence(left_sequence, right_sequence, eqfn=eq):
 
     for d in range(0, lmax + rmax + 1):
         for k in range(-d, d + 1, 2):
-            if (k == -d or
-               (k != d and furthest[k - 1][0] < furthest[k + 1][0])):
+            if k == -d or (k != d and furthest[k - 1][0] < furthest[k + 1][0]):
                 # Go down
                 old_x, history = furthest[k + 1]
                 x = old_x
@@ -89,47 +94,51 @@ def longest_common_subsequence(left_sequence, right_sequence, eqfn=eq):
 
             if x >= lmax and y >= rmax:
                 # This is the best match
-                return [(e, e) for e in range(start)] + history + \
-                    list(zip(range(lend, lslen), range(rend, rslen)))
+                return (
+                    [(e, e) for e in range(start)]
+                    + history
+                    + list(zip(range(lend, lslen), range(rend, rslen)))
+                )
             else:
                 furthest[k] = (x, history)
 
 
-WHITESPACE = re.compile(u'\\s+', flags=re.MULTILINE)
+WHITESPACE = re.compile(u"\\s+", flags=re.MULTILINE)
 
 
 def cleanup_whitespace(text):
-    return WHITESPACE.sub(' ', text)
+    return WHITESPACE.sub(" ", text)
 
 
 def getpath(element, tree=None):
     if tree is None:
         tree = element.getroottree()
     xpath = tree.getpath(element)
-    if xpath[-1] != ']':
+    if xpath[-1] != "]":
         # The path is unique without specifying a count. However, we always
         # want that count, so we add [1].
-        xpath = xpath + '[1]'
+        xpath = xpath + "[1]"
     return xpath
 
 
 # The remainder of the functions here are helpful when debugging.
 # They aren't documented, nor very well tested.
-def _make_ascii_tree(element, indent=''):
+def _make_ascii_tree(element, indent=""):
     from xmldiff.formatting import DIFF_NS  # Avoid circular imports
-    diffns = '{%s}' % DIFF_NS
+
+    diffns = "{%s}" % DIFF_NS
     if element.prefix:
-        name = '%s:%s' % (element.prefix, element.tag.split('}')[1])
+        name = "%s:%s" % (element.prefix, element.tag.split("}")[1])
     else:
         name = element.tag
     diff_attrs = [attr for attr in element.attrib if attr.startswith(diffns)]
     if diff_attrs:
-        diff = '(%s)' % ', '.join(attr.split('}')[1] for attr in diff_attrs)
+        diff = "(%s)" % ", ".join(attr.split("}")[1] for attr in diff_attrs)
     else:
-        diff = ''
+        diff = ""
 
-    result = [' '.join((indent, name, diff))]
-    indent = '  ' + indent
+    result = [" ".join((indent, name, diff))]
+    indent = "  " + indent
 
     for child in element.getchildren():
         result.extend(_make_ascii_tree(child, indent))
@@ -138,4 +147,4 @@ def _make_ascii_tree(element, indent=''):
 
 def make_ascii_tree(element):
     result = _make_ascii_tree(element)
-    return '\n'.join(result)
+    return "\n".join(result)

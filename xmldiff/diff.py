@@ -7,9 +7,7 @@ from xmldiff import utils, actions
 
 
 class Differ(object):
-
-    def __init__(self, F=None, uniqueattrs=None, ratio_mode='fast',
-                 fast_match=False):
+    def __init__(self, F=None, uniqueattrs=None, ratio_mode="fast", fast_match=False):
         # The minimum similarity between two nodes to consider them equal
         if F is None:
             F = 0.5
@@ -18,17 +16,17 @@ class Differ(object):
         # that uniquely identifies a node inside a document. Defaults
         # to 'xml:id'.
         if uniqueattrs is None:
-            uniqueattrs = ['{http://www.w3.org/XML/1998/namespace}id']
+            uniqueattrs = ["{http://www.w3.org/XML/1998/namespace}id"]
         self.uniqueattrs = uniqueattrs
         self.fast_match = fast_match
 
         # Avoid recreating this for every node
         self._sequencematcher = SequenceMatcher()
-        if ratio_mode == 'fast':
+        if ratio_mode == "fast":
             self._sequence_ratio = self._sequencematcher.quick_ratio
-        elif ratio_mode == 'accurate':
+        elif ratio_mode == "accurate":
             self._sequence_ratio = self._sequencematcher.ratio
-        elif ratio_mode == 'faster':
+        elif ratio_mode == "faster":
             self._sequence_ratio = self._sequencematcher.real_quick_ratio
         else:
             raise ValueError("Unknown ratio_mode '%s'" % ratio_mode)
@@ -57,8 +55,9 @@ class Differ(object):
             right = right.getroot()
 
         if not (etree.iselement(left) and etree.iselement(right)):
-            raise TypeError("The 'left' and 'right' parameters must be "
-                            "lxml Elements.")
+            raise TypeError(
+                "The 'left' and 'right' parameters must be " "lxml Elements."
+            )
 
         # Left gets modified as a part of the diff, deepcopy it first.
         self.left = deepcopy(left)
@@ -111,14 +110,15 @@ class Differ(object):
 
         if self.fast_match:
             # First find matches with longest_common_subsequence:
-            matches = list(utils.longest_common_subsequence(
-                lnodes, rnodes, lambda x, y: self.node_ratio(x, y) >= 0.5))
+            matches = list(
+                utils.longest_common_subsequence(
+                    lnodes, rnodes, lambda x, y: self.node_ratio(x, y) >= 0.5
+                )
+            )
 
             # Add the matches (I prefer this from start to finish):
             for left_match, right_match in matches:
-                self.append_match(lnodes[left_match],
-                                  rnodes[right_match],
-                                  None)
+                self.append_match(lnodes[left_match], rnodes[right_match], None)
 
             # Then remove the nodes (needs to be done backwards):
             for left_match, right_match in reversed(matches):
@@ -185,16 +185,16 @@ class Differ(object):
         if node in self._text_cache:
             return self._text_cache[node]
         # Get the texts and the tag as a start
-        texts = node.xpath('text()')
+        texts = node.xpath("text()")
 
         # Then add attributes and values
         for tag, value in sorted(node.attrib.items()):
-            if tag[0] == '{':
-                tag = tag.split('}',)[-1]
-            texts.append('%s:%s' % (tag, value))
+            if tag[0] == "{":
+                tag = tag.split("}",)[-1]
+            texts.append("%s:%s" % (tag, value))
 
         # Finally make one string, useful to see how similar two nodes are
-        text = u' '.join(texts).strip()
+        text = u" ".join(texts).strip()
         result = utils.cleanup_whitespace(text)
         self._text_cache[node] = result
         return result
@@ -256,8 +256,7 @@ class Differ(object):
         # Move: Check if any of the new attributes have the same value
         # as the removed attributes. If they do, it's actually
         # a renaming, and a move is one action instead of remove + insert
-        newattrmap = {v: k for (k, v) in right.attrib.items()
-                      if k in new_keys}
+        newattrmap = {v: k for (k, v) in right.attrib.items() if k in new_keys}
         for lk in sorted(removed_keys):
             value = left.attrib[lk]
             if value in newattrmap:
@@ -332,19 +331,23 @@ class Differ(object):
         return i
 
     def align_children(self, left, right):
-        lchildren = [c for c in left.getchildren()
-                     if (id(c) in self._l2rmap and
-                         self._l2rmap[id(c)].getparent() is right)]
-        rchildren = [c for c in right.getchildren()
-                     if (id(c) in self._r2lmap and
-                         self._r2lmap[id(c)].getparent() is left)]
+        lchildren = [
+            c
+            for c in left.getchildren()
+            if (id(c) in self._l2rmap and self._l2rmap[id(c)].getparent() is right)
+        ]
+        rchildren = [
+            c
+            for c in right.getchildren()
+            if (id(c) in self._r2lmap and self._r2lmap[id(c)].getparent() is left)
+        ]
         if not lchildren or not rchildren:
             # Nothing to align
             return
 
         lcs = utils.longest_common_subsequence(
-            lchildren, rchildren,
-            lambda x, y: self._l2rmap[id(x)] is y)
+            lchildren, rchildren, lambda x, y: self._l2rmap[id(x)] is y
+        )
 
         for x, y in lcs:
             # Mark these as in order
@@ -362,9 +365,8 @@ class Differ(object):
             rtarget = rchild.getparent()
             ltarget = self._r2lmap[id(rtarget)]
             yield actions.MoveNode(
-                utils.getpath(lchild),
-                utils.getpath(ltarget),
-                right_pos)
+                utils.getpath(lchild), utils.getpath(ltarget), right_pos
+            )
             # Do the actual move:
             left.remove(lchild)
             ltarget.insert(right_pos, lchild)
@@ -394,11 +396,13 @@ class Differ(object):
                 # (ii)
                 if rnode.tag is etree.Comment:
                     yield actions.InsertComment(
-                        utils.getpath(ltarget, ltree), pos, rnode.text)
+                        utils.getpath(ltarget, ltree), pos, rnode.text
+                    )
                     lnode = etree.Comment(rnode.text)
                 else:
-                    yield actions.InsertNode(utils.getpath(ltarget, ltree),
-                                             rnode.tag, pos)
+                    yield actions.InsertNode(
+                        utils.getpath(ltarget, ltree), rnode.tag, pos
+                    )
                     lnode = ltarget.makeelement(rnode.tag)
 
                     # (iii)
@@ -426,9 +430,8 @@ class Differ(object):
                 if ltarget is not lparent:
                     pos = self.find_pos(rnode)
                     yield actions.MoveNode(
-                        utils.getpath(lnode, ltree),
-                        utils.getpath(ltarget, ltree),
-                        pos)
+                        utils.getpath(lnode, ltree), utils.getpath(ltarget, ltree), pos
+                    )
                     # Move the node from current parent to target
                     lparent.remove(lnode)
                     ltarget.insert(pos, lnode)
