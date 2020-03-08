@@ -5,7 +5,7 @@ dfm_source_3 := "https://raw.githubusercontent.com/google/diff-match-patch/maste
 all: coverage flake
 
 flake:
-	flake8 tests xmldiff --exclude *diff_match_patch*.py
+	flake8 tests xmldiff --exclude *diff_match_patch*.py --ignore=E231,E501
 
 coverage:
 	coverage run setup.py test

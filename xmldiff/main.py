@@ -1,6 +1,5 @@
 """All major API points and command-line tools"""
 import pkg_resources
-import six
 
 from argparse import ArgumentParser, FileType
 from lxml import etree

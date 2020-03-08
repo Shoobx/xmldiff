@@ -1,6 +1,5 @@
 import json
 import re
-import six
 
 from collections import namedtuple
 from copy import deepcopy
