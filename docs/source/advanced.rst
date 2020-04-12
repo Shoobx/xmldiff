@@ -5,7 +5,7 @@ Diffing Formatted Text
 ----------------------
 
 You can write your own formatter that understands your XML format,
-and therefore can apply som intelligence to the format.
+and therefore can apply some intelligence to the format.
 
 One common use case for this is to have more intelligent text handling.
 The standard formatters will treat any text as just a value,
@@ -148,8 +148,8 @@ Performance Options
 
 The performance options available will not just change the performance,
 but can also change the result.
-It's not always so that the result is worse,
-it's just less accurate.
+The result will not necessarily be worse,
+it will just be less accurate.
 In some cases the less accurate result might actually be preferrable.
 As an example we take the following HTML codes:
 
