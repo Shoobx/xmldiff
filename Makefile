@@ -5,7 +5,10 @@ dfm_source_3 := "https://raw.githubusercontent.com/google/diff-match-patch/maste
 all: coverage flake
 
 flake:
-	flake8 tests xmldiff --exclude *diff_match_patch*.py
+ifneq (, $(shell which black))
+	black --check .
+endif
+	flake8 tests xmldiff --exclude *diff_match_patch*.py --ignore=E231,E501,W503
 
 coverage:
 	coverage run setup.py test

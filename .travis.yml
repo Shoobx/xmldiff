@@ -4,17 +4,21 @@ language: python
 matrix:
   fast_finish: true
   include:
-  - python: 2.7
-  - python: 3.5
   - python: 3.6
+    env: MATRIX=py36
   - python: 3.7
     sudo: required
-    dist: xenial
-  - python: pypy
+    dist: bionic
+    env: MATRIX=py37
   - python: pypy3
+    env: MATRIX=pypy3
+
+before_install:
+  - if [ $MATRIX != pypy3 ]; then pip install black; fi
+  - pip install coverage coveralls flake8 sphinx sphinx-argparse
 
 install:
-  - pip install . coverage coveralls flake8 sphinx sphinx-argparse
+  - pip install .
 
 script:
   - make flake

@@ -1,6 +1,5 @@
 import json
 import re
-import six
 
 from collections import namedtuple
 from copy import deepcopy
@@ -9,12 +8,12 @@ from xmldiff.diff_match_patch import diff_match_patch
 from xmldiff import utils
 
 
-DIFF_NS = 'http://namespaces.shoobx.com/diff'
-DIFF_PREFIX = 'diff'
+DIFF_NS = "http://namespaces.shoobx.com/diff"
+DIFF_PREFIX = "diff"
 
-INSERT_NAME = '{%s}insert' % DIFF_NS
-DELETE_NAME = '{%s}delete' % DIFF_NS
-RENAME_NAME = '{%s}rename' % DIFF_NS
+INSERT_NAME = "{%s}insert" % DIFF_NS
+DELETE_NAME = "{%s}delete" % DIFF_NS
+RENAME_NAME = "{%s}rename" % DIFF_NS
 
 # Flags for whitespace handling in the text aware formatters:
 WS_BOTH = 3  # Normalize ignorable whitespace and text whitespace
@@ -34,15 +33,15 @@ T_SINGLE = 2
 # that have narrow builds, we can change this to 0xf00000, which is
 # the start of two 64,000 private use blocks.
 # PY3: Once Python 2.7 support is dropped we should change this to 0xf00000
-PLACEHOLDER_START = 0xe000
+PLACEHOLDER_START = 0xE000
 
 
 # These Bases can be abstract baseclasses, but it's a pain to support
 # Python 2.7 in that case, because there is no abc.ABC. Right now this
 # is just a description of the API.
 
-class BaseFormatter(object):
 
+class BaseFormatter:
     def __init__(self, normalize=WS_TAGS, pretty_print=False):
         """Formatters must as a minimum have a normalize parameter
 
@@ -75,10 +74,10 @@ class BaseFormatter(object):
         """
 
 
-PlaceholderEntry = namedtuple('PlaceholderEntry', 'element ttype close_ph')
+PlaceholderEntry = namedtuple("PlaceholderEntry", "element ttype close_ph")
 
 
-class PlaceholderMaker(object):
+class PlaceholderMaker:
     """Replace tags with unicode placeholders
 
     This class searches for certain tags in an XML tree and replaces them
@@ -98,20 +97,17 @@ class PlaceholderMaker(object):
         self.placeholder = PLACEHOLDER_START
 
         insert_elem = etree.Element(INSERT_NAME)
-        insert_close = self.get_placeholder(
-            insert_elem, T_CLOSE, None)
-        insert_open = self.get_placeholder(
-            insert_elem, T_OPEN, insert_close)
+        insert_close = self.get_placeholder(insert_elem, T_CLOSE, None)
+        insert_open = self.get_placeholder(insert_elem, T_OPEN, insert_close)
 
         delete_elem = etree.Element(DELETE_NAME)
-        delete_close = self.get_placeholder(
-            delete_elem, T_CLOSE, None)
-        delete_open = self.get_placeholder(
-            delete_elem, T_OPEN, delete_close)
+        delete_close = self.get_placeholder(delete_elem, T_CLOSE, None)
+        delete_open = self.get_placeholder(delete_elem, T_OPEN, delete_close)
 
         self.diff_tags = {
-            'insert': (insert_open, insert_close),
-            'delete': (delete_open, delete_close)}
+            "insert": (insert_open, insert_close),
+            "delete": (delete_open, delete_close),
+        }
 
     def get_placeholder(self, element, ttype, close_ph):
         tag = etree.tounicode(element)
@@ -120,7 +116,7 @@ class PlaceholderMaker(object):
             return ph
 
         self.placeholder += 1
-        ph = six.unichr(self.placeholder)
+        ph = chr(self.placeholder)
         self.placeholder2tag[ph] = PlaceholderEntry(element, ttype, close_ph)
         self.tag2placeholder[tag, ttype, close_ph] = ph
         return ph
@@ -135,17 +131,17 @@ class PlaceholderMaker(object):
         for child in element:
             # Resolve all formatting text by allowing the inside text to
             # participate in the text diffing.
-            tail = child.tail or u''
-            child.tail = u''
-            new_text = element.text or u''
+            tail = child.tail or ""
+            child.tail = ""
+            new_text = element.text or ""
 
             if self.is_formatting(child):
                 ph_close = self.get_placeholder(child, T_CLOSE, None)
                 ph_open = self.get_placeholder(child, T_OPEN, ph_close)
                 # If it's known text formatting tags, do this hierarchically
                 self.do_element(child)
-                text = child.text or u''
-                child.text = u''
+                text = child.text or ""
+                child.text = ""
                 # Stick the placeholder in instead of the start and end tags:
                 element.text = new_text + ph_open + text + ph_close + tail
             else:
@@ -159,15 +155,15 @@ class PlaceholderMaker(object):
 
     def do_tree(self, tree):
         if self.text_tags:
-            for elem in tree.xpath('//'+'|//'.join(self.text_tags)):
+            for elem in tree.xpath("//" + "|//".join(self.text_tags)):
                 self.do_element(elem)
 
     def split_string(self, text):
-        regexp = u'([%s])' % u''.join(self.placeholder2tag)
+        regexp = "([%s])" % "".join(self.placeholder2tag)
         return re.split(regexp, text, flags=re.MULTILINE)
 
     def undo_string(self, text):
-        result = etree.Element('wrap')
+        result = etree.Element("wrap")
         element = None
 
         segments = self.split_string(text)
@@ -184,7 +180,7 @@ class PlaceholderMaker(object):
                 if entry.ttype == T_OPEN:
                     # Yup
                     next_seg = segments.pop(0)
-                    new_text = u''
+                    new_text = ""
                     while next_seg != entry.close_ph:
                         new_text += next_seg
                         next_seg = segments.pop(0)
@@ -195,9 +191,9 @@ class PlaceholderMaker(object):
                 result.append(element)
             else:
                 if element is not None:
-                    element.tail = element.tail or u'' + seg
+                    element.tail = element.tail or "" + seg
                 else:
-                    result.text = result.text or u'' + seg
+                    result.text = result.text or "" + seg
 
         return result
 
@@ -244,8 +240,8 @@ class PlaceholderMaker(object):
         elem = deepcopy(elem)
         if self.is_formatting(elem):
             # Formatting element, add a diff attribute
-            action += '-formatting'
-        elem.attrib['{%s}%s' % (DIFF_NS, action)] = ''
+            action += "-formatting"
+        elem.attrib[f"{{{DIFF_NS}}}{action}"] = ""
 
         # And make a new placeholder for this new entry:
         return self.get_placeholder(elem, entry.ttype, entry.close_ph)
@@ -301,15 +297,17 @@ class XMLFormatter(BaseFormatter):
     all whitespace.
     """
 
-    def __init__(self, normalize=WS_NONE, pretty_print=True,
-                 text_tags=(), formatting_tags=()):
+    def __init__(
+        self, normalize=WS_NONE, pretty_print=True, text_tags=(), formatting_tags=()
+    ):
         # Mapping from placeholders -> structural content and vice versa.
         self.normalize = normalize
         self.pretty_print = pretty_print
         self.text_tags = text_tags
         self.formatting_tags = formatting_tags
         self.placeholderer = PlaceholderMaker(
-            text_tags=text_tags, formatting_tags=formatting_tags)
+            text_tags=text_tags, formatting_tags=formatting_tags
+        )
 
     def prepare(self, left_tree, right_tree):
         """prepare() is run on the trees before diffing
@@ -352,11 +350,11 @@ class XMLFormatter(BaseFormatter):
 
     def handle_action(self, action, result):
         action_type = type(action)
-        method = getattr(self, '_handle_' + action_type.__name__)
+        method = getattr(self, "_handle_" + action_type.__name__)
         method(action, result)
 
     def _remove_comments(self, tree):
-        comments = tree.xpath('//comment()')
+        comments = tree.xpath("//comment()")
 
         for element in comments:
             parent = element.getparent()
@@ -371,20 +369,20 @@ class XMLFormatter(BaseFormatter):
         # one and exactly one element is found. This is to protect against
         # formatting a diff on the wrong tree, or against using ambiguous
         # edit script xpaths.
-        if xpath[0] == '/':
+        if xpath[0] == "/":
             root = True
             xpath = xpath[1:]
         else:
             root = False
 
-        if '/' in xpath:
-            path, rest = xpath.split('/', 1)
+        if "/" in xpath:
+            path, rest = xpath.split("/", 1)
         else:
             path = xpath
-            rest = ''
+            rest = ""
 
-        if '[' in path:
-            path, index = path[:-1].split('[')
+        if "[" in path:
+            path, index = path[:-1].split("[")
             index = int(index) - 1
             multiple = False
         else:
@@ -392,7 +390,7 @@ class XMLFormatter(BaseFormatter):
             multiple = True
 
         if root:
-            path = '/' + path
+            path = "/" + path
 
         matches = []
         for match in node.xpath(path, namespaces=node.nsmap):
@@ -401,33 +399,39 @@ class XMLFormatter(BaseFormatter):
                 matches.append(match)
 
         if index >= len(matches):
-            raise ValueError('xpath %s[%s] not found at %s.' % (
-                path, index + 1, utils.getpath(node)))
+            raise ValueError(
+                "xpath {}[{}] not found at {}.".format(
+                    path, index + 1, utils.getpath(node)
+                )
+            )
         if len(matches) > 1 and multiple:
-            raise ValueError('Multiple nodes found for xpath %s at %s.' % (
-                path, utils.getpath(node)))
+            raise ValueError(
+                "Multiple nodes found for xpath {} at {}.".format(
+                    path, utils.getpath(node)
+                )
+            )
         match = matches[index]
         if rest:
             return self._xpath(match, rest)
         return match
 
     def _extend_diff_attr(self, node, action, value):
-        diffattr = '{%s}%s-attr' % (DIFF_NS, action)
-        oldvalue = node.attrib.get(diffattr, '')
+        diffattr = f"{{{DIFF_NS}}}{action}-attr"
+        oldvalue = node.attrib.get(diffattr, "")
         if oldvalue:
-            value = oldvalue + ';' + value
+            value = oldvalue + ";" + value
         node.attrib[diffattr] = value
 
     def _delete_attrib(self, node, name):
         del node.attrib[name]
-        self._extend_diff_attr(node, 'delete', name)
+        self._extend_diff_attr(node, "delete", name)
 
     def _handle_DeleteAttrib(self, action, tree):
         node = self._xpath(tree, action.node)
         self._delete_attrib(node, action.name)
 
     def _delete_node(self, node):
-        node.attrib[DELETE_NAME] = ''
+        node.attrib[DELETE_NAME] = ""
 
     def _handle_DeleteNode(self, action, tree):
         node = self._xpath(tree, action.node)
@@ -435,14 +439,14 @@ class XMLFormatter(BaseFormatter):
 
     def _insert_attrib(self, node, name, value):
         node.attrib[name] = value
-        self._extend_diff_attr(node, 'add', name)
+        self._extend_diff_attr(node, "add", name)
 
     def _handle_InsertAttrib(self, action, tree):
         node = self._xpath(tree, action.node)
         self._insert_attrib(node, action.name, action.value)
 
     def _insert_node(self, target, node, position):
-        node.attrib[INSERT_NAME] = ''
+        node.attrib[INSERT_NAME] = ""
         target.insert(position, node)
 
     def _get_real_insert_position(self, target, position):
@@ -472,7 +476,7 @@ class XMLFormatter(BaseFormatter):
     def _rename_attrib(self, node, oldname, newname):
         node.attrib[newname] = node.attrib[oldname]
         del node.attrib[oldname]
-        self._extend_diff_attr(node, 'rename', '%s:%s' % (oldname, newname))
+        self._extend_diff_attr(node, "rename", f"{oldname}:{newname}")
 
     def _handle_RenameAttrib(self, action, tree):
         node = self._xpath(tree, action.node)
@@ -494,7 +498,7 @@ class XMLFormatter(BaseFormatter):
     def _update_attrib(self, node, name, value):
         oldval = node.attrib[name]
         node.attrib[name] = value
-        self._extend_diff_attr(node, 'update', '%s:%s' % (name, oldval))
+        self._extend_diff_attr(node, "update", f"{name}:{oldval}")
 
     def _handle_UpdateAttrib(self, action, tree):
         node = self._xpath(tree, action.node)
@@ -540,10 +544,7 @@ class XMLFormatter(BaseFormatter):
                     # needs to be closed before the requested node closure can
                     # happen.
                     stack_op, stack_entry = _stack_pop()
-                    while (
-                            stack_entry is not None and
-                            stack_entry.close_ph != seg
-                           ):
+                    while stack_entry is not None and stack_entry.close_ph != seg:
                         new_diff.append((stack_op, stack_entry.close_ph))
                         stack_op, stack_entry = _stack_pop()
 
@@ -564,11 +565,11 @@ class XMLFormatter(BaseFormatter):
 
     def _make_diff_tags(self, left_value, right_value, node, target=None):
         if bool(self.normalize & WS_TEXT):
-            left_value = utils.cleanup_whitespace(left_value or u'').strip()
-            right_value = utils.cleanup_whitespace(right_value or u'').strip()
+            left_value = utils.cleanup_whitespace(left_value or "").strip()
+            right_value = utils.cleanup_whitespace(right_value or "").strip()
 
         text_diff = diff_match_patch()
-        diff = text_diff.diff_main(left_value or '', right_value or '')
+        diff = text_diff.diff_main(left_value or "", right_value or "")
         text_diff.diff_cleanupSemantic(diff)
 
         diff = self._realign_placeholders(diff)
@@ -582,29 +583,29 @@ class XMLFormatter(BaseFormatter):
         for op, text in diff:
             if op == 0:
                 if cur_child is None:
-                    node.text = (node.text or u'') + text
+                    node.text = (node.text or "") + text
                 else:
-                    cur_child.tail = (cur_child.tail or u'') + text
+                    cur_child.tail = (cur_child.tail or "") + text
                 continue
 
             if op == -1:
-                action = 'delete'
+                action = "delete"
             elif op == 1:
-                action = 'insert'
+                action = "insert"
 
             if self.placeholderer.is_placeholder(text):
                 ph = self.placeholderer.mark_diff(text, action)
 
                 if cur_child is None:
-                    node.text = (node.text or u'') + ph
+                    node.text = (node.text or "") + ph
 
             else:
                 new_text = self.placeholderer.wrap_diff(text, action)
 
                 if cur_child is None:
-                    node.text = (node.text or u'') + new_text
+                    node.text = (node.text or "") + new_text
                 else:
-                    cur_child.tail = (cur_child.tail or u'') + new_text
+                    cur_child.tail = (cur_child.tail or "") + new_text
 
     def _handle_UpdateTextIn(self, action, tree):
         node = self._xpath(tree, action.node)
@@ -635,66 +636,70 @@ class XMLFormatter(BaseFormatter):
 
 
 class DiffFormatter(BaseFormatter):
-
     def __init__(self, normalize=WS_TAGS, pretty_print=False):
         self.normalize = normalize
         # No pretty print support, nothing to be pretty about
 
     # Nothing to prepare or finalize (one-liners for code coverage)
-    def prepare(self, left, right): return
+    def prepare(self, left, right):
+        return
 
-    def finalize(self, left, right): return
+    def finalize(self, left, right):
+        return
 
     def format(self, diff, orig_tree):
         # This Formatter don't need the left tree, but the XMLFormatter
         # does, so the parameter is required.
-        res = u'\n'.join(self._format_action(action) for action in diff)
+        res = "\n".join(self._format_action(action) for action in diff)
         return res
 
-    def _format_action(self, action, ):
-        return u'[%s]' % self.handle_action(action)
+    def _format_action(
+        self, action,
+    ):
+        return "[%s]" % self.handle_action(action)
 
     def handle_action(self, action):
         action_type = type(action)
-        method = getattr(self, '_handle_' + action_type.__name__)
-        return u', '.join(method(action))
+        method = getattr(self, "_handle_" + action_type.__name__)
+        return ", ".join(method(action))
 
     def _handle_DeleteAttrib(self, action):
-        return u"delete-attribute", action.node, action.name
+        return "delete-attribute", action.node, action.name
 
     def _handle_DeleteNode(self, action):
-        return u"delete", action.node
+        return "delete", action.node
 
     def _handle_InsertAttrib(self, action):
-        return (u"insert-attribute", action.node, action.name,
-                json.dumps(action.value))
+        return ("insert-attribute", action.node, action.name, json.dumps(action.value))
 
     def _handle_InsertNode(self, action):
-        return u"insert", action.target, action.tag, str(action.position)
+        return "insert", action.target, action.tag, str(action.position)
 
     def _handle_RenameAttrib(self, action):
-        return (u"rename-attribute", action.node, action.oldname,
-                action.newname)
+        return ("rename-attribute", action.node, action.oldname, action.newname)
 
     def _handle_MoveNode(self, action):
-        return u"move", action.node, action.target, str(action.position)
+        return "move", action.node, action.target, str(action.position)
 
     def _handle_UpdateAttrib(self, action):
-        return (u"update-attribute", action.node, action.name,
-                json.dumps(action.value))
+        return ("update-attribute", action.node, action.name, json.dumps(action.value))
 
     def _handle_UpdateTextIn(self, action):
-        return u"update-text", action.node, json.dumps(action.text)
+        return "update-text", action.node, json.dumps(action.text)
 
     def _handle_UpdateTextAfter(self, action):
-        return u"update-text-after", action.node, json.dumps(action.text)
+        return "update-text-after", action.node, json.dumps(action.text)
 
     def _handle_RenameNode(self, action):
-        return u"rename", action.node, action.tag
+        return "rename", action.node, action.tag
 
     def _handle_InsertComment(self, action):
-        return (u"insert-comment", action.target, str(action.position),
-                json.dumps(action.text))
+        return (
+            "insert-comment",
+            action.target,
+            str(action.position),
+            json.dumps(action.text),
+        )
 
 
 class XmlDiffFormatter(BaseFormatter):
@@ -705,9 +710,11 @@ class XmlDiffFormatter(BaseFormatter):
         # No pretty print support, nothing to be pretty about
 
     # Nothing to prepare or finalize (one-liners for code coverage)
-    def prepare(self, left, right): return
+    def prepare(self, left, right):
+        return
 
-    def finalize(self, left, right): return
+    def finalize(self, left, right):
+        return
 
     def format(self, diff, orig_tree):
         # This Formatter don't need the left tree, but the XMLFormatter
@@ -715,45 +722,44 @@ class XmlDiffFormatter(BaseFormatter):
         actions = []
         for action in diff:
             actions.extend(self.handle_action(action, orig_tree))
-        res = u'\n'.join(self._format_action(action) for action in actions)
+        res = "\n".join(self._format_action(action) for action in actions)
         return res
 
     def _format_action(self, action):
-        return u'[%s]' % ', '.join(action)
+        return "[%s]" % ", ".join(action)
 
     def handle_action(self, action, orig_tree):
         action_type = type(action)
-        method = getattr(self, '_handle_' + action_type.__name__)
-        for item in method(action, orig_tree):
-            yield item
+        method = getattr(self, "_handle_" + action_type.__name__)
+        yield from method(action, orig_tree)
 
     def _handle_DeleteAttrib(self, action, orig_tree):
-        yield u"remove", '%s/@%s' % (action.node, action.name)
+        yield "remove", f"{action.node}/@{action.name}"
 
     def _handle_DeleteNode(self, action, orig_tree):
-        yield u"remove", action.node
+        yield "remove", action.node
 
     def _handle_InsertAttrib(self, action, orig_tree):
         value_text = "\n<@{0}>\n{1}\n</@{0}>".format(action.name, action.value)
-        yield u"insert", action.node, value_text
+        yield "insert", action.node, value_text
 
     def _handle_InsertNode(self, action, orig_tree):
         if action.position == 0:
-            yield u"insert-first", action.target, '\n<%s/>' % action.tag
+            yield "insert-first", action.target, "\n<%s/>" % action.tag
             return
         sibling = orig_tree.xpath(action.target)[0][action.position - 1]
-        yield u"insert-after", utils.getpath(sibling), '\n<%s/>' % action.tag
+        yield "insert-after", utils.getpath(sibling), "\n<%s/>" % action.tag
 
     def _handle_RenameAttrib(self, action, orig_tree):
         node = orig_tree.xpath(action.node)[0]
         value = node.attrib[action.oldname]
         value_text = "\n<@{0}>\n{1}\n</@{0}>".format(action.newname, value)
-        yield u"remove", '%s/@%s' % (action.node, action.oldname)
-        yield u"insert", action.node, value_text
+        yield "remove", f"{action.node}/@{action.oldname}"
+        yield "insert", action.node, value_text
 
     def _handle_MoveNode(self, action, orig_tree):
         if action.position == 0:
-            yield u"move-first", action.node, action.target
+            yield "move-first", action.node, action.target
             return
         node = orig_tree.xpath(action.node)[0]
         target = orig_tree.xpath(action.target)[0]
@@ -766,21 +772,23 @@ class XmlDiffFormatter(BaseFormatter):
                 position += 1
 
         sibling = target[position]
-        yield u"move-after", action.node, utils.getpath(sibling)
+        yield "move-after", action.node, utils.getpath(sibling)
 
     def _handle_UpdateAttrib(self, action, orig_tree):
-        yield (u"update", '%s/@%s' % (action.node, action.name),
-               json.dumps(action.value))
+        yield (
+            "update",
+            f"{action.node}/@{action.name}",
+            json.dumps(action.value),
+        )
 
     def _handle_UpdateTextIn(self, action, orig_tree):
-        yield u"update", action.node + '/text()[1]', json.dumps(action.text)
+        yield "update", action.node + "/text()[1]", json.dumps(action.text)
 
     def _handle_UpdateTextAfter(self, action, orig_tree):
-        yield u"update", action.node + '/text()[2]', json.dumps(action.text)
+        yield "update", action.node + "/text()[2]", json.dumps(action.text)
 
     def _handle_RenameNode(self, action, orig_tree):
-        yield u"rename", action.node, action.tag
+        yield "rename", action.node, action.tag
 
     def _handle_InsertComment(self, action, orig_tree):
-        yield (u"insert-comment", action.target, str(action.position),
-               action.text)
+        yield ("insert-comment", action.target, str(action.position), action.text)

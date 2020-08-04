@@ -15,9 +15,9 @@ Setting Up a Development Environment
 
 To set up a development environment you need a github account, git, and
 of course Python with pip installed. You also should have the Python tools
-``coverage`` and ``flake8`` installed::
+``black``, ``coverage``, and ``flake8`` installed::
 
-  pip install coverage flake8
+  pip install black coverage flake8
 
 Then you need to clone the repository, and install it's dependencies::
 
@@ -43,8 +43,6 @@ The following test runners/commands are known to work:
   * ``make test``
 
   * ``python setup.py test``
-
-  * ``nosetests``
 
   * ``pytest``
 
