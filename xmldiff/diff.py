@@ -198,8 +198,7 @@ class Differ:
         return result
 
     def node_attribs(self, node):
-        """ Return a dict of attributes to consider for this node.
-        """
+        """Return a dict of attributes to consider for this node."""
         return node.attrib
 
     def leaf_ratio(self, left, right):
