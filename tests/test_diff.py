@@ -1458,3 +1458,24 @@ class DiffTests(unittest.TestCase):
         right = '<tag xmlns="ns">new</tag>'
         result = self._diff(left, right)
         self.assertEqual(result[0].node, "/*[1]")
+
+    def test_ignore_attribute(self):
+        # this differ ignores the attribute 'skip' when diffing
+        class IgnoringDiffer(Differ):
+            def node_attribs(self, node):
+                if 'skip' in node.attrib:
+                    attribs = dict(node.attrib)
+                    del attribs['skip']
+                    return attribs
+                return node.attrib
+
+        left = '<a><b foo="bar" skip="boom">text</b></a>'
+        right = '<a><b foo="bar" skip="different">text</b></a>'
+
+        parser = etree.XMLParser(remove_blank_text=True)
+        left_tree = etree.fromstring(left, parser)
+        right_tree = etree.fromstring(right, parser)
+        differ = IgnoringDiffer()
+        differ.set_trees(left_tree, right_tree)
+        editscript = list(differ.diff())
+        self.assertEqual(editscript, [])
