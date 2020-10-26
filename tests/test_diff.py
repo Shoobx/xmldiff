@@ -796,7 +796,10 @@ class MatchTests(unittest.TestCase):
         result = self._match(left, right)
         self.assertEqual(
             result,
-            [("/document/story", "/document/story"), ("/document", "/document"),],
+            [
+                ("/document/story", "/document/story"),
+                ("/document", "/document"),
+            ],
         )
 
     def test_entirely_different(self):
@@ -810,7 +813,12 @@ class MatchTests(unittest.TestCase):
     <h1>Inserted <i>Node</i></h1>
 </document>"""
         result = self._match(left, right)
-        self.assertEqual(result, [("/document", "/document"),])
+        self.assertEqual(
+            result,
+            [
+                ("/document", "/document"),
+            ],
+        )
 
 
 class FastMatchTests(unittest.TestCase):
