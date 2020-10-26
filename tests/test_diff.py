@@ -1471,9 +1471,9 @@ class DiffTests(unittest.TestCase):
         # this differ ignores the attribute 'skip' when diffing
         class IgnoringDiffer(Differ):
             def node_attribs(self, node):
-                if 'skip' in node.attrib:
+                if "skip" in node.attrib:
                     attribs = dict(node.attrib)
-                    del attribs['skip']
+                    del attribs["skip"]
                     return attribs
                 return node.attrib
 
