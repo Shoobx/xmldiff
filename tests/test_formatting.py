@@ -99,7 +99,12 @@ class PlaceholderMakerTests(unittest.TestCase):
 </document>"""
         tree = etree.fromstring(before_diff)
         replacer = formatting.PlaceholderMaker(
-            text_tags=("para",), formatting_tags=("b", "u", "i",)
+            text_tags=("para",),
+            formatting_tags=(
+                "b",
+                "u",
+                "i",
+            ),
         )
         replacer.do_tree(tree)
         after_diff = """<document xmlns:diff="http://namespaces.shoobx.com/diff">
