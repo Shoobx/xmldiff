@@ -654,7 +654,8 @@ class DiffFormatter(BaseFormatter):
         return res
 
     def _format_action(
-        self, action,
+        self,
+        action,
     ):
         return "[%s]" % self.handle_action(action)
 

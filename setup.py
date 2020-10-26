@@ -33,7 +33,11 @@ setup(
     packages=find_packages(exclude=["doc", "tests"]),
     include_package_data=True,
     zip_safe=False,
-    install_requires=["setuptools", "lxml>=3.1.0", "six",],
+    install_requires=[
+        "setuptools",
+        "lxml>=3.1.0",
+        "six",
+    ],
     test_suite="tests",
     entry_points={
         "console_scripts": [

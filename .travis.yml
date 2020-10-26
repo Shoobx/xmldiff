@@ -1,13 +1,13 @@
 language: python
+dist: xenial
+os: linux
 
-# Travis doesn't support 3.7 by default, but if we run it on xenial it works
-matrix:
+jobs:
   fast_finish: true
   include:
   - python: 3.6
     env: MATRIX=py36
   - python: 3.7
-    sudo: required
     dist: bionic
     env: MATRIX=py37
   - python: pypy3
