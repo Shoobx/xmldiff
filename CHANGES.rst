@@ -4,7 +4,7 @@ Changes
 2.5 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- Make it possible to adjust the attributes considered when comparing nodes.
 
 
 2.4 (2019-10-09)

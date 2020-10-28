@@ -186,7 +186,7 @@ class Differ:
         texts = node.xpath("text()")
 
         # Then add attributes and values
-        for tag, value in sorted(node.attrib.items()):
+        for tag, value in sorted(self.node_attribs(node).items()):
             if tag[0] == "{":
                 tag = tag.split(
                     "}",
@@ -198,6 +198,10 @@ class Differ:
         result = utils.cleanup_whitespace(text)
         self._text_cache[node] = result
         return result
+
+    def node_attribs(self, node):
+        """Return a dict of attributes to consider for this node."""
+        return node.attrib
 
     def leaf_ratio(self, left, right):
         # How similar two nodes are, with no consideration of their children
@@ -237,8 +241,8 @@ class Differ:
 
         # Update: Look for differences in attributes
 
-        left_keys = set(left.attrib.keys())
-        right_keys = set(right.attrib.keys())
+        left_keys = set(self.node_attribs(left).keys())
+        right_keys = set(self.node_attribs(right).keys())
         new_keys = right_keys.difference(left_keys)
         removed_keys = left_keys.difference(right_keys)
         common_keys = left_keys.intersection(right_keys)
