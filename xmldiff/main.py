@@ -1,7 +1,7 @@
 """All major API points and command-line tools"""
 import pkg_resources
 
-from argparse import ArgumentParser, FileType
+from argparse import ArgumentParser
 from lxml import etree
 from xmldiff import diff, formatting, patch
 
@@ -57,8 +57,8 @@ def make_diff_parser():
     parser = ArgumentParser(
         description="Create a diff for two XML files.", add_help=False
     )
-    parser.add_argument("file1", type=FileType("r"), help="The first input file.")
-    parser.add_argument("file2", type=FileType("r"), help="The second input file.")
+    parser.add_argument("file1", type=str, help="The first input file.")
+    parser.add_argument("file2", type=str, help="The second input file.")
     parser.add_argument(
         "-h", "--help", action="help", help="Show this help message and exit."
     )
@@ -185,8 +185,8 @@ def make_patch_parser():
     parser = ArgumentParser(
         description="Patch an XML file with an xmldiff", add_help=False
     )
-    parser.add_argument("patchfile", type=FileType("r"), help="An xmldiff diff file.")
-    parser.add_argument("xmlfile", type=FileType("r"), help="An unpatched XML file.")
+    parser.add_argument("patchfile", type=str, help="An xmldiff diff file.")
+    parser.add_argument("xmlfile", type=str, help="An unpatched XML file.")
     parser.add_argument(
         "-h", "--help", action="help", help="Show this help message and exit."
     )
