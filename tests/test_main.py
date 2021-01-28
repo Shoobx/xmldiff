@@ -103,6 +103,18 @@ class MainCLITests(unittest.TestCase):
         # This should default to the diff formatter:
         self.assertEqual(output[0], "[")
 
+    def test_diff_cli_BOM(self):
+        """ Test comparison of files encoded with UTF-8 prepended by Byte Order Mark """
+        curdir = os.path.dirname(__file__)
+        filepath = os.path.join(curdir, "test_data")
+        file1 = os.path.join(filepath, "bom_1.xml")
+        file2 = os.path.join(filepath, "bom_2.xml")
+
+        output, errors = self.call_run([file1, file2])
+        self.assertEqual(len(output.splitlines()), 1)
+        # This should default to the diff formatter:
+        self.assertEqual(output[0], "[")
+
     def test_diff_cli_args(self):
         curdir = os.path.dirname(__file__)
         filepath = os.path.join(curdir, "test_data")

@@ -38,7 +38,6 @@ def _diff(parse_method, left, right, diff_options=None, formatter=None):
         left_tree, right_tree, diff_options=diff_options, formatter=formatter
     )
 
-
 def diff_texts(left, right, diff_options=None, formatter=None):
     """Takes two Unicode strings containing XML"""
     return _diff(
@@ -57,8 +56,8 @@ def make_diff_parser():
     parser = ArgumentParser(
         description="Create a diff for two XML files.", add_help=False
     )
-    parser.add_argument("file1", type=FileType("r"), help="The first input file.")
-    parser.add_argument("file2", type=FileType("r"), help="The second input file.")
+    parser.add_argument("file1", type=FileType("r", encoding="utf-8-sig"), help="The first input file.")
+    parser.add_argument("file2", type=FileType("r", encoding="utf-8-sig"), help="The second input file.")
     parser.add_argument(
         "-h", "--help", action="help", help="Show this help message and exit."
     )
@@ -185,8 +184,8 @@ def make_patch_parser():
     parser = ArgumentParser(
         description="Patch an XML file with an xmldiff", add_help=False
     )
-    parser.add_argument("patchfile", type=FileType("r"), help="An xmldiff diff file.")
-    parser.add_argument("xmlfile", type=FileType("r"), help="An unpatched XML file.")
+    parser.add_argument("patchfile", type=FileType("r", encoding="utf-8-sig"), help="An xmldiff diff file.")
+    parser.add_argument("xmlfile", type=FileType("r", encoding="utf-8-sig"), help="An unpatched XML file.")
     parser.add_argument(
         "-h", "--help", action="help", help="Show this help message and exit."
     )
