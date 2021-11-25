@@ -1,7 +1,7 @@
 """All major API points and command-line tools"""
 import pkg_resources
 
-from argparse import ArgumentParser
+from argparse import Action, ArgumentParser
 from lxml import etree
 from xmldiff import diff, formatting, patch
 
@@ -150,10 +150,10 @@ def diff_command(args=None):
     print(result)
 
 
-def patch_tree(actions, tree):
+def patch_tree(actions, tree, namespaces={'xsi': 'http://www.w3.org/2001/XMLSchema-instance'}):
     """Takes an lxml root element or element tree, and a list of actions"""
     patcher = patch.Patcher()
-    return patcher.patch(actions, tree)
+    return patcher.patch(actions, tree, namespaces)
 
 
 def patch_text(actions, tree):
@@ -164,7 +164,7 @@ def patch_text(actions, tree):
     return etree.tounicode(tree)
 
 
-def patch_file(actions, tree):
+def patch_file(actions, tree, namespaces={'xsi': 'http://www.w3.org/2001/XMLSchema-instance'}):
     """Takes two filenames or streams, one with XML the other a diff"""
     tree = etree.parse(tree)
 
@@ -177,7 +177,7 @@ def patch_file(actions, tree):
         actions = actions.read()
 
     actions = patch.DiffParser().parse(actions)
-    tree = patch_tree(actions, tree)
+    tree = patch_tree(actions, tree, namespaces)
     return etree.tounicode(tree)
 
 
@@ -191,6 +191,17 @@ def make_patch_parser():
         "-h", "--help", action="help", help="Show this help message and exit."
     )
     parser.add_argument(
+        "-ns", "--namespaces",
+        metavar="KEY=VALUE",
+        nargs="+",
+        help="Set a number of namespaces as key-value pairs "
+        "(do not put spaces before or after the = sign). "
+        "Exemple for standard XSI: "
+        "xsi='http://www.w3.org/2001/XMLSchema-instance'",
+        action='append',
+        type=lambda kv: kv.split("="), dest='namespaces'
+    )
+    parser.add_argument(
         "-v",
         "--version",
         action="version",
@@ -202,7 +213,16 @@ def make_patch_parser():
 
 def patch_command(args=None):
     parser = make_patch_parser()
-    args = parser.parse_args(args=args)
 
-    result = patch_file(args.patchfile, args.xmlfile)
+    args = parser.parse_args(args=args)
+    namespaces = extract_namespaces(args)
+
+    result = patch_file(args.patchfile, args.xmlfile, namespaces)
     print(result)
+
+def extract_namespaces(args):
+    namespaces = {}
+    for ns in args.namespaces:
+        k,v = ns[0]
+        namespaces[k] = v
+    return namespaces
