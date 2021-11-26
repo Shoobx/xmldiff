@@ -1,7 +1,7 @@
 """All major API points and command-line tools"""
 import pkg_resources
 
-from argparse import Action, ArgumentParser
+from argparse import ArgumentParser
 from lxml import etree
 from xmldiff import diff, formatting, patch
 
