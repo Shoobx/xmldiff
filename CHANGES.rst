@@ -8,6 +8,7 @@ Changes
 
 - Python versions 3.7 to 3.11 are now supported.
 
+- Added a parameter to return error code 1 when there are differences between the files
 
 2.4 (2019-10-09)
 ----------------
