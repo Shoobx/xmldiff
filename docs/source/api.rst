@@ -68,6 +68,9 @@ Parameters
     Using ``'accurate'`` will be significantly slower,
     especially if your nodes have long texts or many attributes.
 
+    ``ignored_attrs``:
+    A list of XML node attributes that will be ignored in comparison.
+
 ``fast_match``:
   By default ``xmldiff`` will compare each node from one tree with all nodes from the other tree.
   It will then pick the one node that matches best as the match,
