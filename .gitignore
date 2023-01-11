@@ -8,3 +8,6 @@ __pycache__
 .coverage
 htmlcov
 docs/build
+venv
+build
+dist
