@@ -114,7 +114,7 @@ def make_diff_parser():
         "--fast-match", action="store_true", help="A faster, less optimal match run."
     )
     parser.add_argument(
-        "--ignored-attrs",
+        "--ignored-attributes",
         type=str,
         nargs="?",
         help="A comma separated list of attributes "
@@ -152,7 +152,7 @@ def diff_command(args=None):
     )
 
     diff_options = {
-        "ignored_attrs": _parse_ignored_attrs(args.ignored_attrs),
+        "ignored_attrs": _parse_ignored_attrs(args.ignored_attributes),
         "ratio_mode": args.ratio_mode,
         "F": args.F,
         "fast_match": args.fast_match,
