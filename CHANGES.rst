@@ -4,7 +4,10 @@ Changes
 2.6 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- Added an experimental --best-match method that is slower, but generate
+  smaller diffs when you have many nodes that are similar.
+
+- The -F argument now also affects the --fast-match stage.
 
 
 2.5 (2023-01-11)
