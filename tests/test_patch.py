@@ -119,7 +119,7 @@ class DiffPatch(unittest.TestCase):
         # This example has top level comments, and lxml doesn't deal well
         # with that, so the trees are not EXACTLY the same, the trailing
         # top level comment differs, but that's OK.
-        compare_elements(result.getroot(), right.getroot())
+        compare_elements(result, right.getroot())
 
 
 TEST_DIFF = """[delete, node]

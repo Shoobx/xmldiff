@@ -15,6 +15,8 @@ Changes
 
 - Added a parameter for ignoring attributes in comparison.
 
+- Solved a bug in xmlpatch in certain namespace situations.
+
 - Added a --diff-encoding parameter to xmlpatch, to support diff-files that are
   not in your system default encoding.
 
