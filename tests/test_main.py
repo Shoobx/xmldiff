@@ -1,5 +1,5 @@
+import io
 import os
-import six
 import sys
 import unittest
 
@@ -71,8 +71,8 @@ class MainAPITests(unittest.TestCase):
 
 class MainCLITests(unittest.TestCase):
     def call_run(self, args, command=main.diff_command):
-        output = six.StringIO()
-        errors = six.StringIO()
+        output = io.StringIO()
+        errors = io.StringIO()
 
         stdout = sys.stdout
         stderr = sys.stderr

@@ -36,7 +36,6 @@ setup(
     install_requires=[
         "setuptools",
         "lxml>=3.1.0",
-        "six",
     ],
     test_suite="tests",
     entry_points={
