@@ -118,7 +118,7 @@ def make_diff_parser():
         type=str,
         nargs="?",
         help="A comma separated list of attributes "
-        "that should be ignored in comparison. Can be empty.",
+        "that should be ignored in comparison.",
     )
     return parser
 
