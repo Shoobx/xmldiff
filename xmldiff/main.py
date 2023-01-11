@@ -186,13 +186,13 @@ def patch_text(actions, tree):
     return etree.tounicode(tree)
 
 
-def patch_file(actions, tree):
+def patch_file(actions, tree, diff_encoding=None):
     """Takes two filenames or streams, one with XML the other a diff"""
     tree = etree.parse(tree)
 
     if isinstance(actions, str):
         # It's a string, so it's a filename
-        with open(actions) as f:
+        with open(actions, "rt", encoding=diff_encoding) as f:
             actions = f.read()
     else:
         # We assume it's a stream
@@ -219,6 +219,10 @@ def make_patch_parser():
         help="Display version and exit.",
         version="xmldiff %s" % __version__,
     )
+    parser.add_argument(
+        "--diff-encoding",
+        help="The encoding used for the diff file, eg UTF-8 or UTF-16, etc.",
+    )
     return parser
 
 
@@ -226,5 +230,5 @@ def patch_command(args=None):
     parser = make_patch_parser()
     args = parser.parse_args(args=args)
 
-    result = patch_file(args.patchfile, args.xmlfile)
+    result = patch_file(args.patchfile, args.xmlfile, args.diff_encoding)
     print(result)
