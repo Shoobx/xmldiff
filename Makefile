@@ -30,6 +30,5 @@ release: devenv
 	$(bin_dir)/fullrelease
 
 update-diff-match-patch:
-	wget $(dfm_source_2) -O $(root_dir)/xmldiff/_diff_match_patch_py2.py
-	wget $(dfm_source_3) -O $(root_dir)/xmldiff/_diff_match_patch_py3.py
+	wget $(dfm_source_3) -O $(root_dir)/xmldiff/diff_match_patch.py
 
