@@ -41,6 +41,9 @@ Parameters
 ``right``:
   The "right", "new" or "target" XML.
 
+``check``:
+  Return error code 1 if there are any differences between the files.
+
 ``diff_options``:
   A dictionary containing options that will be passed into the ``Differ()``:
     ``F``:
