@@ -1472,3 +1472,32 @@ class DiffTests(unittest.TestCase):
         differ.set_trees(left_tree, right_tree)
         editscript = list(differ.diff())
         self.assertEqual(editscript, [])
+
+    def test_compare_with_ignore_attrs(self):
+        left = dedent(
+            """\
+        <document>
+            <a test="a" uuid="{0123}"/>
+            <b test="b" uuid="{0123}"/>
+            <c test="c"/>
+        </document>
+        """
+        )
+
+        right = dedent(
+            """\
+        <document>
+            <a test="a" uuid="{3210}"/>
+            <b test="b"/>
+            <c test="c" uuid="{3210}"/>
+        </document>
+        """
+        )
+
+        parser = etree.XMLParser(remove_blank_text=True)
+        left_tree = etree.fromstring(left, parser)
+        right_tree = etree.fromstring(right, parser)
+        differ = Differ(ignored_attrs=["uuid"])
+        differ.set_trees(left_tree, right_tree)
+        editscript = list(differ.diff())
+        self.assertEqual(editscript, [])

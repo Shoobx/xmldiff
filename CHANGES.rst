@@ -11,6 +11,7 @@ Changes
 - Improved node matching method, that puts more emphasis similarities than
   differences when weighing attributes vs children.
 
+- Added a parameter for ignoring attributes in comparison.
 
 2.4 (2019-10-09)
 ----------------

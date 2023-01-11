@@ -6,7 +6,14 @@ from xmldiff import utils, actions
 
 
 class Differ:
-    def __init__(self, F=None, uniqueattrs=None, ratio_mode="fast", fast_match=False):
+    def __init__(
+        self,
+        F=None,
+        uniqueattrs=None,
+        ratio_mode="fast",
+        fast_match=False,
+        ignored_attrs=[],
+    ):
         # The minimum similarity between two nodes to consider them equal
         if F is None:
             F = 0.5
@@ -29,6 +36,8 @@ class Differ:
             self._sequence_ratio = self._sequencematcher.real_quick_ratio
         else:
             raise ValueError("Unknown ratio_mode '%s'" % ratio_mode)
+
+        self.ignored_attrs = ignored_attrs
 
         self.clear()
 
@@ -201,7 +210,10 @@ class Differ:
 
     def node_attribs(self, node):
         """Return a dict of attributes to consider for this node."""
-        return node.attrib
+        attribs = dict(node.attrib)
+        for key in self.ignored_attrs:
+            attribs.pop(key, None)
+        return attribs
 
     def leaf_ratio(self, left, right):
         # How similar two nodes are, with no consideration of their children
