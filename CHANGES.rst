@@ -8,6 +8,9 @@ Changes
 
 - Python versions 3.7 to 3.11 are now supported.
 
+- Improved node matching method, that puts more emphasis similarities than
+  differences when weighing attributes vs children.
+
 
 2.4 (2019-10-09)
 ----------------
