@@ -15,6 +15,9 @@ Changes
 
 - Added a parameter for ignoring attributes in comparison.
 
+- Added a --diff-encoding parameter to xmlpatch, to support diff-files that are
+  not in your system default encoding.
+
 
 2.4 (2019-10-09)
 ----------------
