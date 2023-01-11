@@ -70,6 +70,11 @@ def make_diff_parser():
         version="xmldiff %s" % __version__,
     )
     parser.add_argument(
+        "--check",
+        action="store_true",
+        help="Return error code 1 if there are any differences between the files.",
+    )
+    parser.add_argument(
         "-f",
         "--formatter",
         default="diff",
@@ -148,6 +153,9 @@ def diff_command(args=None):
         args.file1, args.file2, diff_options=diff_options, formatter=formatter
     )
     print(result)
+
+    if args.check and len(result) > 0:
+        return 1
 
 
 def patch_tree(actions, tree):

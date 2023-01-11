@@ -11,6 +11,8 @@ Changes
 - Improved node matching method, that puts more emphasis similarities than
   differences when weighing attributes vs children.
 
+- Added a parameter to return error code 1 when there are differences between the files
+
 
 2.4 (2019-10-09)
 ----------------
@@ -18,6 +20,7 @@ Changes
 - Added an option to pass pairs of (element, attr) as unique
   attributes for tree matching.  Exposed this option on the command
   line, too.
+
 
 2.3 (2019-02-27)
 ----------------
