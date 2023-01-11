@@ -1,23 +1,35 @@
 root_dir := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
+bin_dir := $(root_dir)/ve/bin
 dfm_source_2 := "https://raw.githubusercontent.com/google/diff-match-patch/master/python2/diff_match_patch.py"
 dfm_source_3 := "https://raw.githubusercontent.com/google/diff-match-patch/master/python3/diff_match_patch.py"
 
-all: coverage flake
+all: check coverage
 
-flake:
-ifneq (, $(shell which black))
-	black --check .
-endif
-	flake8 tests xmldiff --exclude *diff_match_patch*.py --ignore=E231,E501,W503
+# The fullrelease script is a part of zest.releaser, which is the last
+# package installed, so if it exists, the devenv is installed.
+devenv:	ve/bin/fullrelease
 
-coverage:
-	coverage run setup.py test
-	coverage html
-	coverage report
+ve/bin/fullrelease:
+	virtualenv $(root_dir)/ve --python python3
+	$(bin_dir)/pip install -e .[devenv]
 
-test:
-	python setup.py test
+check: devenv
+	$(bin_dir)/black xmldiff tests
+	$(bin_dir)/flake8 xmldiff tests
+	$(bin_dir)/pyroma -d .
+
+coverage: devenv
+	$(bin_dir)/coverage run -m unittest
+	$(bin_dir)/coverage html
+	$(bin_dir)/coverage report
+
+test: devenv
+	$(bin_dir)/python -bb -X dev -W ignore::UserWarning:setuptools.dist -m unittest --verbose
+
+release: devenv
+	$(bin_dir)/fullrelease
 
 update-diff-match-patch:
 	wget $(dfm_source_2) -O $(root_dir)/xmldiff/_diff_match_patch_py2.py
 	wget $(dfm_source_3) -O $(root_dir)/xmldiff/_diff_match_patch_py3.py
+

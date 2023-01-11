@@ -14,21 +14,24 @@ Setting Up a Development Environment
 ------------------------------------
 
 To set up a development environment you need a github account, git, and
-of course Python with pip installed. You also should have the Python tools
-``black``, ``coverage``, and ``flake8`` installed::
+of course Python with pip installed.
 
-  pip install black coverage flake8
-
-Then you need to clone the repository, and install it's dependencies::
+You need to clone the repository, and install the development dependencies::
 
   git clone git@github.com:Shoobx/xmldiff.git
   cd xmldiff
-  pip install -e .
+  make devenv
 
 You should now be able to test your setup by running a few ``make`` commands::
 
   make test
-  make flake
+  make check
+
+or just::
+
+  make
+
+Which will run the syntax and style checkers and the test suit with coverage.
 
 These should both pass with no errors, and then you are set!
 
@@ -44,7 +47,9 @@ The following test runners/commands are known to work:
 
   * ``python setup.py test``
 
-  * ``pytest``
+  * ``pytest`` (if you have pytest installed)
+
+  * ``python -m unittest``
 
 There is no support for ``tox`` to run test under different Python versions.
 This is because Travis will run all supported versions on pull requests in any case,

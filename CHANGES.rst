@@ -6,6 +6,8 @@ Changes
 
 - Make it possible to adjust the attributes considered when comparing nodes.
 
+- Python versions 3.7 to 3.11 are now supported.
+
 
 2.4 (2019-10-09)
 ----------------
