@@ -1,5 +1,5 @@
+import io
 import os
-import six
 import sys
 import unittest
 
@@ -71,8 +71,8 @@ class MainAPITests(unittest.TestCase):
 
 class MainCLITests(unittest.TestCase):
     def call_run(self, args, command=main.diff_command):
-        output = six.StringIO()
-        errors = six.StringIO()
+        output = io.StringIO()
+        errors = io.StringIO()
 
         stdout = sys.stdout
         stderr = sys.stderr
@@ -104,7 +104,7 @@ class MainCLITests(unittest.TestCase):
         self.assertEqual(output[0], "[")
 
     def test_diff_cli_BOM(self):
-        """ Test comparison of files encoded with UTF-8 prepended by Byte Order Mark """
+        """Test comparison of files encoded with UTF-8 prepended by Byte Order Mark"""
         curdir = os.path.dirname(__file__)
         filepath = os.path.join(curdir, "test_data")
         file1 = os.path.join(filepath, "bom_1.xml")
