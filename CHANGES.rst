@@ -15,6 +15,8 @@ Changes
 
 - Added a parameter for ignoring attributes in comparison.
 
+- Solved a bug in xmlpatch in certain namespace situations.
+
 
 2.4 (2019-10-09)
 ----------------
