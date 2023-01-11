@@ -1,7 +1,7 @@
 Changes
 =======
 
-2.5 (unreleased)
+2.5 (2023-01-11)
 ----------------
 
 - Make it possible to adjust the attributes considered when comparing nodes.
