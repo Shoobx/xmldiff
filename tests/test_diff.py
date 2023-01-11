@@ -405,7 +405,7 @@ class NodeRatioTests(unittest.TestCase):
         right = differ.right.xpath("/document/story/subsection[1]")[0]
         self.assertAlmostEqual(differ.leaf_ratio(left, right), 1.0)
         self.assertEqual(differ.child_ratio(left, right), 0.5)
-        self.assertAlmostEqual(differ.node_ratio(left, right), 0.75)
+        self.assertAlmostEqual(differ.node_ratio(left, right), 0.7905694150420949)
 
     def test_compare_node_rename(self):
         left = """<document>
@@ -1286,26 +1286,13 @@ class DiffTests(unittest.TestCase):
         self.assertEqual(
             result,
             [
-                InsertNode(
-                    bm_bm_bm + "[1]",
-                    "{http://namespaces.shoobx.com/application}section",
-                    0,
-                ),
-                InsertAttrib(bm_bm_bm + "/app:section[1]", "allowCustom", "False"),
-                InsertAttrib(
+                UpdateAttrib(
                     bm_bm_bm + "/app:section[1]",
                     "hidden",
                     "advisor.payment_type == 'none'",
                 ),
-                InsertAttrib(bm_bm_bm + "/app:section[1]", "name", "payment"),
-                InsertAttrib(bm_bm_bm + "/app:section[1]", "title", "Payment"),
-                InsertNode(
-                    bm_bm_bm + "/app:section[1]",
-                    "{http://xml.zope.org/namespaces/tal}if",
-                    0,
-                ),
-                InsertAttrib(
-                    bm_bm_bm + "/app:section[1]/tal:if[1]",
+                UpdateAttrib(
+                    bm_bm_bm + "/app:section/tal:if[1]",
                     "condition",
                     "python: advisor.payment_type == 'stock_award'",
                 ),
@@ -1315,7 +1302,7 @@ class DiffTests(unittest.TestCase):
                     1,
                 ),
                 InsertAttrib(
-                    bm_bm_bm + "/app:section[1]/tal:if[2]",
+                    bm_bm_bm + "/app:section/tal:if[2]",
                     "condition",
                     "python: advisor.payment_type == 'cash'",
                 ),
@@ -1325,39 +1312,37 @@ class DiffTests(unittest.TestCase):
                     2,
                 ),
                 InsertAttrib(
-                    bm_bm_bm + "/app:section[1]/tal:if[3]",
+                    bm_bm_bm + "/app:section/tal:if[3]",
                     "condition",
                     "python: advisor.payment_type == 'stock_award_and_cash'",
                 ),
-                InsertNode(bm_bm_bm + "/app:section[1]/tal:if[1]", "para", 0),
+                InsertNode(bm_bm_bm + "/app:section/tal:if[1]", "para", 0),
                 UpdateTextIn(
-                    bm_bm_bm + "/app:section[1]/tal:if[1]/para[1]", "\n        A "
+                    bm_bm_bm + "/app:section/tal:if[1]/para[1]", "\n        A "
                 ),
-                InsertNode(bm_bm_bm + "/app:section[1]/tal:if[2]", "para", 0),
+                InsertNode(bm_bm_bm + "/app:section/tal:if[2]", "para", 0),
                 UpdateTextIn(
-                    bm_bm_bm + "/app:section[1]/tal:if[2]/para[1]",
+                    bm_bm_bm + "/app:section/tal:if[2]/para[1]",
                     "\n        More text for diffing purposes\n      ",
                 ),
-                InsertNode(bm_bm_bm + "/app:section[1]/tal:if[3]", "para", 0),
+                InsertNode(bm_bm_bm + "/app:section/tal:if[3]", "para", 0),
                 UpdateTextIn(
-                    bm_bm_bm + "/app:section[1]/tal:if[3]/para[1]",
+                    bm_bm_bm + "/app:section/tal:if[3]/para[1]",
                     "\n        Lorem hipster ipso facto\n      ",
                 ),
-                InsertNode(bm_bm_bm + "/app:section[1]/tal:if[1]/para[1]", "i", 0),
-                UpdateTextIn(bm_bm_bm + "/app:section[1]/tal:if[1]/para/i[1]", "whole"),
+                InsertNode(bm_bm_bm + "/app:section/tal:if[1]/para[1]", "i", 0),
+                UpdateTextIn(bm_bm_bm + "/app:section/tal:if[1]/para[1]/i[1]", "whole"),
                 UpdateTextAfter(
-                    bm_bm_bm + "/app:section[1]/tal:if[1]/para/i[1]",
+                    bm_bm_bm + "/app:section/tal:if[1]/para[1]/i[1]",
                     " load of formatted text and ",
                 ),
-                InsertNode(bm_bm_bm + "/app:section[1]/tal:if[1]/para[1]", "br", 1),
+                InsertNode(bm_bm_bm + "/app:section/tal:if[1]/para[1]", "br", 1),
                 UpdateTextAfter(
-                    bm_bm_bm + "/app:section[1]/tal:if[1]/para/br[1]",
+                    bm_bm_bm + "/app:section/tal:if[1]/para[1]/br[1]",
                     " other stuff.\n      ",
                 ),
-                DeleteNode(bm_bm_bm + "/app:section[2]/tal:if/para/b[1]"),
-                DeleteNode(bm_bm_bm + "/app:section[2]/tal:if/para[1]"),
-                DeleteNode(bm_bm_bm + "/app:section[2]/tal:if[1]"),
-                DeleteNode(bm_bm_bm + "/app:section[2]"),
+                DeleteNode(bm_bm_bm + "/app:section/tal:if[1]/para[2]/b[1]"),
+                DeleteNode(bm_bm_bm + "/app:section/tal:if[1]/para[2]"),
             ],
         )
 

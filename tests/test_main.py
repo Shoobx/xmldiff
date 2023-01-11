@@ -118,13 +118,13 @@ class MainCLITests(unittest.TestCase):
     def test_diff_cli_args(self):
         curdir = os.path.dirname(__file__)
         filepath = os.path.join(curdir, "test_data")
-        file1 = os.path.join(filepath, "insert-node.left.html")
-        file2 = os.path.join(filepath, "insert-node.right.html")
+        file1 = os.path.join(filepath, "example.left.html")
+        file2 = os.path.join(filepath, "example.right.html")
 
         # Select a formatter:
         output, errors = self.call_run([file1, file2, "--formatter", "xml"])
         # It gives a very compact output
-        self.assertEqual(len(output.splitlines()), 1)
+        self.assertEqual(len(output.splitlines()), 2)
         # Now it's XML
         self.assertEqual(output[0], "<")
 
@@ -132,17 +132,17 @@ class MainCLITests(unittest.TestCase):
         output, errors = self.call_run(
             [file1, file2, "--keep-whitespace", "--formatter", "xml"]
         )
-        self.assertEqual(len(output.splitlines()), 5)
+        self.assertEqual(len(output.splitlines()), 13)
 
         # And stripping and pretty printing gives a longer readable output
         output, errors = self.call_run(
             [file1, file2, "--pretty-print", "--formatter", "xml"]
         )
-        self.assertEqual(len(output.splitlines()), 6)
+        self.assertEqual(len(output.splitlines()), 11)
 
-        # The default output gives three lines for three actions
+        # The default output gives six lines for six actions
         output, errors = self.call_run([file1, file2, "--ratio-mode", "fast"])
-        self.assertEqual(len(output.splitlines()), 3)
+        self.assertEqual(len(output.splitlines()), 6)
 
         # 'fast' is default, so it's the same output
         output2, errors = self.call_run([file1, file2, "--ratio-mode", "fast"])
@@ -152,19 +152,19 @@ class MainCLITests(unittest.TestCase):
         output2, errors = self.call_run([file1, file2, "--ratio-mode", "accurate"])
         self.assertEqual(output, output2)
 
-        # But "faster" gives six actions instead of three
+        # But "faster" gives nine actions instead of six
         output, errors = self.call_run([file1, file2, "--ratio-mode", "faster"])
-        self.assertEqual(len(output.splitlines()), 6)
+        self.assertEqual(len(output.splitlines()), 9)
 
         # You can specify unique attributes:
         output, errors = self.call_run(
             [file1, file2, "--unique-attributes", "id,foo,frotz"]
         )
-        self.assertEqual(len(output.splitlines()), 3)
+        self.assertEqual(len(output.splitlines()), 6)
 
         # Or none
         output, errors = self.call_run([file1, file2, "--unique-attributes"])
-        self.assertEqual(len(output.splitlines()), 3)
+        self.assertEqual(len(output.splitlines()), 6)
 
     def test_patch_cli_simple(self):
         curdir = os.path.dirname(__file__)

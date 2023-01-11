@@ -1,6 +1,7 @@
 from copy import deepcopy
 from difflib import SequenceMatcher
 from lxml import etree
+from math import sqrt
 from xmldiff import utils, actions
 
 
@@ -148,7 +149,6 @@ class Differ:
 
         # Match the roots
         self.append_match(self.left, self.right, 1.0)
-
         return self._matches
 
     def node_ratio(self, left, right):
@@ -176,7 +176,7 @@ class Differ:
         child_ratio = self.child_ratio(left, right)
 
         if child_ratio is not None:
-            match = (match + child_ratio) / 2
+            match = sqrt((match**2 + child_ratio**2) / 2)
         return match
 
     def node_text(self, node):
