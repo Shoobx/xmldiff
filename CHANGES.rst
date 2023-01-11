@@ -13,6 +13,8 @@ Changes
 
 - Added a parameter to return error code 1 when there are differences between the files
 
+- Added a parameter for ignoring attributes in comparison.
+
 
 2.4 (2019-10-09)
 ----------------
