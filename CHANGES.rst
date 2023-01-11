@@ -17,6 +17,9 @@ Changes
 
 - Solved a bug in xmlpatch in certain namespace situations.
 
+- Added a --diff-encoding parameter to xmlpatch, to support diff-files that are
+  not in your system default encoding.
+
 
 2.4 (2019-10-09)
 ----------------
