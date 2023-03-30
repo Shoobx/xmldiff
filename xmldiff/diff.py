@@ -426,6 +426,27 @@ class Differ:
         if not self._matches:
             self.match(left, right)
 
+        # First, deal with namespaces:
+        rnsmap = self.right.nsmap
+        lnsmap = self.left.nsmap
+        for k, v in rnsmap.items():
+            # Make sure it's registered:
+            if k is not None:
+                etree.register_namespace(k, v)
+            if k not in lnsmap:
+                yield actions.InsertNamespace(k, v)
+            elif lnsmap[k] != v:
+                raise RuntimeError(
+                    "Sorry, we do not support changing the URI of namespaces in xmldiff"
+                )
+
+        for k, v in lnsmap.items():
+            # Make sure it's registered:
+            if k is not None:
+                etree.register_namespace(k, v)
+            if k not in rnsmap:
+                yield actions.DeleteNamespace(k)
+
         # The paper talks about the five phases, and then does four of them
         # in one phase, in a different order that described. This
         # implementation in turn differs in order yet again.

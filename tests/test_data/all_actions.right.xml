@@ -1,4 +1,5 @@
-<document>
+<document
+  xmlns:space="http://namespaces.shoobx.com/outerspace">
   <!-- Insert a new comment -->
   <node newtribute="renamed" name="was updated" this="is new">
     Modified
@@ -10,5 +11,6 @@
   <nod>
     Here we have some text.
   </nod>
-  <new/></document>
+  <space:name here="we are testing changing namespaces"/>
+  </document>
 <!-- A different comment, which gets ignored! -->

@@ -488,6 +488,8 @@ class XmlDiffFormatTests(unittest.TestCase):
         formatter = formatting.XmlDiffFormatter()
         result = main.diff_files(lfile, rfile, formatter=formatter)
         expected = (
+            "[insert-namespace, space, http://namespaces.shoobx.com/outerspace]\n"
+            "[delete-namespace, name]\n"
             "[move-after, /document/node[2], /document/tag[1]]\n"
             "[insert-comment, /document[1], 0,  Insert a new comment ]\n"
             '[update, /document/node[1]/@name, "was updated"]\n'
@@ -505,8 +507,8 @@ class XmlDiffFormatTests(unittest.TestCase):
             '[update, /document/node[1]/text()[2], "\\n    '
             'New tail content\\n  "]\n'
             "[rename, /document/node[2], nod]\n"
-            "[insert-after, /document/tail[1], \n"
-            "<new/>]\n"
+            "[rename, /document/name:space[1], {http://namespaces.shoobx.com/outerspace}name]\n"
+            '[update, /document/space:name[1]/text()[2], "\\n  "]\n'
             "[remove, /document/tail[1]]"
         )
         self.assertEqual(result, expected)

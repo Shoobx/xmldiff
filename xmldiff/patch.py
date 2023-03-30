@@ -6,9 +6,16 @@ from xmldiff import actions
 
 
 class Patcher:
+    @property
+    def nsmap(self):
+        return getattr(self, "_nsmap", {})
+
     def patch(self, actions, tree):
         if isinstance(tree, etree._ElementTree):
             tree = tree.getroot()
+
+        # Save the namespace:
+        self._nsmap = tree.nsmap
 
         # Copy the tree so we don't modify the original
         result = deepcopy(tree)
@@ -24,46 +31,46 @@ class Patcher:
         method(action, tree)
 
     def _handle_DeleteNode(self, action, tree):
-        node = tree.xpath(action.node, namespaces=tree.nsmap)[0]
+        node = tree.xpath(action.node, namespaces=self.nsmap)[0]
         node.getparent().remove(node)
 
     def _handle_InsertNode(self, action, tree):
-        target = tree.xpath(action.target, namespaces=tree.nsmap)[0]
+        target = tree.xpath(action.target, namespaces=self.nsmap)[0]
         node = target.makeelement(action.tag)
         target.insert(action.position, node)
 
     def _handle_RenameNode(self, action, tree):
-        tree.xpath(action.node, namespaces=tree.nsmap)[0].tag = action.tag
+        tree.xpath(action.node, namespaces=self.nsmap)[0].tag = action.tag
 
     def _handle_MoveNode(self, action, tree):
-        node = tree.xpath(action.node, namespaces=tree.nsmap)[0]
+        node = tree.xpath(action.node, namespaces=self.nsmap)[0]
         node.getparent().remove(node)
         target = tree.xpath(action.target)[0]
         target.insert(action.position, node)
 
     def _handle_UpdateTextIn(self, action, tree):
-        tree.xpath(action.node, namespaces=tree.nsmap)[0].text = action.text
+        tree.xpath(action.node, namespaces=self.nsmap)[0].text = action.text
 
     def _handle_UpdateTextAfter(self, action, tree):
-        tree.xpath(action.node, namespaces=tree.nsmap)[0].tail = action.text
+        tree.xpath(action.node, namespaces=self.nsmap)[0].tail = action.text
 
     def _handle_UpdateAttrib(self, action, tree):
-        node = tree.xpath(action.node, namespaces=tree.nsmap)[0]
+        node = tree.xpath(action.node, namespaces=self.nsmap)[0]
         # This should not be used to insert new attributes.
         assert action.name in node.attrib
         node.attrib[action.name] = action.value
 
     def _handle_DeleteAttrib(self, action, tree):
-        del tree.xpath(action.node, namespaces=tree.nsmap)[0].attrib[action.name]
+        del tree.xpath(action.node, namespaces=self.nsmap)[0].attrib[action.name]
 
     def _handle_InsertAttrib(self, action, tree):
-        node = tree.xpath(action.node, namespaces=tree.nsmap)[0]
+        node = tree.xpath(action.node, namespaces=self.nsmap)[0]
         # This should not be used to update existing attributes.
         assert action.name not in node.attrib
         node.attrib[action.name] = action.value
 
     def _handle_RenameAttrib(self, action, tree):
-        node = tree.xpath(action.node, namespaces=tree.nsmap)[0]
+        node = tree.xpath(action.node, namespaces=self.nsmap)[0]
         assert action.oldname in node.attrib
         assert action.newname not in node.attrib
         node.attrib[action.newname] = node.attrib[action.oldname]
@@ -72,6 +79,13 @@ class Patcher:
     def _handle_InsertComment(self, action, tree):
         target = tree.xpath(action.target)[0]
         target.insert(action.position, etree.Comment(action.text))
+
+    def _handle_InsertNamespace(self, action, tree):
+        self.nsmap[action.prefix] = action.uri
+
+    def _handle_DeleteNamespace(self, action, tree):
+        # Nothing needs to be done, it will be handled by cleanup
+        pass
 
 
 class DiffParser:
@@ -142,3 +156,9 @@ class DiffParser:
 
     def _handle_insert_comment(self, target, position, text):
         return actions.InsertComment(target, int(position), loads(text))
+
+    def _handle_insert_namespace(self, prefix, uri):
+        return actions.InsertNamespace(prefix, uri)
+
+    def _handle_delete_namespace(self, prefix):
+        return actions.DeleteNamespace(prefix)
