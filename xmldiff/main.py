@@ -115,8 +115,14 @@ def make_diff_parser():
         choices={"accurate", "fast", "faster"},
         help="Choose the node comparison optimization.",
     )
-    parser.add_argument(
+    match_group = parser.add_mutually_exclusive_group()
+    match_group.add_argument(
         "--fast-match", action="store_true", help="A faster, less optimal match run."
+    )
+    match_group.add_argument(
+        "--best-match",
+        action="store_true",
+        help="A slower, two-stage match run that may result in smaller diffs. (Experimental)",
     )
     parser.add_argument(
         "--ignored-attributes",
@@ -161,8 +167,10 @@ def diff_command(args=None):
         "ratio_mode": args.ratio_mode,
         "F": args.F,
         "fast_match": args.fast_match,
+        "best_match": args.best_match,
         "uniqueattrs": _parse_uniqueattrs(args.unique_attributes),
     }
+
     result = diff_files(
         args.file1, args.file2, diff_options=diff_options, formatter=formatter
     )

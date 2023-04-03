@@ -821,11 +821,11 @@ class MatchTests(unittest.TestCase):
         )
 
 
-class FastMatchTests(unittest.TestCase):
-    def _match(self, left, right, fast_match):
+class BestFastMatchTests(unittest.TestCase):
+    def _match(self, left, right, fast_match=False, best_match=False):
         left_tree = etree.fromstring(left)
         right_tree = etree.fromstring(right)
-        differ = Differ(fast_match=fast_match)
+        differ = Differ(fast_match=fast_match, best_match=best_match)
         differ.set_trees(left_tree, right_tree)
         matches = differ.match()
         lpath = differ.left.getroottree().getpath
@@ -860,9 +860,11 @@ class FastMatchTests(unittest.TestCase):
 """
         # Same matches as the non-fast match test, but the matches are
         # a different order.
-        slow_result = sorted(self._match(left, right, False))
-        fast_result = sorted(self._match(left, right, True))
+        slow_result = sorted(self._match(left, right))
+        fast_result = sorted(self._match(left, right, fast_match=True))
+        best_result = sorted(self._match(left, right, best_match=True))
         self.assertEqual(slow_result, fast_result)
+        self.assertEqual(slow_result, best_result)
 
     def test_move_children(self):
         # Here the paragraphs are all so similar that that each paragraph
@@ -914,6 +916,54 @@ class FastMatchTests(unittest.TestCase):
                 ("/document/story/section/para[1]", "/document/story/section/para[1]"),
                 ("/document/story/section/para[2]", "/document/story/section/para[2]"),
                 ("/document/story/section/para[3]", "/document/story/section/para[3]"),
+            ],
+        )
+
+        # Best should be as good as slow (but slower)
+        best_result = sorted(self._match(left, right, best_match=True))
+        self.assertEqual(best_result, slow_result)
+
+    def test_delete_node(self):
+        # If you have a list of similar nodes, and delete one, that
+        # confuses both the standard and the fast algorithm:
+        left = """<root>
+<node id="1"/>
+<node id="2"/>
+<node id="3"/>
+<node id="4"/>
+<node id="5"/>
+</root>
+"""
+        right = """<root>
+<node id="1"/>
+<node id="2"/>
+<node id="4"/>
+<node id="5"/>
+</root>
+"""
+
+        slow_result = sorted(self._match(left, right))
+        fast_result = sorted(self._match(left, right, fast_match=True))
+        best_result = sorted(self._match(left, right, best_match=True))
+        self.assertEqual(
+            slow_result,
+            [
+                ("/root", "/root"),
+                ("/root/node[1]", "/root/node[1]"),
+                ("/root/node[2]", "/root/node[2]"),
+                ("/root/node[3]", "/root/node[3]"),
+                ("/root/node[4]", "/root/node[4]"),
+            ],
+        )
+        self.assertEqual(fast_result, slow_result)
+        self.assertEqual(
+            best_result,
+            [
+                ("/root", "/root"),
+                ("/root/node[1]", "/root/node[1]"),
+                ("/root/node[2]", "/root/node[2]"),
+                ("/root/node[4]", "/root/node[3]"),
+                ("/root/node[5]", "/root/node[4]"),
             ],
         )
 

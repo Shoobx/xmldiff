@@ -12,6 +12,7 @@ class Differ:
         uniqueattrs=None,
         ratio_mode="fast",
         fast_match=False,
+        best_match=False,
         ignored_attrs=[],
     ):
         # The minimum similarity between two nodes to consider them equal
@@ -25,6 +26,7 @@ class Differ:
             uniqueattrs = ["{http://www.w3.org/XML/1998/namespace}id"]
         self.uniqueattrs = uniqueattrs
         self.fast_match = fast_match
+        self.best_match = best_match
 
         # Avoid recreating this for every node
         self._sequencematcher = SequenceMatcher()
@@ -120,7 +122,7 @@ class Differ:
             # First find matches with longest_common_subsequence:
             matches = list(
                 utils.longest_common_subsequence(
-                    lnodes, rnodes, lambda x, y: self.node_ratio(x, y) >= 0.5
+                    lnodes, rnodes, lambda x, y: self.node_ratio(x, y) >= self.F
                 )
             )
 
@@ -130,8 +132,37 @@ class Differ:
 
             # Then remove the nodes (needs to be done backwards):
             for left_match, right_match in reversed(matches):
-                lnode = lnodes.pop(left_match)
-                rnode = rnodes.pop(right_match)
+                lnodes.pop(left_match)
+                rnodes.pop(right_match)
+
+        elif self.best_match:
+            unmatched_lnodes = []
+
+            # First find all nodes that match perfectly
+            for lnode in lnodes:
+                max_match = 0
+                match_node = None
+
+                for rnode in rnodes:
+                    match = self.node_ratio(lnode, rnode)
+                    if match == 1.0:
+                        self.append_match(lnode, rnode, 1.0)
+                        rnodes.remove(rnode)
+                        break
+
+                    if match > max_match:
+                        match_node = rnode
+                        max_match = match
+                else:
+                    unmatched_lnodes.append((lnode, match_node, max_match))
+                    # unmatched_lnodes.append(lnode)
+
+            lnodes = []
+            for lnode, rnode, max_match in unmatched_lnodes:
+                if max_match >= self.F and rnode in rnodes:
+                    self.append_match(lnode, rnode, max_match)
+                else:
+                    lnodes.append(lnode)
 
         for lnode in lnodes:
             max_match = 0
