@@ -1,7 +1,7 @@
 Changes
 =======
 
-2.6 (unreleased)
+2.6 (2023-04-03)
 ----------------
 
 - Added `InsertNamespace` and `DeleteNamespace` actions for better handling
