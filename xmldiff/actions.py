@@ -15,3 +15,6 @@ InsertAttrib = namedtuple("InsertAttrib", "node name value")
 RenameAttrib = namedtuple("RenameAttrib", "node oldname newname")
 
 InsertComment = namedtuple("InsertComment", "target position text")
+
+InsertNamespace = namedtuple("InsertNamespace", "prefix uri")
+DeleteNamespace = namedtuple("DeleteNamespace", "prefix")

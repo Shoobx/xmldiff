@@ -43,11 +43,13 @@ especially in the case where formatting is added:
   :options: -ELLIPSIS, +NORMALIZE_WHITESPACE
 
   >>> left = '<body><p>My Fine Content</p></body>'
-  >>> right = '<body><p>My <i>Fine</i> Content</p></body>'
+  >>> right = '<body><p><b>My <i>Fine</i> Content</b></p></body>'
   >>> result = main.diff_texts(left, right, formatter=formatter)
   >>> print(result)
   <body xmlns:diff="http://namespaces.shoobx.com/diff">
-    <p diff:insert="">My <i diff:insert="">Fine</i><diff:insert> Content</diff:insert></p>
+    <p diff:insert="">
+      <b diff:insert="" diff:rename="p">My <i diff:insert="">Fine</i><diff:insert> Content</diff:insert></b>
+    </p>
     <p diff:delete="">My Fine Content</p>
   </body>
   <BLANKLINE>
@@ -66,7 +68,9 @@ The XMLFormatter supports a better handling of text with the ``text_tags`` and `
   >>> result = main.diff_texts(left, right, formatter=formatter)
   >>> print(result)
   <body xmlns:diff="http://namespaces.shoobx.com/diff">
-    <p>My <i diff:insert-formatting="">Fine</i> Content</p>
+    <p>
+      <b diff:insert-formatting="">My <i diff:insert-formatting="">Fine</i> Content</b>
+    </p>
   </body>
 
 This gives a result that flags the ``<i>`` tag as new formatting.
@@ -134,7 +138,9 @@ Now use that formatter in the diffing:
   >>> result = main.diff_texts(left, right, formatter=formatter)
   >>> print(result)
   <body xmlns:diff="http://namespaces.shoobx.com/diff">
-    <p>My <i class="insert-formatting">Fine</i> Content</p>
+    <p>
+      <b class="insert-formatting">My <i class="insert-formatting">Fine</i> Content</b>
+    </p>
   </body>
 
 You can then add into your CSS files classes that make inserted text green,

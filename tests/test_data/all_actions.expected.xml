@@ -1,4 +1,4 @@
-<document xmlns:diff="http://namespaces.shoobx.com/diff">
+<document xmlns:diff="http://namespaces.shoobx.com/diff" xmlns:space="http://namespaces.shoobx.com/outerspace">
   <node name="was updated" diff:update-attr="name:updated" newtribute="renamed" diff:rename-attr="attribute:newtribute" this="is new" diff:add-attr="this" diff:delete-attr="attr"><diff:delete>A bit of contained text</diff:delete><diff:insert>Modified</diff:insert></node><diff:delete>This is outside a tag</diff:delete><diff:insert>New tail content</diff:insert><node diff:delete="">
     Here we have some text.
   </node>
@@ -8,7 +8,7 @@
   <nod diff:insert="" diff:rename="node">
     Here we have some text.
   </nod>
-  <new diff:insert=""/><tail diff:delete="">
+  <tail diff:delete="">
     My last tag
   </tail>
-</document><!-- You can't delete top level comments with lxml -->
+  <space:name here="we are testing changing namespaces" diff:rename="{http://namespaces.shoobx.com/name}space"/></document><!-- You can't delete top level comments with lxml -->

@@ -448,6 +448,42 @@ Example:
   [InsertComment(target='/document[1]', position=0, text=' A comment ')]
 
 
+``InsertNamespace(prefix, uri)``
+................................
+
+Adds a new namespace to the XML document. You need to have this before
+adding a node that uses a namespace that is not in the original XML tree.
+
+Example:
+
+.. doctest::
+  :options: -ELLIPSIS, +NORMALIZE_WHITESPACE
+
+  >>> left = '<document></document>'
+  >>> right = '<document xmlns:new="http://theuri"></document>'
+  >>> main.diff_texts(left, right)
+  [InsertNamespace(prefix='new', uri='http://theuri')]
+
+
+``DeleteNamespace(prefix)``
+................................
+
+Removes a namespace from the XML document. You don't need to handle this,
+strictly speaking, nothing will break if there is an unused namespace,
+but `xmldiff` will return this action.
+
+Example:
+
+.. doctest::
+  :options: -ELLIPSIS, +NORMALIZE_WHITESPACE
+
+  >>> left = '<document xmlns:new="http://theuri"></document>'
+  >>> right = '<document></document>'
+  >>> main.diff_texts(left, right)
+  [DeleteNamespace(prefix='new')]
+
+
+
 The patching API
 ----------------
 

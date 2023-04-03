@@ -1,4 +1,5 @@
-<document>
+<document
+  xmlns:name="http://namespaces.shoobx.com/name">
   <node attribute="renamed" attr="deleted" name="updated">
     A bit of contained text
   </node>
@@ -12,5 +13,6 @@
   <tail>
     My last tag
   </tail>
+  <name:space here="we are testing changing namespaces"/>
 </document>
 <!-- You can't delete top level comments with lxml -->

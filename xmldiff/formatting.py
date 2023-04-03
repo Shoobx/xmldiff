@@ -335,6 +335,7 @@ class XMLFormatter(BaseFormatter):
         else:
             root = result
 
+        self._nsmap = [(DIFF_PREFIX, DIFF_NS)]
         etree.register_namespace(DIFF_PREFIX, DIFF_NS)
 
         for action in diff:
@@ -342,7 +343,7 @@ class XMLFormatter(BaseFormatter):
 
         self.finalize(root)
 
-        etree.cleanup_namespaces(result, top_nsmap={DIFF_PREFIX: DIFF_NS})
+        etree.cleanup_namespaces(result, top_nsmap=dict(self._nsmap))
         return self.render(result)
 
     def render(self, result):
@@ -369,6 +370,11 @@ class XMLFormatter(BaseFormatter):
         # one and exactly one element is found. This is to protect against
         # formatting a diff on the wrong tree, or against using ambiguous
         # edit script xpaths.
+
+        # First, make a namespace map that uses the left tree's URI's:
+        nsmap = dict(self._nsmap)
+        nsmap.update(node.nsmap)
+
         if xpath[0] == "/":
             root = True
             xpath = xpath[1:]
@@ -393,11 +399,10 @@ class XMLFormatter(BaseFormatter):
             path = "/" + path
 
         matches = []
-        for match in node.xpath(path, namespaces=node.nsmap):
+        for match in node.xpath(path, namespaces=nsmap):
             # Skip nodes that have been deleted
             if DELETE_NAME not in match.attrib:
                 matches.append(match)
-
         if index >= len(matches):
             raise ValueError(
                 "xpath {}[{}] not found at {}.".format(
@@ -632,6 +637,14 @@ class XMLFormatter(BaseFormatter):
 
         return node
 
+    def _handle_InsertNamespace(self, action, tree):
+        # There is no way to mark this so it's visible, so we'll just update the tree
+        self._nsmap.append((action.prefix, action.uri))
+
+    def _handle_DeleteNamespace(self, action, tree):
+        # This will be handled by the namespace cleanup
+        pass
+
     # There is no InsertComment handler, as this formatter removes all comments
 
 
@@ -700,6 +713,19 @@ class DiffFormatter(BaseFormatter):
             action.target,
             str(action.position),
             json.dumps(action.text),
+        )
+
+    def _handle_InsertNamespace(self, action):
+        return (
+            "insert-namespace",
+            action.prefix,
+            action.uri,
+        )
+
+    def _handle_DeleteNamespace(self, action):
+        return (
+            "delete-namespace",
+            action.prefix,
         )
 
 
@@ -792,4 +818,10 @@ class XmlDiffFormatter(BaseFormatter):
         yield "rename", action.node, action.tag
 
     def _handle_InsertComment(self, action, orig_tree):
-        yield ("insert-comment", action.target, str(action.position), action.text)
+        yield "insert-comment", action.target, str(action.position), action.text
+
+    def _handle_InsertNamespace(self, action, orig_tree):
+        yield "insert-namespace", action.prefix, action.uri
+
+    def _handle_DeleteNamespace(self, action, orig_tree):
+        yield "delete-namespace", action.prefix

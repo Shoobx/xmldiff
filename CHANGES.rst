@@ -4,11 +4,15 @@ Changes
 2.6 (unreleased)
 ----------------
 
-- Nothing changed yet.
-
+- Added `InsertNamespace` and `DeleteNamespace` actions for better handling
+  of changing namespaces. Should improve any "Unknown namespace prefix"
+  errors. Changing the URI of a a namespace prefix is not supported, and will
+  raise an error.
 
 2.6b1 (2023-01-12)
 ------------------
+
+- Used geometric mean for the node_ratio, for better handling of simple nodes.
 
 - Added an experimental --best-match method that is slower, but generate
   smaller diffs when you have many nodes that are similar.
