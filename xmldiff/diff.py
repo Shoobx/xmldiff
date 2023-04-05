@@ -431,7 +431,7 @@ class Differ:
         lnsmap = self.left.nsmap
         for k, v in rnsmap.items():
             # Make sure it's registered:
-            if k is not None:
+            if k is not None and not utils.RESERVED_NS.match(k):
                 etree.register_namespace(k, v)
             if k not in lnsmap:
                 yield actions.InsertNamespace(k, v)
@@ -442,7 +442,7 @@ class Differ:
 
         for k, v in lnsmap.items():
             # Make sure it's registered:
-            if k is not None:
+            if k is not None and not utils.RESERVED_NS.match(k):
                 etree.register_namespace(k, v)
             if k not in rnsmap:
                 yield actions.DeleteNamespace(k)
