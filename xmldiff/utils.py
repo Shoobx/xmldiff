@@ -2,6 +2,10 @@ import re
 
 from operator import eq
 
+# This namespace is reserved for lxml internal use, which only
+# means we get an error if we try registering it:
+RESERVED_NS = re.compile(r"ns\d+", flags=re.ASCII)
+
 
 def post_order_traverse(node):
     for child in node.getchildren():
