@@ -1,8 +1,8 @@
 Changes
 =======
 
-2.7 (unreleased)
-----------------
+2.6.1 (2023-04-05)
+------------------
 
 - #108: Fixed an error that happens if using namespaces like ns0 or ns1.
 
