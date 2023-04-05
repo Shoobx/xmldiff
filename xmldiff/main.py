@@ -1,11 +1,15 @@
 """All major API points and command-line tools"""
-import pkg_resources
+import sys
 
 from argparse import ArgumentParser
 from lxml import etree
 from xmldiff import diff, formatting, patch
 
-__version__ = pkg_resources.require("xmldiff")[0].version
+if sys.version_info < (3, 10):  # pragma: no cover (PY310+)
+    import importlib_metadata
+else:
+    import importlib.metadata as importlib_metadata
+__version__ = importlib_metadata.version("xmldiff")
 
 FORMATTERS = {
     "diff": formatting.DiffFormatter,

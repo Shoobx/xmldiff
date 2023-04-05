@@ -4,7 +4,7 @@ Changes
 2.7 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- Changed usage of deprecated `pkg_resources` package to `importlib.metadata`
 
 
 2.6 (2023-04-03)
