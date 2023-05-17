@@ -74,6 +74,7 @@ class diff_match_patch:
     DIFF_DELETE = -1
     DIFF_INSERT = 1
     DIFF_EQUAL = 0
+    DIFF_REPLACE = 2
 
     def diff_main(self, text1, text2, checklines=True, deadline=None):
         """Find the differences between two texts.  Simplifies the problem by
@@ -179,7 +180,7 @@ class diff_match_patch:
         if len(shorttext) == 1:
             # Single character string.
             # After the previous speedup, the character can't be an equality.
-            return [(self.DIFF_DELETE, text1), (self.DIFF_INSERT, text2)]
+            return [(self.DIFF_REPLACE, text2, text1)]
 
         # Check to see if the problem can be split in two.
         hm = self.diff_halfMatch(text1, text2)
@@ -194,7 +195,6 @@ class diff_match_patch:
 
         if checklines and len(text1) > 100 and len(text2) > 100:
             return self.diff_lineMode(text1, text2, deadline)
-
         return self.diff_bisect(text1, text2, deadline)
 
     def diff_lineMode(self, text1, text2, deadline):
@@ -267,7 +267,6 @@ class diff_match_patch:
         Returns:
           Array of diff tuples.
         """
-
         # Cache the text lengths to prevent multiple calls.
         text1_length = len(text1)
         text2_length = len(text2)
@@ -356,7 +355,7 @@ class diff_match_patch:
 
         # Diff took too long and hit the deadline or
         # number of diffs equals number of characters, no commonality at all.
-        return [(self.DIFF_DELETE, text1), (self.DIFF_INSERT, text2)]
+        return [(self.DIFF_REPLACE, text2, text1)]
 
     def diff_bisectSplit(self, text1, text2, x, y, deadline):
         """Given the location of the 'middle snake', split the diff in two parts
@@ -981,25 +980,31 @@ class diff_match_patch:
         pointer = 0
         count_delete = 0
         count_insert = 0
+        count_replace = 0
         text_delete = ""
         text_insert = ""
+        text_replace = ""
         while pointer < len(diffs):
-            if diffs[pointer][0] == self.DIFF_INSERT:
+            if diffs[pointer][0] >= self.DIFF_INSERT:
                 count_insert += 1
                 text_insert += diffs[pointer][1]
                 pointer += 1
-            elif diffs[pointer][0] == self.DIFF_DELETE:
+            elif diffs[pointer][0] <= self.DIFF_DELETE:
                 count_delete += 1
                 text_delete += diffs[pointer][1]
                 pointer += 1
+            elif diffs[pointer][0] <= self.DIFF_REPLACE:
+                count_replace += 1
+                text_replace += diffs[pointer][1]
+                pointer += 1
             elif diffs[pointer][0] == self.DIFF_EQUAL:
                 # Upon reaching an equality, check for prior redundancies.
-                if count_delete + count_insert > 1:
-                    if count_delete != 0 and count_insert != 0:
+                if count_delete + count_insert + count_replace > 1:
+                    if count_delete != 0 and count_insert != 0 and count_replace != 0:
                         # Factor out any common prefixies.
                         commonlength = self.diff_commonPrefix(text_insert, text_delete)
                         if commonlength != 0:
-                            x = pointer - count_delete - count_insert - 1
+                            x = pointer - count_delete - count_insert - count_replace - 1
                             if x >= 0 and diffs[x][0] == self.DIFF_EQUAL:
                                 diffs[x] = (
                                     diffs[x][0],
@@ -1027,8 +1032,8 @@ class diff_match_patch:
                         new_ops.append((self.DIFF_DELETE, text_delete))
                     if len(text_insert) != 0:
                         new_ops.append((self.DIFF_INSERT, text_insert))
-                    pointer -= count_delete + count_insert
-                    diffs[pointer : pointer + count_delete + count_insert] = new_ops
+                    pointer -= count_delete + count_insert + count_replace
+                    diffs[pointer : pointer + count_delete + count_insert + count_replace] = new_ops
                     pointer += len(new_ops) + 1
                 elif pointer != 0 and diffs[pointer - 1][0] == self.DIFF_EQUAL:
                     # Merge this equality with the previous one.
@@ -1042,8 +1047,10 @@ class diff_match_patch:
 
                 count_insert = 0
                 count_delete = 0
+                count_replace = 0
                 text_delete = ""
                 text_insert = ""
+                text_replace = ""
 
         if diffs[-1][1] == "":
             diffs.pop()  # Remove the dummy entry at the end.
@@ -1135,7 +1142,7 @@ class diff_match_patch:
           HTML representation.
         """
         html = []
-        for (op, data) in diffs:
+        for op, data in diffs:
             text = (
                 data.replace("&", "&amp;")
                 .replace("<", "&lt;")
@@ -1160,7 +1167,7 @@ class diff_match_patch:
           Source text.
         """
         text = []
-        for (op, data) in diffs:
+        for op, data in diffs:
             if op != self.DIFF_INSERT:
                 text.append(data)
         return "".join(text)
@@ -1175,7 +1182,7 @@ class diff_match_patch:
           Destination text.
         """
         text = []
-        for (op, data) in diffs:
+        for op, data in diffs:
             if op != self.DIFF_DELETE:
                 text.append(data)
         return "".join(text)
@@ -1193,7 +1200,7 @@ class diff_match_patch:
         levenshtein = 0
         insertions = 0
         deletions = 0
-        for (op, data) in diffs:
+        for op, data in diffs:
             if op == self.DIFF_INSERT:
                 insertions += len(data)
             elif op == self.DIFF_DELETE:
@@ -1219,7 +1226,7 @@ class diff_match_patch:
           Delta text.
         """
         text = []
-        for (op, data) in diffs:
+        for op, data in diffs:
             if op == self.DIFF_INSERT:
                 # High ascii will raise UnicodeDecodeError.  Use Unicode instead.
                 data = data.encode("utf-8")
@@ -1707,7 +1714,7 @@ class diff_match_patch:
                     else:
                         self.diff_cleanupSemanticLossless(diffs)
                         index1 = 0
-                        for (op, data) in patch.diffs:
+                        for op, data in patch.diffs:
                             if op != self.DIFF_EQUAL:
                                 index2 = self.diff_xIndex(diffs, index1)
                             if op == self.DIFF_INSERT:  # Insertion
@@ -2006,7 +2013,7 @@ class patch_obj:
             coords2 = str(self.start2 + 1) + "," + str(self.length2)
         text = ["@@ -", coords1, " +", coords2, " @@\n"]
         # Escape the body of the patch with %xx notation.
-        for (op, data) in self.diffs:
+        for op, data in self.diffs:
             if op == diff_match_patch.DIFF_INSERT:
                 text.append("+")
             elif op == diff_match_patch.DIFF_DELETE:
