@@ -13,6 +13,7 @@ DIFF_PREFIX = "diff"
 
 INSERT_NAME = "{%s}insert" % DIFF_NS
 DELETE_NAME = "{%s}delete" % DIFF_NS
+REPLACE_NAME = "{%s}replace" % DIFF_NS
 RENAME_NAME = "{%s}rename" % DIFF_NS
 
 # Flags for whitespace handling in the text aware formatters:
@@ -104,9 +105,14 @@ class PlaceholderMaker:
         delete_close = self.get_placeholder(delete_elem, T_CLOSE, None)
         delete_open = self.get_placeholder(delete_elem, T_OPEN, delete_close)
 
+        replace_elem = etree.Element(REPLACE_NAME)
+        replace_close = self.get_placeholder(replace_elem, T_CLOSE, None)
+        replace_open = self.get_placeholder(replace_elem, T_OPEN, replace_close)
+
         self.diff_tags = {
             "insert": (insert_open, insert_close),
             "delete": (delete_open, delete_close),
+            "replace": (replace_open, replace_close),
         }
 
     def get_placeholder(self, element, ttype, close_ph):
@@ -228,7 +234,7 @@ class PlaceholderMaker:
     def undo_tree(self, tree):
         self.undo_element(tree)
 
-    def mark_diff(self, ph, action):
+    def mark_diff(self, ph, action, attributes={}):
         entry = self.placeholder2tag[ph]
         if entry.ttype == T_CLOSE:
             # Close tag, nothing to mark
@@ -242,12 +248,21 @@ class PlaceholderMaker:
             # Formatting element, add a diff attribute
             action += "-formatting"
         elem.attrib[f"{{{DIFF_NS}}}{action}"] = ""
+        for attrib, value in attributes.items():
+            elem.attrib[attrib] = value
 
         # And make a new placeholder for this new entry:
         return self.get_placeholder(elem, entry.ttype, entry.close_ph)
 
-    def wrap_diff(self, text, action):
+    def wrap_diff(self, text, action, attributes=None):
         open_ph, close_ph = self.diff_tags[action]
+        if attributes is not None:
+            entry = self.placeholder2tag[open_ph]
+            elem = entry.element
+            elem = deepcopy(elem)
+            for attrib, value in attributes.items():
+                elem.attrib[attrib] = value
+            open_ph = self.get_placeholder(elem, entry.ttype, entry.close_ph)
         return open_ph + text + close_ph
 
 
@@ -519,7 +534,12 @@ class XMLFormatter(BaseFormatter):
         def _stack_pop():
             return stack.pop() if stack else (None, None)
 
-        for op, text in diff:
+        for d in diff:
+            if len(d) == 2:
+                op, text = d
+            else:
+                op, text, opt = d
+                text = text + '|' + opt
             segments = self.placeholderer.split_string(text)
             for seg in segments:
                 if not seg:
@@ -576,7 +596,6 @@ class XMLFormatter(BaseFormatter):
         text_diff = diff_match_patch()
         diff = text_diff.diff_main(left_value or "", right_value or "")
         text_diff.diff_cleanupSemantic(diff)
-
         diff = self._realign_placeholders(diff)
 
         cur_child = None
@@ -585,7 +604,12 @@ class XMLFormatter(BaseFormatter):
         else:
             cur_child = node
 
-        for op, text in diff:
+        for d in diff:
+            op, text = d
+            if '|' in text:
+                _text = text.split('|')
+                text = _text[0]
+                old_text = _text[1]
             if op == 0:
                 if cur_child is None:
                     node.text = (node.text or "") + text
@@ -593,24 +617,29 @@ class XMLFormatter(BaseFormatter):
                     cur_child.tail = (cur_child.tail or "") + text
                 continue
 
+            attributes = {}
             if op == -1:
                 action = "delete"
             elif op == 1:
                 action = "insert"
+            elif op == 2:
+                action = "replace"
+                attributes["old-text"] = old_text
 
             if self.placeholderer.is_placeholder(text):
-                ph = self.placeholderer.mark_diff(text, action)
+                ph = self.placeholderer.mark_diff(text, action, attributes)
 
                 if cur_child is None:
                     node.text = (node.text or "") + ph
 
             else:
-                new_text = self.placeholderer.wrap_diff(text, action)
+                new_text = self.placeholderer.wrap_diff(text, action, attributes)
 
                 if cur_child is None:
                     node.text = (node.text or "") + new_text
                 else:
                     cur_child.tail = (cur_child.tail or "") + new_text
+
 
     def _handle_UpdateTextIn(self, action, tree):
         node = self._xpath(tree, action.node)
@@ -622,7 +651,6 @@ class XMLFormatter(BaseFormatter):
         left_value = node.text
         right_value = action.text
         node.text = None
-
         self._make_diff_tags(left_value, right_value, node)
 
         return node
