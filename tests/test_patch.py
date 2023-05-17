@@ -23,7 +23,6 @@ from .testing import compare_elements
 
 
 class PatcherTests(unittest.TestCase):
-
     patcher = Patcher()
 
     def _test(self, start, action, end):

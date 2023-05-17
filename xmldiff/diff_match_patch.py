@@ -74,6 +74,7 @@ class diff_match_patch:
     DIFF_DELETE = -1
     DIFF_INSERT = 1
     DIFF_EQUAL = 0
+    DIFF_REPLACE = 2
 
     def diff_main(self, text1, text2, checklines=True, deadline=None):
         """Find the differences between two texts.  Simplifies the problem by
@@ -1135,7 +1136,7 @@ class diff_match_patch:
           HTML representation.
         """
         html = []
-        for (op, data) in diffs:
+        for op, data in diffs:
             text = (
                 data.replace("&", "&amp;")
                 .replace("<", "&lt;")
@@ -1160,7 +1161,7 @@ class diff_match_patch:
           Source text.
         """
         text = []
-        for (op, data) in diffs:
+        for op, data in diffs:
             if op != self.DIFF_INSERT:
                 text.append(data)
         return "".join(text)
@@ -1175,7 +1176,7 @@ class diff_match_patch:
           Destination text.
         """
         text = []
-        for (op, data) in diffs:
+        for op, data in diffs:
             if op != self.DIFF_DELETE:
                 text.append(data)
         return "".join(text)
@@ -1193,7 +1194,7 @@ class diff_match_patch:
         levenshtein = 0
         insertions = 0
         deletions = 0
-        for (op, data) in diffs:
+        for op, data in diffs:
             if op == self.DIFF_INSERT:
                 insertions += len(data)
             elif op == self.DIFF_DELETE:
@@ -1219,7 +1220,7 @@ class diff_match_patch:
           Delta text.
         """
         text = []
-        for (op, data) in diffs:
+        for op, data in diffs:
             if op == self.DIFF_INSERT:
                 # High ascii will raise UnicodeDecodeError.  Use Unicode instead.
                 data = data.encode("utf-8")
@@ -1707,7 +1708,7 @@ class diff_match_patch:
                     else:
                         self.diff_cleanupSemanticLossless(diffs)
                         index1 = 0
-                        for (op, data) in patch.diffs:
+                        for op, data in patch.diffs:
                             if op != self.DIFF_EQUAL:
                                 index2 = self.diff_xIndex(diffs, index1)
                             if op == self.DIFF_INSERT:  # Insertion
@@ -2006,7 +2007,7 @@ class patch_obj:
             coords2 = str(self.start2 + 1) + "," + str(self.length2)
         text = ["@@ -", coords1, " +", coords2, " @@\n"]
         # Escape the body of the patch with %xx notation.
-        for (op, data) in self.diffs:
+        for op, data in self.diffs:
             if op == diff_match_patch.DIFF_INSERT:
                 text.append("+")
             elif op == diff_match_patch.DIFF_DELETE:

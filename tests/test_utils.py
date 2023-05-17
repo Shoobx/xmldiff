@@ -111,7 +111,6 @@ class LongestCommonSubsequenceTests(unittest.TestCase):
         self.assertEqual("".join(res), result)
 
     def test_lcs(self):
-
         self._diff("ABCDEF", "ABCDEF", "ABCDEF")
 
         self._diff("ABCDEF", "GHIJKL", "")

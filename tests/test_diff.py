@@ -640,7 +640,6 @@ class MatchTests(unittest.TestCase):
         )
 
     def test_change_attribs(self):
-
         left = """<document>
     <story firstPageTemplate="FirstPage">
         <section xml:id="oldfirst" ref="3" single-ref="3">

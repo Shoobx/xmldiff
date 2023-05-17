@@ -90,5 +90,8 @@ Contributors
 
  * Jacek Chałupka, krunchfrompoland@gmail.com
 
-The diff algorithm is based on "`Change Detection in Hierarchically Structured Information <http://infolab.stanford.edu/c3/papers/html/tdiff3-8/tdiff3-8.html>`_",
+ * Thomas Pfitzinger, thpfitzinger@web.de
+
+The diff algorithm is based on
+"`Change Detection in Hierarchically Structured Information <http://infolab.stanford.edu/c3/papers/html/tdiff3-8/tdiff3-8.html>`_",
 and the text diff is using Google's ``diff_match_patch`` algorithm.
