@@ -1,7 +1,7 @@
 Changes
 =======
 
-2.6.3 (unreleased)
+2.6.3 (2023-05-21)
 ------------------
 
 - And there was a namespace bug in the patch as well. #118
