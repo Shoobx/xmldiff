@@ -121,6 +121,21 @@ class DiffPatch(unittest.TestCase):
         # top level comment differs, but that's OK.
         compare_elements(result, right.getroot())
 
+    def test_diff_default_namespace(self):
+        here = os.path.split(__file__)[0]
+        lfile = os.path.join(here, "test_data", "namespace.left.xml")
+        rfile = os.path.join(here, "test_data", "namespace.right.xml")
+
+        left = etree.parse(lfile)
+        right = etree.parse(rfile)
+        diff = diff_trees(left, right)
+        result = Patcher().patch(diff, left)
+
+        # This example has top level comments, and lxml doesn't deal well
+        # with that, so the trees are not EXACTLY the same, the trailing
+        # top level comment differs, but that's OK.
+        compare_elements(result, right.getroot())
+
 
 TEST_DIFF = """[delete, node]
 [insert, target, tag, 0]
