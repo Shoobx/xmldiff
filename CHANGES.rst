@@ -4,13 +4,13 @@ Changes
 2.6.3 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- And there was a namespace bug in the patch as well. #89
 
 
 2.6.2 (2023-05-21)
 ------------------
 
-- Solved an error in the xmlformatter when using default namespaces. #89, #113
+- Solved an error in the xmlformatter when using default namespaces. #113
 
 
 2.6.1 (2023-04-05)
