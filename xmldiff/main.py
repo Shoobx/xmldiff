@@ -1,7 +1,7 @@
 """All major API points and command-line tools"""
 import pkg_resources
 
-from argparse import ArgumentParser
+from argparse import ArgumentParser, ArgumentTypeError
 from lxml import etree
 from xmldiff import diff, formatting, patch
 
@@ -53,6 +53,19 @@ def diff_files(left, right, diff_options=None, formatter=None):
     )
 
 
+def validate_F(arg):
+    """Type function for argparse - a float within some predefined bounds"""
+    try:
+        F = float(arg)
+    except ValueError:
+        raise ArgumentTypeError("Must be a floating point number")
+    if F <= 0:
+        raise ArgumentTypeError("F can not be zero or lower")
+    if F > 1:
+        raise ArgumentTypeError("F can not be above 1")
+    return F
+
+
 def make_diff_parser():
     parser = ArgumentParser(
         description="Create a diff for two XML files.", add_help=False
@@ -95,7 +108,7 @@ def make_diff_parser():
     )
     parser.add_argument(
         "-F",
-        type=float,
+        type=validate_F,
         help="A value between 0 and 1 that determines how "
         "similar nodes must be to match.",
     )
