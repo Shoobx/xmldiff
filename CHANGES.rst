@@ -4,7 +4,7 @@ Changes
 2.6.2 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Solved an error in the xmlformatter when using default namespaces. #89, #113
 
 
 2.6.1 (2023-04-05)
