@@ -310,6 +310,9 @@ class XMLFormatter(BaseFormatter):
     WS_TEXT normalizes only inside text_tags, WS_TAGS will remove ignorable
     whitespace between tags, WS_BOTH do both, and WS_NONE will preserve
     all whitespace.
+
+    The ``use_replace`` flag decides, if a replace tag (with the old text
+    as an attribute) should be used instead of one delete and one insert tag.
     """
 
     def __init__(

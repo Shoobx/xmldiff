@@ -32,9 +32,17 @@ import urllib.parse
 
 
 class diff_object:
-    # The data structure representing a diff is an array of tuples:
-    # [(DIFF_DELETE, "Hello"), (DIFF_INSERT, "Goodbye"), (DIFF_EQUAL, " world.")]
-    # which means: delete "Hello", add "Goodbye" and keep " world."
+    """A class for a diff object, with a type identifier 
+    (integer, one of [-1, 0, 1, 2]) and at a text. In case of the 
+    REPLACE type (2), a secondary text (the replaced text) should 
+    also be given.
+
+    The class can be accessed like an iterable with obj[0] returning
+    the type identifier, obj[1] the main text and obj[2] the
+    secondary text. This is in order to be compatible with the previous
+    use of tuples for diff objects.
+    """
+
     DELETE = -1
     EQUAL = 0
     INSERT = 1
@@ -86,6 +94,9 @@ class diff_match_patch:
     def __init__(self, use_replace=False):
         """Inits a diff_match_patch object with default settings.
         Redefine these in your program to override the defaults.
+
+        The ``use_replace`` flag decides, if a replace tag (with the old text
+        as an attribute) should be used instead of one delete and one insert tag.
         """
 
         self.use_replace = use_replace
@@ -113,6 +124,11 @@ class diff_match_patch:
         # Multiple short patches (using native ints) are much faster than long ones.
         self.Match_MaxBits = 32
 
+
+    # The data structure representing a diff is the diff_object class, which can be 
+    # accessed as an iterable, for example:
+    # [DIFF_REPLACE, "Goodbye", "Hello"], [DIFF_EQUAL, " world."]
+    # which means: replace "Hello" with "Goodbye" and keep " world."
     DIFF_DELETE = -1
     DIFF_EQUAL = 0
     DIFF_INSERT = 1
