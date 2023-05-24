@@ -313,13 +313,14 @@ class XMLFormatter(BaseFormatter):
     """
 
     def __init__(
-        self, normalize=WS_NONE, pretty_print=True, text_tags=(), formatting_tags=()
+        self, normalize=WS_NONE, pretty_print=True, text_tags=(), formatting_tags=(), use_replace=False
     ):
         # Mapping from placeholders -> structural content and vice versa.
         self.normalize = normalize
         self.pretty_print = pretty_print
         self.text_tags = text_tags
         self.formatting_tags = formatting_tags
+        self.use_replace = use_replace
         self.placeholderer = PlaceholderMaker(
             text_tags=text_tags, formatting_tags=formatting_tags
         )
@@ -594,7 +595,7 @@ class XMLFormatter(BaseFormatter):
             left_value = utils.cleanup_whitespace(left_value or "").strip()
             right_value = utils.cleanup_whitespace(right_value or "").strip()
 
-        text_diff = diff_match_patch()
+        text_diff = diff_match_patch(use_replace=self.use_replace)
         diff = text_diff.diff_main(left_value or "", right_value or "")
         text_diff.diff_cleanupSemantic(diff)
         diff = self._realign_placeholders(diff)

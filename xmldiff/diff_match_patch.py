@@ -83,11 +83,12 @@ class diff_match_patch:
     Also contains the behaviour settings.
     """
 
-    def __init__(self):
+    def __init__(self, use_replace=False):
         """Inits a diff_match_patch object with default settings.
         Redefine these in your program to override the defaults.
         """
 
+        self.use_replace = use_replace
         # Number of seconds to map a diff before giving up (0 for infinity).
         self.Diff_Timeout = 1.0
         # Cost of an empty edit operation in terms of edit characters.
@@ -223,7 +224,10 @@ class diff_match_patch:
         if len(shorttext) == 1:
             # Single character string.
             # After the previous speedup, the character can't be an equality.
-            return [diff_object(self.DIFF_REPLACE, text2, text1)]
+            if self.use_replace:
+                return [diff_object(self.DIFF_REPLACE, text2, text1)]
+            return [diff_object(self.DIFF_DELETE, text1), 
+                    diff_object(self.DIFF_INSERT, text2)]
 
         # Check to see if the problem can be split in two.
         hm = self.diff_halfMatch(text1, text2)
@@ -398,7 +402,11 @@ class diff_match_patch:
 
         # Diff took too long and hit the deadline or
         # number of diffs equals number of characters, no commonality at all.
-        return [diff_object(self.DIFF_REPLACE, text2, text1)]
+        if self.use_replace:
+            return [diff_object(self.DIFF_REPLACE, text2, text1)]
+        else:
+            return [diff_object(self.DIFF_DELETE, text1), 
+                    diff_object(self.DIFF_INSERT, text2)]
 
     def diff_bisectSplit(self, text1, text2, x, y, deadline):
         """Given the location of the 'middle snake', split the diff in two parts
