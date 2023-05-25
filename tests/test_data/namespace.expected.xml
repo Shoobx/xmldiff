@@ -1,0 +1,3 @@
+<document xmlns="http://default/namespace" xmlns:diff="http://namespaces.shoobx.com/diff">
+  <tag><diff:delete>lxml doesn't handle default namespaces in xp</diff:delete><diff:insert>So we need to work around th</diff:insert>at<diff:delete>h</diff:delete></tag>
+</document>

@@ -1,0 +1,4 @@
+<document
+  xmlns="http://default/namespace">
+  <tag>lxml doesn't handle default namespaces in xpath</tag>
+</document>

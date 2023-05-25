@@ -418,6 +418,8 @@ class XMLFormatter(BaseFormatter):
             path = "/" + path
 
         matches = []
+        if None in nsmap:
+            del nsmap[None]
         for match in node.xpath(path, namespaces=nsmap):
             # Skip nodes that have been deleted
             if DELETE_NAME not in match.attrib:

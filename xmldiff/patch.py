@@ -16,6 +16,8 @@ class Patcher:
 
         # Save the namespace:
         self._nsmap = tree.nsmap
+        if None in self._nsmap:
+            del self._nsmap[None]
 
         # Copy the tree so we don't modify the original
         result = deepcopy(tree)
