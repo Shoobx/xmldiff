@@ -4,7 +4,7 @@ import re
 from collections import namedtuple
 from copy import deepcopy
 from lxml import etree
-from xmldiff.diff_match_patch import diff_match_patch, diff_object
+from xmldiff.diff_match_patch import diff_match_patch
 from xmldiff import utils
 
 
@@ -551,21 +551,21 @@ class XMLFormatter(BaseFormatter):
                     continue
                 # There is nothing to do for regular text.
                 if not self.placeholderer.is_placeholder(seg):
-                    new_diff.append(diff_object(op, seg, opt))
+                    new_diff.append((op, seg, opt))
                     continue
                 # Handle all structural replacement elements.
                 entry = self.placeholderer.placeholder2tag[seg]
                 if entry.ttype == T_SINGLE:
                     # There is nothing to do for singletons since they are
                     # fully self-contained.
-                    new_diff.append(diff_object(op, seg, opt))
+                    new_diff.append((op, seg, opt))
                     continue
                 elif entry.ttype == T_OPEN:
                     # Opening tags are added to the stack, so we know what
                     # needs to be closed when. We are assuming that tags are
                     # opened in the desired order.
-                    stack.append(diff_object(op, entry, opt))
-                    new_diff.append(diff_object(op, seg, opt))
+                    stack.append((op, entry, opt))
+                    new_diff.append((op, seg, opt))
                     continue
                 elif entry.ttype == T_CLOSE:
                     # Due to the nature of the text diffing algorithm, closing
@@ -575,7 +575,7 @@ class XMLFormatter(BaseFormatter):
                     # happen.
                     stack_op, stack_entry = _stack_pop()
                     while stack_entry is not None and stack_entry.close_ph != seg:
-                        new_diff.append(diff_object(stack_op, stack_entry.close_ph, opt))
+                        new_diff.append((stack_op, stack_entry.close_ph, opt))
                         stack_op, stack_entry = _stack_pop()
 
                     # Stephan: We have situations where the opening tag
@@ -590,7 +590,7 @@ class XMLFormatter(BaseFormatter):
                     # put in an assert
                     if stack_entry is not None:
                         assert stack_op <= op
-                        new_diff.append(diff_object(op, seg, opt))
+                        new_diff.append((op, seg, opt))
         return new_diff
 
     def _make_diff_tags(self, left_value, right_value, node, target=None):
