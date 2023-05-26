@@ -999,15 +999,15 @@ class diff_match_patch:
         text_insert = ""
         text_replace = ""
         while pointer < len(diffs):
-            if diffs[pointer][0] >= self.DIFF_INSERT:
+            if diffs[pointer][0] == self.DIFF_INSERT:
                 count_insert += 1
                 text_insert += diffs[pointer][1]
                 pointer += 1
-            elif diffs[pointer][0] <= self.DIFF_DELETE:
+            elif diffs[pointer][0] == self.DIFF_DELETE:
                 count_delete += 1
                 text_delete += diffs[pointer][1]
                 pointer += 1
-            elif diffs[pointer][0] <= self.DIFF_REPLACE:
+            elif diffs[pointer][0] == self.DIFF_REPLACE:
                 count_replace += 1
                 text_replace += diffs[pointer][1]
                 pointer += 1
@@ -1065,6 +1065,8 @@ class diff_match_patch:
                 text_delete = ""
                 text_insert = ""
                 text_replace = ""
+            else:
+                raise Exception(f"Unknown diff type {diffs[pointer][0]}")
 
         if diffs[-1][1] == "":
             diffs.pop()  # Remove the dummy entry at the end.
