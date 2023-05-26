@@ -188,8 +188,8 @@ class diff_match_patch:
             # After the previous speedup, the character can't be an equality.
             if self.use_replace:
                 return [(self.DIFF_REPLACE, text2, text1)]
-            return [(self.DIFF_DELETE, text1), 
-                    (self.DIFF_INSERT, text2)]
+            else:
+                return [(self.DIFF_DELETE, text1), (self.DIFF_INSERT, text2)]
 
         # Check to see if the problem can be split in two.
         hm = self.diff_halfMatch(text1, text2)
@@ -204,6 +204,7 @@ class diff_match_patch:
 
         if checklines and len(text1) > 100 and len(text2) > 100:
             return self.diff_lineMode(text1, text2, deadline)
+        
         return self.diff_bisect(text1, text2, deadline)
 
     def diff_lineMode(self, text1, text2, deadline):
@@ -276,6 +277,7 @@ class diff_match_patch:
         Returns:
           Array of diff tuples.
         """
+
         # Cache the text lengths to prevent multiple calls.
         text1_length = len(text1)
         text2_length = len(text2)
@@ -367,8 +369,7 @@ class diff_match_patch:
         if self.use_replace:
             return [(self.DIFF_REPLACE, text2, text1)]
         else:
-            return [(self.DIFF_DELETE, text1), 
-                    (self.DIFF_INSERT, text2)]
+            return [(self.DIFF_DELETE, text1), (self.DIFF_INSERT, text2)]
 
     def diff_bisectSplit(self, text1, text2, x, y, deadline):
         """Given the location of the 'middle snake', split the diff in two parts
@@ -1106,7 +1107,7 @@ class diff_match_patch:
                         + diffs[pointer + 1][1],
                     )
                     del diffs[pointer + 1]
-                    changes = Truediff
+                    changes = True
             pointer += 1
 
         # If shifts were made, the diff needs reordering and another shift sweep.
@@ -1155,7 +1156,7 @@ class diff_match_patch:
           HTML representation.
         """
         html = []
-        for op, data in diffs:
+        for (op, data) in diffs:
             text = (
                 data.replace("&", "&amp;")
                 .replace("<", "&lt;")
@@ -1180,7 +1181,7 @@ class diff_match_patch:
           Source text.
         """
         text = []
-        for op, data in diffs:
+        for (op, data) in diffs:
             if op != self.DIFF_INSERT:
                 text.append(data)
         return "".join(text)
@@ -1213,7 +1214,7 @@ class diff_match_patch:
         levenshtein = 0
         insertions = 0
         deletions = 0
-        for op, data in diffs:
+        for (op, data) in diffs:
             if op == self.DIFF_INSERT:
                 insertions += len(data)
             elif op == self.DIFF_DELETE:
@@ -1239,7 +1240,7 @@ class diff_match_patch:
           Delta text.
         """
         text = []
-        for op, data in diffs:
+        for (op, data) in diffs:
             if op == self.DIFF_INSERT:
                 # High ascii will raise UnicodeDecodeError.  Use Unicode instead.
                 data = data.encode("utf-8")
@@ -1727,7 +1728,7 @@ class diff_match_patch:
                     else:
                         self.diff_cleanupSemanticLossless(diffs)
                         index1 = 0
-                        for op, data in patch.diffs:
+                        for (op, data) in patch.diffs:
                             if op != self.DIFF_EQUAL:
                                 index2 = self.diff_xIndex(diffs, index1)
                             if op == self.DIFF_INSERT:  # Insertion
@@ -2026,7 +2027,7 @@ class patch_obj:
             coords2 = str(self.start2 + 1) + "," + str(self.length2)
         text = ["@@ -", coords1, " +", coords2, " @@\n"]
         # Escape the body of the patch with %xx notation.
-        for op, data in self.diffs:
+        for (op, data) in self.diffs:
             if op == diff_match_patch.DIFF_INSERT:
                 text.append("+")
             elif op == diff_match_patch.DIFF_DELETE:
