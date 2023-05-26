@@ -352,6 +352,16 @@ class XMLFormatTests(unittest.TestCase):
 
         self._format_test(left, action, expected, use_replace=True)
 
+    def test_replace_complete_text(self):
+        left = "<document><node>aaaaaaa bbbbbb</node></document>"
+        action = actions.UpdateTextIn("/document/node", "ccccc dddd eee")
+        expected = (
+            START + "><diff:replace old-text=\"aaaaaaa bbbbbb\">ccccc dddd eee"
+            "</diff:replace>" + END
+        )
+
+        self._format_test(left, action, expected, use_replace=True)
+
 class DiffFormatTests(unittest.TestCase):
     def _format_test(self, action, expected):
         formatter = formatting.DiffFormatter()
