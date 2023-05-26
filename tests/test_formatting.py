@@ -186,8 +186,8 @@ class PlaceholderMakerTests(unittest.TestCase):
 
 
 class XMLFormatTests(unittest.TestCase):
-    def _format_test(self, left, action, expected):
-        formatter = formatting.XMLFormatter(pretty_print=False)
+    def _format_test(self, left, action, expected, use_replace=False):
+        formatter = formatting.XMLFormatter(pretty_print=False, use_replace=use_replace)
         result = formatter.format([action], etree.fromstring(left))
         self.assertEqual(result, expected)
 
@@ -317,6 +317,40 @@ class XMLFormatTests(unittest.TestCase):
 
         self._format_test(left, action, expected)
 
+    def test_replace_text_in(self):
+        left = '<document><node attr="val"/></document>'
+        action = actions.UpdateTextIn("/document/node", "Text")
+        expected = START + ' attr="val"><diff:insert>Text</diff:insert>' + END
+
+        self._format_test(left, action, expected, use_replace=True)
+
+        left = "<document><node>This is a bit of text, right" + END
+        action = actions.UpdateTextIn("/document/node", "Also a bit of text, rick")
+        expected = (
+            START + "><diff:replace old-text=\"This is\">Also</diff:replace>"
+            " a bit of text, ri<diff:replace old-text=\"ght\">ck"
+            "</diff:replace>" + END
+        )
+
+        self._format_test(left, action, expected, use_replace=True)
+
+    def test_replace_text_after_1(self):
+        left = "<document><node/><node/></document>"
+        action = actions.UpdateTextAfter("/document/node[1]", "Text")
+        expected = START + "/><diff:insert>Text</diff:insert>" "<node/></document>"
+
+        self._format_test(left, action, expected, use_replace=True)
+
+    def test_replace_text_after_2(self):
+        left = "<document><node/>This is a bit of text, right</document>"
+        action = actions.UpdateTextAfter("/document/node", "Also a bit of text, rick")
+        expected = (
+            START + "/><diff:replace old-text=\"This is\">Also</diff:replace>"
+            " a bit of text, ri<diff:replace old-text=\"ght\">ck"
+            "</diff:replace></document>"
+        )
+
+        self._format_test(left, action, expected, use_replace=True)
 
 class DiffFormatTests(unittest.TestCase):
     def _format_test(self, action, expected):
