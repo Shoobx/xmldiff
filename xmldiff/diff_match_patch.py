@@ -994,10 +994,8 @@ class diff_match_patch:
         pointer = 0
         count_delete = 0
         count_insert = 0
-        count_replace = 0
         text_delete = ""
         text_insert = ""
-        text_replace = ""
         while pointer < len(diffs):
             if diffs[pointer][0] == self.DIFF_INSERT:
                 count_insert += 1
@@ -1007,18 +1005,14 @@ class diff_match_patch:
                 count_delete += 1
                 text_delete += diffs[pointer][1]
                 pointer += 1
-            elif diffs[pointer][0] == self.DIFF_REPLACE:
-                count_replace += 1
-                text_replace += diffs[pointer][1]
-                pointer += 1
-            elif diffs[pointer][0] == self.DIFF_EQUAL:
+            elif diffs[pointer][0] == self.DIFF_EQUAL or diffs[pointer][0] == self.DIFF_REPLACE:
                 # Upon reaching an equality, check for prior redundancies.
-                if count_delete + count_insert + count_replace > 1:
-                    if count_delete != 0 and count_insert != 0 and count_replace != 0:
+                if count_delete + count_insert > 1:
+                    if count_delete != 0 and count_insert != 0:
                         # Factor out any common prefixies.
                         commonlength = self.diff_commonPrefix(text_insert, text_delete)
                         if commonlength != 0:
-                            x = pointer - count_delete - count_insert - count_replace - 1
+                            x = pointer - count_delete - count_insert - 1
                             if x >= 0 and diffs[x][0] == self.DIFF_EQUAL:
                                 diffs[x] = (
                                     diffs[x][0],
@@ -1046,8 +1040,8 @@ class diff_match_patch:
                         new_ops.append((self.DIFF_DELETE, text_delete))
                     if len(text_insert) != 0:
                         new_ops.append((self.DIFF_INSERT, text_insert))
-                    pointer -= count_delete + count_insert + count_replace
-                    diffs[pointer : pointer + count_delete + count_insert + count_replace] = new_ops
+                    pointer -= count_delete + count_insert
+                    diffs[pointer : pointer + count_delete + count_insert] = new_ops
                     pointer += len(new_ops) + 1
                 elif pointer != 0 and diffs[pointer - 1][0] == self.DIFF_EQUAL:
                     # Merge this equality with the previous one.
@@ -1061,10 +1055,8 @@ class diff_match_patch:
 
                 count_insert = 0
                 count_delete = 0
-                count_replace = 0
                 text_delete = ""
                 text_insert = ""
-                text_replace = ""
             else:
                 raise Exception(f"Unknown diff type {diffs[pointer][0]}")
 
