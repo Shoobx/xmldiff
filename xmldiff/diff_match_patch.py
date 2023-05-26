@@ -37,15 +37,11 @@ class diff_match_patch:
     Also contains the behaviour settings.
     """
 
-    def __init__(self, use_replace=False):
+    def __init__(self):
         """Inits a diff_match_patch object with default settings.
         Redefine these in your program to override the defaults.
-
-        The ``use_replace`` flag decides, if a replace tag (with the old text
-        as an attribute) should be used instead of one delete and one insert tag.
         """
 
-        self.use_replace = use_replace
         # Number of seconds to map a diff before giving up (0 for infinity).
         self.Diff_Timeout = 1.0
         # Cost of an empty edit operation in terms of edit characters.
@@ -70,17 +66,14 @@ class diff_match_patch:
         # Multiple short patches (using native ints) are much faster than long ones.
         self.Match_MaxBits = 32
 
-
-    # The data structure representing a diff is the diff_object class, which can be 
-    # accessed as an iterable, for example:
-    # [DIFF_REPLACE, "Goodbye", "Hello"], [DIFF_EQUAL, " world."]
-    # which means: replace "Hello" with "Goodbye" and keep " world."
-    DIFF_DELETE = -1
-    DIFF_EQUAL = 0
-    DIFF_INSERT = 1
-    DIFF_REPLACE = 2
-
     #  DIFF FUNCTIONS
+
+    # The data structure representing a diff is an array of tuples:
+    # [(DIFF_DELETE, "Hello"), (DIFF_INSERT, "Goodbye"), (DIFF_EQUAL, " world.")]
+    # which means: delete "Hello", add "Goodbye" and keep " world."
+    DIFF_DELETE = -1
+    DIFF_INSERT = 1
+    DIFF_EQUAL = 0
 
     def diff_main(self, text1, text2, checklines=True, deadline=None):
         """Find the differences between two texts.  Simplifies the problem by
@@ -186,10 +179,7 @@ class diff_match_patch:
         if len(shorttext) == 1:
             # Single character string.
             # After the previous speedup, the character can't be an equality.
-            if self.use_replace:
-                return [(self.DIFF_REPLACE, text2, text1)]
-            else:
-                return [(self.DIFF_DELETE, text1), (self.DIFF_INSERT, text2)]
+            return [(self.DIFF_DELETE, text1), (self.DIFF_INSERT, text2)]
 
         # Check to see if the problem can be split in two.
         hm = self.diff_halfMatch(text1, text2)
@@ -204,7 +194,7 @@ class diff_match_patch:
 
         if checklines and len(text1) > 100 and len(text2) > 100:
             return self.diff_lineMode(text1, text2, deadline)
-        
+
         return self.diff_bisect(text1, text2, deadline)
 
     def diff_lineMode(self, text1, text2, deadline):
@@ -366,10 +356,7 @@ class diff_match_patch:
 
         # Diff took too long and hit the deadline or
         # number of diffs equals number of characters, no commonality at all.
-        if self.use_replace:
-            return [(self.DIFF_REPLACE, text2, text1)]
-        else:
-            return [(self.DIFF_DELETE, text1), (self.DIFF_INSERT, text2)]
+        return [(self.DIFF_DELETE, text1), (self.DIFF_INSERT, text2)]
 
     def diff_bisectSplit(self, text1, text2, x, y, deadline):
         """Given the location of the 'middle snake', split the diff in two parts
@@ -1005,7 +992,7 @@ class diff_match_patch:
                 count_delete += 1
                 text_delete += diffs[pointer][1]
                 pointer += 1
-            elif diffs[pointer][0] == self.DIFF_EQUAL or diffs[pointer][0] == self.DIFF_REPLACE:
+            elif diffs[pointer][0] == self.DIFF_EQUAL:
                 # Upon reaching an equality, check for prior redundancies.
                 if count_delete + count_insert > 1:
                     if count_delete != 0 and count_insert != 0:
@@ -1057,8 +1044,6 @@ class diff_match_patch:
                 count_delete = 0
                 text_delete = ""
                 text_insert = ""
-            else:
-                raise Exception(f"Unknown diff type {diffs[pointer][0]}")
 
         if diffs[-1][1] == "":
             diffs.pop()  # Remove the dummy entry at the end.
@@ -1125,9 +1110,9 @@ class diff_match_patch:
         last_chars2 = 0
         for x in range(len(diffs)):
             (op, text) = diffs[x]
-            if op == self.DIFF_EQUAL or op == self.DIFF_DELETE:  # Equality or deletion.
+            if op != self.DIFF_INSERT:  # Equality or deletion.
                 chars1 += len(text)
-            if op == self.DIFF_EQUAL or op == self.DIFF_INSERT:  # Equality or insertion.
+            if op != self.DIFF_DELETE:  # Equality or insertion.
                 chars2 += len(text)
             if chars1 > loc:  # Overshot the location.
                 break
