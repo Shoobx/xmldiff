@@ -1133,9 +1133,9 @@ class diff_match_patch:
         last_chars2 = 0
         for x in range(len(diffs)):
             (op, text) = diffs[x]
-            if op != self.DIFF_INSERT:  # Equality or deletion.
+            if op == self.DIFF_EQUAL or op == self.DIFF_DELETE:  # Equality or deletion.
                 chars1 += len(text)
-            if op != self.DIFF_DELETE:  # Equality or insertion.
+            if op == self.DIFF_EQUAL or op == self.DIFF_INSERT:  # Equality or insertion.
                 chars2 += len(text)
             if chars1 > loc:  # Overshot the location.
                 break

@@ -234,7 +234,7 @@ class PlaceholderMaker:
     def undo_tree(self, tree):
         self.undo_element(tree)
 
-    def mark_diff(self, ph, action, attributes={}):
+    def mark_diff(self, ph, action, attributes=None):
         entry = self.placeholder2tag[ph]
         if entry.ttype == T_CLOSE:
             # Close tag, nothing to mark
@@ -248,15 +248,16 @@ class PlaceholderMaker:
             # Formatting element, add a diff attribute
             action += "-formatting"
         elem.attrib[f"{{{DIFF_NS}}}{action}"] = ""
-        for attrib, value in attributes.items():
-            elem.attrib[attrib] = value
+        if attributes is not None:
+            for attrib, value in attributes.items():
+                elem.attrib[attrib] = value
 
         # And make a new placeholder for this new entry:
         return self.get_placeholder(elem, entry.ttype, entry.close_ph)
 
     def wrap_diff(self, text, action, attributes=None):
         open_ph, close_ph = self.diff_tags[action]
-        if attributes is not None:
+        if attributes is not None and len(attributes) > 0:
             entry = self.placeholder2tag[open_ph]
             elem = entry.element
             elem = deepcopy(elem)
