@@ -1196,7 +1196,7 @@ class diff_match_patch:
           Destination text.
         """
         text = []
-        for op, data in diffs:
+        for (op, data) in diffs:
             if op != self.DIFF_DELETE:
                 text.append(data)
         return "".join(text)

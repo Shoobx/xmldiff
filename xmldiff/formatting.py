@@ -540,8 +540,7 @@ class XMLFormatter(BaseFormatter):
         def _stack_pop():
             return stack.pop() if stack else (None, None)
 
-        for d in diff:
-            op, text = d
+        for op, text in diff:
             segments = self.placeholderer.split_string(text)
             for seg in segments:
                 if not seg:
@@ -642,7 +641,6 @@ class XMLFormatter(BaseFormatter):
                 else:
                     cur_child.tail = (cur_child.tail or "") + new_text
 
-
     def _handle_UpdateTextIn(self, action, tree):
         node = self._xpath(tree, action.node)
         if INSERT_NAME in node.attrib:
@@ -653,6 +651,7 @@ class XMLFormatter(BaseFormatter):
         left_value = node.text
         right_value = action.text
         node.text = None
+
         self._make_diff_tags(left_value, right_value, node)
 
         return node
