@@ -600,16 +600,39 @@ class XMLFormatter(BaseFormatter):
                         new_diff.append(seg_diff)
         return new_diff
 
+    def _join_delete_insert(self, diffs):
+        new_diffs = []
+        skip_next = False
+        for i in range(len(diffs)-1):
+            if skip_next:
+                skip_next = False
+                continue
+            op, text = diffs[i]
+            next_op, next_text = diffs[i+1]
+            # insert, then delete
+            if op==diff_match_patch.DIFF_INSERT and next_op==diff_match_patch.DIFF_DELETE:
+                new_diffs.apped((diff_match_patch.DIFF_REPLACE, text, next_text))
+                skip_next = True # also skip upcoming delete
+            # delete, then insert
+            elif next_op==diff_match_patch.DIFF_INSERT and op==diff_match_patch.DIFF_DELETE:
+                new_diffs.append((diff_match_patch.DIFF_REPLACE, next_text, text))
+                skip_next = True # also skip upcoming insert
+            else:
+                new_diffs.append(diffs[i])
+        return new_diffs
+
     def _make_diff_tags(self, left_value, right_value, node, target=None):
         if bool(self.normalize & WS_TEXT):
             left_value = utils.cleanup_whitespace(left_value or "").strip()
             right_value = utils.cleanup_whitespace(right_value or "").strip()
 
-        text_diff = diff_match_patch(use_replace=self.use_replace)
+        text_diff = diff_match_patch()
         diff = text_diff.diff_main(left_value or "", right_value or "")
         text_diff.diff_cleanupSemantic(diff)
         diff = self._realign_placeholders(diff)
 
+        if self.use_replace:
+            diff = self._join_delete_insert(diff)
         cur_child = None
         if target is None:
             target = node
