@@ -1,0 +1,7 @@
+- Added option to XMLFormatter to use replace tags
+
+- in _make_diff_tags after diffing, neighboring delete/insert diffs are joined to a replace tag
+
+- the deleted text is added as an attribute ("old-text")
+
+- the inserted text is the element's text
