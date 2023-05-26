@@ -541,38 +541,28 @@ class XMLFormatter(BaseFormatter):
         def _stack_pop():
             return stack.pop() if stack else (None, None)
 
-        for d in diff:
-            op = d[0] 
-            text = d[1]
-            if op == diff_match_patch.DIFF_REPLACE:
-                opt = d[2]
-            else:
-                opt = None
+        for op, text in diff:
             segments = self.placeholderer.split_string(text)
             for seg in segments:
                 if not seg:
                     continue
-                if op == diff_match_patch.DIFF_REPLACE:
-                    seg_diff = (op, seg, opt)
-                else:
-                    seg_diff = (op, seg)
                 # There is nothing to do for regular text.
                 if not self.placeholderer.is_placeholder(seg):
-                    new_diff.append(seg_diff)
+                    new_diff.append((op, seg))
                     continue
                 # Handle all structural replacement elements.
                 entry = self.placeholderer.placeholder2tag[seg]
                 if entry.ttype == T_SINGLE:
                     # There is nothing to do for singletons since they are
                     # fully self-contained.
-                    new_diff.append(seg_diff)
+                    new_diff.append((op, seg))
                     continue
                 elif entry.ttype == T_OPEN:
                     # Opening tags are added to the stack, so we know what
                     # needs to be closed when. We are assuming that tags are
                     # opened in the desired order.
-                    stack.append((op, entry, opt))
-                    new_diff.append(seg_diff)
+                    stack.append((op, entry))
+                    new_diff.append((op, seg))
                     continue
                 elif entry.ttype == T_CLOSE:
                     # Due to the nature of the text diffing algorithm, closing
@@ -582,7 +572,7 @@ class XMLFormatter(BaseFormatter):
                     # happen.
                     stack_op, stack_entry = _stack_pop()
                     while stack_entry is not None and stack_entry.close_ph != seg:
-                        new_diff.append((stack_op, stack_entry.close_ph, opt))
+                        new_diff.append((stack_op, stack_entry.close_ph))
                         stack_op, stack_entry = _stack_pop()
 
                     # Stephan: We have situations where the opening tag
@@ -597,7 +587,7 @@ class XMLFormatter(BaseFormatter):
                     # put in an assert
                     if stack_entry is not None:
                         assert stack_op <= op
-                        new_diff.append(seg_diff)
+                        new_diff.append((op, seg))
         return new_diff
 
     def _join_delete_insert(self, diffs):

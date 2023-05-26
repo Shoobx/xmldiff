@@ -74,6 +74,7 @@ class diff_match_patch:
     DIFF_DELETE = -1
     DIFF_INSERT = 1
     DIFF_EQUAL = 0
+    DIFF_REPLACE = 2
 
     def diff_main(self, text1, text2, checklines=True, deadline=None):
         """Find the differences between two texts.  Simplifies the problem by
