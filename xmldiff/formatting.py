@@ -612,7 +612,7 @@ class XMLFormatter(BaseFormatter):
             if op == diff_match_patch.DIFF_REPLACE:
                 old_text = d[2]
 
-            if op == 0:
+            if op == diff_match_patch.DIFF_EQUAL:
                 if cur_child is None:
                     node.text = (node.text or "") + text
                 else:
@@ -620,11 +620,11 @@ class XMLFormatter(BaseFormatter):
                 continue
 
             attributes = {}
-            if op == -1:
+            if op == diff_match_patch.DIFF_DELETE:
                 action = "delete"
-            elif op == 1:
+            elif op == diff_match_patch.DIFF_INSERT:
                 action = "insert"
-            elif op == 2:
+            elif op == diff_match_patch.DIFF_REPLACE:
                 action = "replace"
                 attributes["old-text"] = old_text
 
