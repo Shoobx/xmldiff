@@ -609,6 +609,9 @@ class XMLFormatter(BaseFormatter):
                 skip_next = True # also skip upcoming insert
             else:
                 new_diffs.append(diffs[i])
+        # append last diff, if it shouldn't be skipped
+        if not skip_next:
+            new_diffs.append(diffs[-1])
         return new_diffs
 
     def _make_diff_tags(self, left_value, right_value, node, target=None):
