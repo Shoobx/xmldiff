@@ -16,13 +16,13 @@ class PlaceholderMakerTests(unittest.TestCase):
         replacer = formatting.PlaceholderMaker()
         # Get a placeholder:
         ph = replacer.get_placeholder(etree.Element("tag"), formatting.T_OPEN, None)
-        self.assertEqual(ph, "\ue005")
+        self.assertEqual(ph, "\ue007")
         # Do it again:
         ph = replacer.get_placeholder(etree.Element("tag"), formatting.T_OPEN, None)
-        self.assertEqual(ph, "\ue005")
+        self.assertEqual(ph, "\ue007")
         # Get another one
         ph = replacer.get_placeholder(etree.Element("tag"), formatting.T_CLOSE, ph)
-        self.assertEqual(ph, "\ue006")
+        self.assertEqual(ph, "\ue008")
 
     def test_do_element(self):
         replacer = formatting.PlaceholderMaker(["p"], ["b"])
@@ -34,7 +34,7 @@ class PlaceholderMakerTests(unittest.TestCase):
 
         self.assertEqual(
             etree.tounicode(element),
-            "<p>This is a tag with \ue006formatted\ue005 text.</p>",
+            "<p>This is a tag with \ue008formatted\ue007 text.</p>",
         )
 
         replacer.undo_element(element)
@@ -45,14 +45,14 @@ class PlaceholderMakerTests(unittest.TestCase):
         element = etree.fromstring(text)
         replacer.do_element(element)
         result = etree.tounicode(element)
-        self.assertEqual(result, "<p>This is a tag with \ue007 text.</p>")
+        self.assertEqual(result, "<p>This is a tag with \ue009 text.</p>")
 
         # Single formatting tags still get two placeholders.
         text = "<p>This is a <b/> with <foo/> text.</p>"
         element = etree.fromstring(text)
         replacer.do_element(element)
         result = etree.tounicode(element)
-        self.assertEqual(result, "<p>This is a \ue009\ue008 with \ue00a text.</p>")
+        self.assertEqual(result, "<p>This is a \ue00b\ue00a with \ue00c text.</p>")
 
     def test_do_undo_element(self):
         replacer = formatting.PlaceholderMaker(["p"], ["b"])
@@ -63,7 +63,7 @@ class PlaceholderMakerTests(unittest.TestCase):
         replacer.do_element(element)
 
         self.assertEqual(
-            element.text, "This \ue005 a \ue006 with \ue008formatted" "\ue007 text."
+            element.text, "This \ue007 a \ue008 with \ue00aformatted" "\ue009 text."
         )
 
         replacer.undo_element(element)
@@ -79,7 +79,7 @@ class PlaceholderMakerTests(unittest.TestCase):
         replacer.do_element(element)
 
         self.assertEqual(
-            element.text, "This is \ue006doubly \ue008formatted\ue007" "\ue005 text."
+            element.text, "This is \ue008doubly \ue00aformatted\ue009" "\ue007 text."
         )
 
         replacer.undo_element(element)
@@ -110,8 +110,8 @@ class PlaceholderMakerTests(unittest.TestCase):
         after_diff = """<document xmlns:diff="http://namespaces.shoobx.com/diff">
   <section>
     <para>
-      <insert>\ue005</insert>.
-      \ue007\ue009At Will Employment\ue008\ue006
+      <insert>\ue007</insert>.
+      \ue009\ue00bAt Will Employment\ue00a\ue008
       .\u201c<insert>New </insert>Text\u201d
     </para>
   </section>
@@ -119,8 +119,8 @@ class PlaceholderMakerTests(unittest.TestCase):
 
         # The diff formatting will find some text to insert.
         delete_attrib = "{%s}delete-format" % formatting.DIFF_NS
-        replacer.placeholder2tag["\ue006"].element.attrib[delete_attrib] = ""
-        replacer.placeholder2tag["\ue007"].element.attrib[delete_attrib] = ""
+        replacer.placeholder2tag["\ue008"].element.attrib[delete_attrib] = ""
+        replacer.placeholder2tag["\ue009"].element.attrib[delete_attrib] = ""
         tree = etree.fromstring(after_diff)
         replacer.undo_tree(tree)
         result = etree.tounicode(tree)
@@ -153,7 +153,7 @@ class PlaceholderMakerTests(unittest.TestCase):
 
             #
             self.assertEqual(
-                element.text, "This \uf904 a \uf905 with \uf907some" "\uf906 text."
+                element.text, "This \uf906 a \uf907 with \uf909some" "\uf908 text."
             )
 
             try:
@@ -172,8 +172,8 @@ class PlaceholderMakerTests(unittest.TestCase):
                 # This should raise an error on a narrow build
                 self.assertEqual(
                     element.text,
-                    "This \U00010004 a \U00010005 with \U00010007some"
-                    "\U00010006 text.",
+                    "This \U00010006 a \U00010007 with \U00010009some"
+                    "\U00010008 text.",
                 )
             except ValueError:
                 if sys.maxunicode > 0x10000:
