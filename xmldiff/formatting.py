@@ -601,7 +601,7 @@ class XMLFormatter(BaseFormatter):
             next_op, next_text = diffs[i+1]
             # insert, then delete
             if op==diff_match_patch.DIFF_INSERT and next_op==diff_match_patch.DIFF_DELETE:
-                new_diffs.apped((diff_match_patch.DIFF_REPLACE, text, next_text))
+                new_diffs.append((diff_match_patch.DIFF_REPLACE, text, next_text))
                 skip_next = True # also skip upcoming delete
             # delete, then insert
             elif next_op==diff_match_patch.DIFF_INSERT and op==diff_match_patch.DIFF_DELETE:
