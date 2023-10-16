@@ -7,6 +7,8 @@ Changes
 - Changed the comparison to make accurate and standard more accurate,
   although fast gets less accurate as a result.
 
+- Changed usage of deprecated `pkg_resources` package to `importlib.metadata`.
+
 
 2.6.3 (2023-05-21)
 ------------------
