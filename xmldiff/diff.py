@@ -223,7 +223,7 @@ class Differ:
         if node in self._text_cache:
             return self._text_cache[node]
         # Get the texts and the tag as a start
-        texts = node.xpath("text()")
+        texts = [node.tag] + node.xpath("text()")
 
         # Then add attributes and values
         for tag, value in sorted(self.node_attribs(node).items()):

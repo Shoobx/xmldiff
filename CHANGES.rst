@@ -4,7 +4,8 @@ Changes
 2.6.4 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Changed the comparison to make accurate and standard more accurate,
+  although fast gets less accurate as a result.
 
 
 2.6.3 (2023-05-21)
