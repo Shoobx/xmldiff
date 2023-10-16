@@ -183,12 +183,12 @@ class NodeRatioTests(unittest.TestCase):
         left = lefttree.xpath("/document/story/section[2]/para")[0]
         right = righttree.xpath("/document/story/section[2]/para")[0]
 
-        self.assertAlmostEqual(differ.leaf_ratio(left, right), 0.75)
+        self.assertAlmostEqual(differ.leaf_ratio(left, right), 0.80952380)
 
         # These nodes should not be very similar
         left = lefttree.xpath("/document/story/section[1]/para")[0]
         right = righttree.xpath("/document/story/section[1]/para")[0]
-        self.assertAlmostEqual(differ.leaf_ratio(left, right), 0.45614035087719)
+        self.assertAlmostEqual(differ.leaf_ratio(left, right), 0.53731343)
 
     def test_compare_different_nodes(self):
         left = """<document>
@@ -293,7 +293,7 @@ class NodeRatioTests(unittest.TestCase):
         right = differ.right.xpath("/document/story/section[1]")[0]
 
         # These are very similar
-        self.assertEqual(differ.leaf_ratio(left, right), 0.9)
+        self.assertAlmostEqual(differ.leaf_ratio(left, right), 0.9210526)
         # And one out of two children in common
         self.assertEqual(differ.child_ratio(left, right), 0.5)
         # But different id's, hence 0 as match
@@ -312,7 +312,7 @@ class NodeRatioTests(unittest.TestCase):
         # has an xml:id, so they do not match.
         left = differ.left.xpath("/document/story/section[3]")[0]
         right = differ.right.xpath("/document/story/section[3]")[0]
-        self.assertAlmostEqual(differ.leaf_ratio(left, right), 0.81818181818)
+        self.assertAlmostEqual(differ.leaf_ratio(left, right), 0.8666667)
         self.assertEqual(differ.child_ratio(left, right), 1.0)
         self.assertEqual(differ.node_ratio(left, right), 0)
 
@@ -376,7 +376,7 @@ class NodeRatioTests(unittest.TestCase):
         right = differ.right.xpath("/document/story/section[1]")[0]
 
         # These are very similar
-        self.assertEqual(differ.leaf_ratio(left, right), 0.90625)
+        self.assertEqual(differ.leaf_ratio(left, right), 0.925)
         # And one out of two children in common
         self.assertEqual(differ.child_ratio(left, right), 0.5)
         # But different names, hence 0 as match
@@ -395,7 +395,7 @@ class NodeRatioTests(unittest.TestCase):
         # has an name, so they do not match.
         left = differ.left.xpath("/document/story/section[3]")[0]
         right = differ.right.xpath("/document/story/section[3]")[0]
-        self.assertAlmostEqual(differ.leaf_ratio(left, right), 0.78260869565)
+        self.assertAlmostEqual(differ.leaf_ratio(left, right), 0.8387097)
         self.assertEqual(differ.child_ratio(left, right), 1.0)
         self.assertEqual(differ.node_ratio(left, right), 0)
 
@@ -403,9 +403,9 @@ class NodeRatioTests(unittest.TestCase):
         # one of them is not a section, so the uniqueattr does not match
         left = differ.left.xpath("/document/story/section[1]")[0]
         right = differ.right.xpath("/document/story/subsection[1]")[0]
-        self.assertAlmostEqual(differ.leaf_ratio(left, right), 1.0)
+        self.assertAlmostEqual(differ.leaf_ratio(left, right), 0.9638554)
         self.assertEqual(differ.child_ratio(left, right), 0.5)
-        self.assertAlmostEqual(differ.node_ratio(left, right), 0.7905694150420949)
+        self.assertAlmostEqual(differ.node_ratio(left, right), 0.7677947)
 
     def test_compare_node_rename(self):
         left = """<document>
@@ -430,16 +430,16 @@ class NodeRatioTests(unittest.TestCase):
         left = differ.left.xpath("/document/para[1]")[0]
         right = differ.right.xpath("/document/section[1]")[0]
 
-        # These have different tags, but should still match
-        self.assertEqual(differ.leaf_ratio(left, right), 1.0)
+        # These have different tags, so don't match that great any more
+        self.assertAlmostEqual(differ.leaf_ratio(left, right), 0.7441860)
 
         # These have different tags, and different attribute value,
         # but still similar enough
         left = differ.left.xpath("/document/para[2]")[0]
         right = differ.right.xpath("/document/section[2]")[0]
 
-        # These have different tags, but should still match
-        self.assertAlmostEqual(differ.leaf_ratio(left, right), 0.76190476190476)
+        # These have different tags, so don't match that great any more
+        self.assertAlmostEqual(differ.leaf_ratio(left, right), 0.6578947)
 
         # These have different tags, and different attribute value,
         # but still similar enough
@@ -447,7 +447,7 @@ class NodeRatioTests(unittest.TestCase):
         right = differ.right.xpath("/document/section[3]")[0]
 
         # These are too different
-        self.assertAlmostEqual(differ.leaf_ratio(left, right), 0.45161290322580)
+        self.assertAlmostEqual(differ.leaf_ratio(left, right), 0.4)
 
     def test_compare_namespaces(self):
         left = """<document>
@@ -472,8 +472,8 @@ class NodeRatioTests(unittest.TestCase):
             "/document/foo:para[1]", namespaces={"foo": "otheruri"}
         )[0]
 
-        # These have different namespaces, but should still match
-        self.assertEqual(differ.leaf_ratio(left, right), 1.0)
+        # These have different namespaces, but should still match OK
+        self.assertAlmostEqual(differ.leaf_ratio(left, right), 0.915254237)
 
     def test_different_ratio_modes(self):
         node1 = etree.Element("para")
@@ -485,19 +485,19 @@ class NodeRatioTests(unittest.TestCase):
 
         # These texts are very different
         differ = Differ(ratio_mode="accurate")
-        self.assertAlmostEqual(differ.leaf_ratio(node1, node2), 0.24)
+        self.assertAlmostEqual(differ.leaf_ratio(node1, node2), 0.3666667)
         # However, the quick_ratio doesn't catch that, and think they match
         differ = Differ(ratio_mode="fast")
-        self.assertAlmostEqual(differ.leaf_ratio(node1, node2), 0.64)
+        self.assertAlmostEqual(differ.leaf_ratio(node1, node2), 0.7)
         # It still realizes these sentences are different, though.
         differ = Differ(ratio_mode="fast")
-        self.assertAlmostEqual(differ.leaf_ratio(node1, node3), 0.4561403508)
+        self.assertAlmostEqual(differ.leaf_ratio(node1, node3), 0.53731343)
         # Faster thinks the first two are the same!
         differ = Differ(ratio_mode="faster")
         self.assertAlmostEqual(differ.leaf_ratio(node1, node2), 1.0)
         # And that the third is almost the same
         differ = Differ(ratio_mode="faster")
-        self.assertAlmostEqual(differ.leaf_ratio(node1, node3), 0.8771929824)
+        self.assertAlmostEqual(differ.leaf_ratio(node1, node3), 0.89552238)
 
         # Invalid modes raise error:
         with self.assertRaises(ValueError):
