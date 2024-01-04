@@ -12,3 +12,5 @@ docs/build
 venv
 build
 dist
+test.ipynb
+.venv/

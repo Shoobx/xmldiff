@@ -1,18 +1,18 @@
 repos:
 -   repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.4.0
+    rev: v4.5.0
     hooks:
     -   id: check-yaml
     -   id: trailing-whitespace
 -   repo: https://github.com/psf/black
-    rev: 22.12.0
+    rev: 23.12.1
     hooks:
     -   id: black
 -   repo: https://github.com/pycqa/flake8
-    rev: 6.0.0
+    rev: 6.1.0
     hooks:
     -   id: flake8
 -   repo: https://github.com/regebro/pyroma
-    rev: '4.1'
+    rev: '4.2'
     hooks:
     -   id: pyroma

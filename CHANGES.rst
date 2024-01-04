@@ -9,6 +9,11 @@ Changes
 
 - Changed usage of deprecated `pkg_resources` package to `importlib.metadata`.
 
+- A `use_replace` flag was added to the `XMLFormatter` by Thomas Pfitzinger.
+  It changes text replacement from delete and insert tags to a replace tag.
+  It's not currently accessaible thtough the CLI, the question is it is better
+  to add a new formatter name, or an option to pass in formatter flags.
+
 
 2.6.3 (2023-05-21)
 ------------------

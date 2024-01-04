@@ -37,7 +37,6 @@ def breadth_first_traverse(node):
 # It also skips any items that are equal in the beginning and end, speeding
 # up the search, and using even less memory.
 def longest_common_subsequence(left_sequence, right_sequence, eqfn=eq):
-
     start = 0
     lend = lslen = len(left_sequence)
     rend = rslen = len(right_sequence)
