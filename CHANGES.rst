@@ -14,6 +14,10 @@ Changes
   It's not currently accessaible thtough the CLI, the question is it is better
   to add a new formatter name, or an option to pass in formatter flags.
 
+  - Added option to XMLFormatter to use replace tags
+  - in _make_diff_tags after diffing, neighboring delete/insert diffs are joined to a replace tag
+  - the deleted text is added as an attribute ("old-text")
+  - the inserted text is the element's text
 
 2.6.3 (2023-05-21)
 ------------------
