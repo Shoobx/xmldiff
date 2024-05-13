@@ -1,7 +1,7 @@
 Changes
 =======
 
-2.6.4 (unreleased)
+2.7.0 (2024-05-13)
 ------------------
 
 - Changed the comparison to make accurate and standard more accurate,
