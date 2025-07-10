@@ -65,9 +65,7 @@ class Differ:
             right = right.getroot()
 
         if not (etree.iselement(left) and etree.iselement(right)):
-            raise TypeError(
-                "The 'left' and 'right' parameters must be " "lxml Elements."
-            )
+            raise TypeError("The 'left' and 'right' parameters must be lxml Elements.")
 
         # Left gets modified as a part of the diff, deepcopy it first.
         self.left = deepcopy(left)

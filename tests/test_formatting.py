@@ -63,7 +63,7 @@ class PlaceholderMakerTests(unittest.TestCase):
         replacer.do_element(element)
 
         self.assertEqual(
-            element.text, "This \ue007 a \ue008 with \ue00aformatted" "\ue009 text."
+            element.text, "This \ue007 a \ue008 with \ue00aformatted\ue009 text."
         )
 
         replacer.undo_element(element)
@@ -79,7 +79,7 @@ class PlaceholderMakerTests(unittest.TestCase):
         replacer.do_element(element)
 
         self.assertEqual(
-            element.text, "This is \ue008doubly \ue00aformatted\ue009" "\ue007 text."
+            element.text, "This is \ue008doubly \ue00aformatted\ue009\ue007 text."
         )
 
         replacer.undo_element(element)
@@ -153,7 +153,7 @@ class PlaceholderMakerTests(unittest.TestCase):
 
             #
             self.assertEqual(
-                element.text, "This \uf906 a \uf907 with \uf909some" "\uf908 text."
+                element.text, "This \uf906 a \uf907 with \uf909some\uf908 text."
             )
 
             try:
@@ -172,8 +172,7 @@ class PlaceholderMakerTests(unittest.TestCase):
                 # This should raise an error on a narrow build
                 self.assertEqual(
                     element.text,
-                    "This \U00010006 a \U00010007 with \U00010009some"
-                    "\U00010008 text.",
+                    "This \U00010006 a \U00010007 with \U00010009some\U00010008 text.",
                 )
             except ValueError:
                 if sys.maxunicode > 0x10000:
@@ -227,7 +226,7 @@ class XMLFormatTests(unittest.TestCase):
     def test_insert_attr(self):
         left = "<document><node>We need more text</node></document>"
         action = actions.InsertAttrib("/document/node", "attr", "val")
-        expected = START + ' attr="val" diff:add-attr="attr">' "We need more text" + END
+        expected = START + ' attr="val" diff:add-attr="attr">We need more text' + END
 
         self._format_test(left, action, expected)
 
@@ -243,7 +242,7 @@ class XMLFormatTests(unittest.TestCase):
         # renamed:
         left = '<document><node attr="val">Text</node></document>'
         action = actions.RenameAttrib("/document/node", "attr", "bottr")
-        expected = START + ' bottr="val" diff:rename-attr="attr:bottr"' ">Text" + END
+        expected = START + ' bottr="val" diff:rename-attr="attr:bottr">Text' + END
 
         self._format_test(left, action, expected)
 
@@ -271,14 +270,14 @@ class XMLFormatTests(unittest.TestCase):
     def test_rename_node(self):
         left = "<document><node><para>Content</para>Tail</node></document>"
         action = actions.RenameNode("/document/node[1]/para[1]", "newtag")
-        expected = START + '><newtag diff:rename="para">Content' "</newtag>Tail" + END
+        expected = START + '><newtag diff:rename="para">Content</newtag>Tail' + END
 
         self._format_test(left, action, expected)
 
     def test_update_attr(self):
         left = '<document><node attr="val"/></document>'
         action = actions.UpdateAttrib("/document/node", "attr", "newval")
-        expected = START + ' attr="newval" diff:update-attr="attr:val"/>' "</document>"
+        expected = START + ' attr="newval" diff:update-attr="attr:val"/></document>'
 
         self._format_test(left, action, expected)
 
@@ -302,7 +301,7 @@ class XMLFormatTests(unittest.TestCase):
     def test_update_text_after_1(self):
         left = "<document><node/><node/></document>"
         action = actions.UpdateTextAfter("/document/node[1]", "Text")
-        expected = START + "/><diff:insert>Text</diff:insert>" "<node/></document>"
+        expected = START + "/><diff:insert>Text</diff:insert><node/></document>"
 
         self._format_test(left, action, expected)
 
@@ -337,7 +336,7 @@ class XMLFormatTests(unittest.TestCase):
     def test_replace_text_after_1(self):
         left = "<document><node/><node/></document>"
         action = actions.UpdateTextAfter("/document/node[1]", "Text")
-        expected = START + "/><diff:insert>Text</diff:insert>" "<node/></document>"
+        expected = START + "/><diff:insert>Text</diff:insert><node/></document>"
 
         self._format_test(left, action, expected, use_replace=True)
 
@@ -434,7 +433,7 @@ class DiffFormatTests(unittest.TestCase):
         self._format_test(action, expected)
 
         action = actions.UpdateTextIn("/document/node", 'Also a bit of text, "rick"')
-        expected = "[update-text, /document/node, " '"Also a bit of text, \\"rick\\""]'
+        expected = '[update-text, /document/node, "Also a bit of text, \\"rick\\""]'
         self._format_test(action, expected)
 
     def test_update_text_after_1(self):
@@ -444,7 +443,7 @@ class DiffFormatTests(unittest.TestCase):
 
     def test_update_text_after_2(self):
         action = actions.UpdateTextAfter("/document/node", "Also a bit of text, rick")
-        expected = "[update-text-after, /document/node, " '"Also a bit of text, rick"]'
+        expected = '[update-text-after, /document/node, "Also a bit of text, rick"]'
         self._format_test(action, expected)
 
     def test_insert_comment(self):
@@ -511,7 +510,7 @@ class XmlDiffFormatTests(unittest.TestCase):
 
         action = actions.UpdateTextIn("/document/node", 'Also a bit of text, "rick"')
         expected = (
-            "[update, /document/node/text()[1], " '"Also a bit of text, \\"rick\\""]'
+            '[update, /document/node/text()[1], "Also a bit of text, \\"rick\\""]'
         )
         self._format_test(action, expected)
 
@@ -522,7 +521,7 @@ class XmlDiffFormatTests(unittest.TestCase):
 
     def test_update_text_after_2(self):
         action = actions.UpdateTextAfter("/document/node", "Also a bit of text, rick")
-        expected = "[update, /document/node/text()[2], " '"Also a bit of text, rick"]'
+        expected = '[update, /document/node/text()[2], "Also a bit of text, rick"]'
         self._format_test(action, expected)
 
     def test_all_actions(self):

@@ -14,8 +14,7 @@ ve/bin/fullrelease:
 	$(bin_dir)/pip install -e .[devenv]
 
 check: devenv
-	$(bin_dir)/black xmldiff tests
-	$(bin_dir)/flake8 xmldiff tests
+	$(bin_dir)/ruff check xmldiff tests
 	$(bin_dir)/pyroma -d .
 
 coverage: devenv

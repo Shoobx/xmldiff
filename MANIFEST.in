@@ -14,3 +14,6 @@ recursive-include docs *.rst
 recursive-include docs *.xslt
 recursive-include docs Makefile
 recursive-exclude docs/build *
+
+# added by check-manifest
+include *.yaml

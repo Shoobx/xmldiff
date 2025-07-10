@@ -1263,7 +1263,7 @@ class DiffTests(unittest.TestCase):
                 InsertAttrib("/document/story/app:section[4]/app:term[1]", "set", "ol"),
                 InsertNode("/document/story/app:section[4]", "para", 1),
                 UpdateTextIn(
-                    "/document/story/app:section[1]/para[2]/" "app:placeholder[1]",
+                    "/document/story/app:section[1]/para[2]/app:placeholder[1]",
                     "consectetur",
                 ),
                 InsertNode(

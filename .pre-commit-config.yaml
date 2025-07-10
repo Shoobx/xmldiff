@@ -4,15 +4,15 @@ repos:
     hooks:
     -   id: check-yaml
     -   id: trailing-whitespace
--   repo: https://github.com/psf/black
-    rev: 23.12.1
-    hooks:
-    -   id: black
--   repo: https://github.com/pycqa/flake8
-    rev: 6.1.0
-    hooks:
-    -   id: flake8
+- repo: https://github.com/astral-sh/ruff-pre-commit
+  # Ruff version.
+  rev: v0.12.2
+  hooks:
+    # Run the linter.
+    - id: ruff-check
+    # Run the formatter.
+    - id: ruff-format
 -   repo: https://github.com/regebro/pyroma
-    rev: '4.2'
+    rev: '5.0b2'
     hooks:
     -   id: pyroma
