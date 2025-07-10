@@ -1,0 +1,64 @@
+[build-system]
+requires = ["setuptools>=61.2"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "xmldiff"
+dynamic = ["version"]
+description = "Creates diffs of XML files"
+readme = "README.rst"
+license = "MIT"
+requires-python = ">=3.8"
+authors = [
+    { name = "Lennart Regebro", email = "lregebro@shoobx.com" },
+]
+keywords = [
+    "diff",
+    "html",
+    "xml",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: End Users/Desktop",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: Implementation :: PyPy",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Text Processing :: Markup :: XML",
+]
+dependencies = [
+    "lxml>=3.1.0",
+]
+
+[project.optional-dependencies]
+devenv = [
+    "ruff",
+    "pyroma>=5.0b1",
+    "zest.releaser[recommended]",
+]
+
+[project.scripts]
+xmldiff = "xmldiff.main:diff_command"
+xmlpatch = "xmldiff.main:patch_command"
+
+[project.urls]
+Homepage = "https://github.com/Shoobx/xmldiff"
+"Source Code" = "https://github.com/Shoobx/xmldiff"
+
+[tool.setuptools]
+packages = ["xmldiff"]
+include-package-data = true
+zip-safe = false
+
+[tool.ruff]
+exclude = ["xmldiff/diff_match_patch.py"]
+
+[tool.zest.releaser]
+create-wheel = true

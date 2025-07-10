@@ -1,4 +1,5 @@
 """All major API points and command-line tools"""
+
 from importlib import metadata
 
 from argparse import ArgumentParser, ArgumentTypeError
