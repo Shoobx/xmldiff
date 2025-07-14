@@ -1,7 +1,7 @@
 Changes
 =======
 
-2.7.1 (unreleased)
+3.0b1 (2025-07-14)
 ------------------
 
 - UpdateTextIn() and UpdateTextAfter() now also has optional parameters "oldtext"
