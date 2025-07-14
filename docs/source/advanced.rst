@@ -18,7 +18,7 @@ and the resulting diff will simply replace one value with another:
   >>> left = '<body><p>Old Content</p></body>'
   >>> right = '<body><p>New Content</p></body>'
   >>> main.diff_texts(left, right)
-  [UpdateTextIn(node='/body/p[1]', text='New Content')]
+  [UpdateTextIn(node='/body/p[1]', text='New Content', oldtext='Old Content')]
 
 The ``xml`` formatter will set tags around the text marking it as inserted or deleted:
 
@@ -211,8 +211,8 @@ Let's try diffing the same HTML with the fast match algorithm:
   >>> result = main.diff_texts(left, right,
   ...     diff_options={'fast_match': True})
   >>> result
-  [UpdateTextIn(node='/html/body/p[1]', text='Last paragraph'),
-   UpdateTextIn(node='/html/body/p[3]', text='The First paragraph')]
+  [UpdateTextIn(node='/html/body/p[1]', text='Last paragraph', oldtext='The First paragraph'),
+   UpdateTextIn(node='/html/body/p[3]', text='The First paragraph', oldtext='Last paragraph')]
 
 Now we instead got two update actions.
 This means the resulting HTML is quite different:

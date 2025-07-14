@@ -766,10 +766,20 @@ class DiffFormatter(BaseFormatter):
         return ("update-attribute", action.node, action.name, json.dumps(action.value))
 
     def _handle_UpdateTextIn(self, action):
-        return "update-text", action.node, json.dumps(action.text)
+        return (
+            "update-text",
+            action.node,
+            json.dumps(action.text),
+            json.dumps(action.oldtext),
+        )
 
     def _handle_UpdateTextAfter(self, action):
-        return "update-text-after", action.node, json.dumps(action.text)
+        return (
+            "update-text-after",
+            action.node,
+            json.dumps(action.text),
+            json.dumps(action.oldtext),
+        )
 
     def _handle_RenameNode(self, action):
         return "rename", action.node, action.tag

@@ -332,11 +332,11 @@ class Differ:
         left_xpath = utils.getpath(left)
 
         if left.text != right.text:
-            yield actions.UpdateTextIn(left_xpath, right.text)
+            yield actions.UpdateTextIn(left_xpath, right.text, left.text)
             left.text = right.text
 
         if left.tail != right.tail:
-            yield actions.UpdateTextAfter(left_xpath, right.tail)
+            yield actions.UpdateTextAfter(left_xpath, right.tail, left.tail)
             left.tail = right.tail
 
     def find_pos(self, node):
