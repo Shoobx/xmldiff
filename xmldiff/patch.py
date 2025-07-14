@@ -1,8 +1,12 @@
+import re
+
 from copy import deepcopy
-from csv import reader
 from json import loads
 from lxml import etree
 from xmldiff import actions
+
+
+DIFF_SPLIT = re.compile('(?:"[^"]*"|[^, ])+|(?<![^,])(?![^,])')
 
 
 class Patcher:
@@ -119,7 +123,7 @@ class DiffParser:
         line = line[1:-1]
         # Split the line on commas (ignoring commas in quoted strings) and
         # strip extraneous spaces. The first is the action, the rest params.
-        parts = [x.strip() for x in next(reader([line]))]
+        parts = DIFF_SPLIT.findall(line)
         action = parts[0]
         params = parts[1:]
         # Get the method, and return the result of calling it
