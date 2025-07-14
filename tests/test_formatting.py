@@ -380,7 +380,7 @@ class DiffFormatTests(unittest.TestCase):
 
     def test_del_text(self):
         action = actions.UpdateTextIn("/document/node", None)
-        expected = "[update-text, /document/node, null]"
+        expected = "[update-text, /document/node, null, null]"
         self._format_test(action, expected)
 
     def test_insert_attr(self):
@@ -429,21 +429,25 @@ class DiffFormatTests(unittest.TestCase):
 
     def test_update_text_in(self):
         action = actions.UpdateTextIn("/document/node", "Text")
-        expected = '[update-text, /document/node, "Text"]'
+        expected = '[update-text, /document/node, "Text", null]'
         self._format_test(action, expected)
 
         action = actions.UpdateTextIn("/document/node", 'Also a bit of text, "rick"')
-        expected = '[update-text, /document/node, "Also a bit of text, \\"rick\\""]'
+        expected = (
+            '[update-text, /document/node, "Also a bit of text, \\"rick\\"", null]'
+        )
         self._format_test(action, expected)
 
     def test_update_text_after_1(self):
         action = actions.UpdateTextAfter("/document/node[1]", "Text")
-        expected = '[update-text-after, /document/node[1], "Text"]'
+        expected = '[update-text-after, /document/node[1], "Text", null]'
         self._format_test(action, expected)
 
     def test_update_text_after_2(self):
         action = actions.UpdateTextAfter("/document/node", "Also a bit of text, rick")
-        expected = '[update-text-after, /document/node, "Also a bit of text, rick"]'
+        expected = (
+            '[update-text-after, /document/node, "Also a bit of text, rick", null]'
+        )
         self._format_test(action, expected)
 
     def test_insert_comment(self):

@@ -138,10 +138,10 @@ class DiffParser:
     def _handle_move(self, node, target, position):
         return actions.MoveNode(node, target, int(position))
 
-    def _handle_update_text(self, node, text):
+    def _handle_update_text(self, node, text, oldtext=None):
         return actions.UpdateTextIn(node, loads(text))
 
-    def _handle_update_text_after(self, node, text):
+    def _handle_update_text_after(self, node, text, oldtext=None):
         return actions.UpdateTextAfter(node, loads(text))
 
     def _handle_update_attribute(self, node, name, value):

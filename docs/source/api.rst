@@ -14,9 +14,9 @@ you just import and call one of the three main API methods.
   >>> main.diff_files("../tests/test_data/insert-node.left.html",
   ...                 "../tests/test_data/insert-node.right.html",
   ...                 diff_options={'F': 0.5, 'ratio_mode': 'fast'})
-  [UpdateTextIn(node='/body/div[1]', text=None),
+  [UpdateTextIn(node='/body/div[1]', text=None, oldtext='\n  '),
    InsertNode(target='/body/div[1]', tag='p', position=0),
-   UpdateTextIn(node='/body/div/p[1]', text='Simple text')]
+   UpdateTextIn(node='/body/div/p[1]', text='Simple text', oldtext=None)]
 
 Which one you choose depends on if the XML is contained in files,
 text strings or ``lxml`` trees.
@@ -182,9 +182,9 @@ so the output is not compatible.
   >>> print(main.diff_files("../tests/test_data/insert-node.left.html",
   ...                       "../tests/test_data/insert-node.right.html",
   ...                       formatter=formatter))
-  [update-text, /body/div[1], null]
+  [update-text, /body/div[1], null, "\n  "]
   [insert, /body/div[1], p, 0]
-  [update-text, /body/div/p[1], "Simple text"]
+  [update-text, /body/div/p[1], "Simple text", null]
 
 
 XmlDiffFormatter
@@ -405,7 +405,7 @@ Example:
   >>> left = '<document><node>Content</node></document>'
   >>> right = '<document><node>New Content</node></document>'
   >>> main.diff_texts(left, right)
-  [UpdateTextIn(node='/document/node[1]', text='New Content')]
+  [UpdateTextIn(node='/document/node[1]', text='New Content', oldtext='Content')]
 
 
 ``UpdateTextAfter(node, name)``
@@ -422,7 +422,7 @@ Example:
   >>> left = '<document><node>Content</node></document>'
   >>> right = '<document><node>Content</node>Trailing text</document>'
   >>> main.diff_texts(left, right)
-  [UpdateTextAfter(node='/document/node[1]', text='Trailing text')]
+  [UpdateTextAfter(node='/document/node[1]', text='Trailing text', oldtext=None)]
 
 
 ``InsertComment(target, position, text)``

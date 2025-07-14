@@ -4,7 +4,8 @@ Changes
 2.7.1 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- UpdateTextIn() and UpdateTextAfter() now also has optional parameters "oldtext"
+  which contains the text before update, or None, if there was no text.
 
 
 2.7.0 (2024-05-13)

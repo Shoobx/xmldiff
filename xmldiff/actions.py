@@ -6,8 +6,8 @@ InsertNode = namedtuple("InsertNode", "target tag position")
 RenameNode = namedtuple("RenameNode", "node tag")
 MoveNode = namedtuple("MoveNode", "node target position")
 
-UpdateTextIn = namedtuple("UpdateTextIn", "node text")
-UpdateTextAfter = namedtuple("UpdateTextAfter", "node text")
+UpdateTextIn = namedtuple("UpdateTextIn", "node text oldtext", defaults=[None])
+UpdateTextAfter = namedtuple("UpdateTextAfter", "node text oldtext", defaults=[None])
 
 UpdateAttrib = namedtuple("UpdateAttrib", "node name value")
 DeleteAttrib = namedtuple("DeleteAttrib", "node name")
