@@ -253,3 +253,13 @@ class ParserTests(unittest.TestCase):
             expected = f.read()
         # lxml.etree.parse() will strip ending whitespace
         self.assertEqual(result, expected.rstrip())
+
+    def test_parse_commas(self):
+        parser = DiffParser()
+
+        # There should be able to be a comma in the value
+        actions = list(parser.parse('[update-text-after, /root/anode[1], "foo,bar"]'))
+        self.assertEqual(
+            actions,
+            [UpdateTextAfter(node="/root/anode[1]", text="foo,bar", oldtext=None)],
+        )
