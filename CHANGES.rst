@@ -7,6 +7,8 @@ Changes
 - UpdateTextIn() and UpdateTextAfter() now also has optional parameters "oldtext"
   which contains the text before update, or None, if there was no text.
 
+- Fixed a bug in the parsing of diff files.
+
 
 2.7.0 (2024-05-13)
 ------------------
