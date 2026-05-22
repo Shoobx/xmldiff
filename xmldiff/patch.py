@@ -51,7 +51,7 @@ class Patcher:
     def _handle_MoveNode(self, action, tree):
         node = tree.xpath(action.node, namespaces=self.nsmap)[0]
         node.getparent().remove(node)
-        target = tree.xpath(action.target)[0]
+        target = tree.xpath(action.target, namespaces=self.nsmap)[0]
         target.insert(action.position, node)
 
     def _handle_UpdateTextIn(self, action, tree):
