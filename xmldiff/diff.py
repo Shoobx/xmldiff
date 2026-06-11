@@ -155,10 +155,16 @@ class Differ:
                     unmatched_lnodes.append((lnode, match_node, max_match))
                     # unmatched_lnodes.append(lnode)
 
+            # Sort by descending match quality so better matches get
+            # priority, and remove matched rnodes to prevent multiple
+            # left nodes from matching the same right node.
             lnodes = []
-            for lnode, rnode, max_match in unmatched_lnodes:
+            for lnode, rnode, max_match in sorted(
+                unmatched_lnodes, key=lambda x: -x[2]
+            ):
                 if max_match >= self.F and rnode in rnodes:
                     self.append_match(lnode, rnode, max_match)
+                    rnodes.remove(rnode)
                 else:
                     lnodes.append(lnode)
 
