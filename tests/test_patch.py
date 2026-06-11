@@ -23,12 +23,11 @@ from .testing import compare_elements
 
 
 class PatcherTests(unittest.TestCase):
-    patcher = Patcher()
 
     def _test(self, start, action, end):
-        tree = etree.fromstring(start)
-        self.patcher.handle_action(action, tree)
-        self.assertEqual(etree.tounicode(tree), end)
+        patcher = Patcher()
+        result = patcher.patch([action], etree.fromstring(start))
+        self.assertEqual(etree.tounicode(result), end)
 
     def test_delete_node(self):
         self._test("<root><deleteme/></root>", DeleteNode("/root/deleteme"), "<root/>")
@@ -52,6 +51,13 @@ class PatcherTests(unittest.TestCase):
             "<root><anode><moveme/></anode></root>",
             MoveNode("/root/anode/moveme", "/root", 1),
             "<root><anode/><moveme/></root>",
+        )
+
+    def test_move_node_with_namespace(self):
+        self._test(
+            '<root xmlns:ns="http://example.com/ns"><ns:src><moveme/></ns:src><ns:dst/></root>',
+            MoveNode("/root/ns:src/moveme", "/root/ns:dst", 0),
+            '<root xmlns:ns="http://example.com/ns"><ns:src/><ns:dst><moveme/></ns:dst></root>'
         )
 
     def test_update_text_in(self):
