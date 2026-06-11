@@ -7,6 +7,12 @@ Changes
 - Updated Python versions. 3.8 and 3.9 still works, but is officially unsupported,
   added 3.13, 3.14 and 3.15 to the supported versions.
 
+- Speeding up diffing by using dequeue [barucden]
+
+- Support namespace-prefixed move nodes [barucden]
+
+- Improved matching in certain cases [barucden]
+
 
 3.0b1 (2025-07-14)
 ------------------
