@@ -4,8 +4,8 @@ Changes
 3.0b2 (unreleased)
 ------------------
 
-- Updated Python versions. 3.8 still works, but is officially unsupported,
-  added 3.13 and 3.14 to the supported versions.
+- Updated Python versions. 3.8 and 3.9 still works, but is officially unsupported,
+  added 3.13, 3.14 and 3.15 to the supported versions.
 
 
 3.0b1 (2025-07-14)
