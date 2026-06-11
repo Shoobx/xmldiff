@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "xmldiff"
-version = "3.0"
+version = "3.1.dev0"
 description = "Creates diffs of XML files"
 readme = "README.rst"
 license = { text = "MIT" }
