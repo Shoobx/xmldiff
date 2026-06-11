@@ -966,24 +966,24 @@ class BestFastMatchTests(unittest.TestCase):
             ],
         )
 
-
     def test_best_match_no_double_match(self):
-        left = '''\
+        left = """\
 <a>
     <p>x<b>xy</b></p>
 </a>
-'''
-        right = '''\
+"""
+        right = """\
 <a>
     <p>x</p>
 </a>
-'''
+"""
         matches = self._match(left, right, best_match=True)
         # All matched paths should be exactly equal,
         # and /a/p/b should not be matched with anything
-        for (lpath, rpath) in matches:
+        for lpath, rpath in matches:
             self.assertEqual(lpath, rpath)
         self.assertNotIn("/a/p/b", [m[0] for m in matches])
+
 
 class UpdateNodeTests(unittest.TestCase):
     """Testing only the update phase of the diffing"""

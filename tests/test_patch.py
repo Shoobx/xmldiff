@@ -23,7 +23,6 @@ from .testing import compare_elements
 
 
 class PatcherTests(unittest.TestCase):
-
     def _test(self, start, action, end):
         patcher = Patcher()
         result = patcher.patch([action], etree.fromstring(start))
@@ -57,7 +56,7 @@ class PatcherTests(unittest.TestCase):
         self._test(
             '<root xmlns:ns="http://example.com/ns"><ns:src><moveme/></ns:src><ns:dst/></root>',
             MoveNode("/root/ns:src/moveme", "/root/ns:dst", 0),
-            '<root xmlns:ns="http://example.com/ns"><ns:src/><ns:dst><moveme/></ns:dst></root>'
+            '<root xmlns:ns="http://example.com/ns"><ns:src/><ns:dst><moveme/></ns:dst></root>',
         )
 
     def test_update_text_in(self):
