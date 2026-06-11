@@ -1,5 +1,6 @@
 import re
 
+from collections import deque
 from operator import eq
 
 # This namespace is reserved for lxml internal use, which only
@@ -23,10 +24,10 @@ def reverse_post_order_traverse(node):
 
 def breadth_first_traverse(node):
     # First yield the root node
-    queue = [node]
+    queue = deque([node])
 
     while queue:
-        item = queue.pop(0)
+        item = queue.popleft()
         yield item
         queue.extend(item.getchildren())
 
