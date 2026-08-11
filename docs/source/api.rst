@@ -102,7 +102,7 @@ The included formatters, ``diff``, ``xml``, and ``old`` all return a Unicode str
 
 ``xmldiff`` is still under rapid development,
 and no guarantees are done that the output of one version will be the same as the output of any previous version.
-The actions of the edit script can be in a different order or replaced by equivalent actions dependingon the version of ``xmldiff``,
+The actions of the edit script can be in a different order or replaced by equivalent actions depending on the version of ``xmldiff``,
 but if the Edit Script does not correctly transform one XML tree into another,
 that is regarded as a bug.
 This means that the output of the ``xml`` format also may change from version to version.

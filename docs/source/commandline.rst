@@ -40,7 +40,7 @@ The ``old`` formatter is a formatter that gives a list of edit actions in a form
 Whitespace Handling
 -------------------
 
-Formatters are also responsable for whitespace handling,
+Formatters are also responsible for whitespace handling,
 both in parsing and in output.
 
 By default ``xmldiff`` will strip all whitespace that is between tags,
