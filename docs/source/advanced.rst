@@ -178,7 +178,7 @@ As an example we take the following HTML codes:
   [MoveNode(node='/html/body/p[1]', target='/html/body[1]', position=2),
    MoveNode(node='/html/body/p[1]', target='/html/body[1]', position=1)]
 
-We here see that the differ finds that two paragraphs needs to be moved.
+We here see that the differ finds that two paragraphs need to be moved.
 Don't be confused that it says ``p[1]`` in both cases.
 That just means to move the first paragraph,
 and in the second case that first paragraph has already been moved and is now last.
